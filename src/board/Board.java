@@ -123,6 +123,20 @@ public class Board {
     }
 
     /**
+     * Returns the turn at this board.
+     */
+    public boolean getTurn() {
+        return this.turn;
+    }
+
+    /**
+     * Get the board index that the current player has to move at.
+     */
+    public byte getBoardIndexToMove() {
+        return this.subBoardIndex;
+    }
+
+    /**
      * Determines if another object is equal to this board.
      * Two boards are equal if they have the same board, at the same turn,
      * and the sub-board to make a move at is the same.
@@ -140,5 +154,22 @@ public class Board {
         Board board = (Board) object;
         return this.subBoardIndex == board.subBoardIndex && this.turn == board.turn
                 && Arrays.equals(this.subBoards, board.subBoards);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                stringBuilder.append(String.format("%s  %s  %s\n",
+                        this.subBoards[3 * i].getRow(j),
+                        this.subBoards[3 * i + 1].getRow(j),
+                        this.subBoards[3 * i + 2].getRow(j)));
+            }
+            if (i != 2) {
+                stringBuilder.append("\n");
+            }
+        }
+        return stringBuilder.toString();
     }
 }
