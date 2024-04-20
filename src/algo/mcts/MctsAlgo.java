@@ -22,4 +22,9 @@ public class MctsAlgo implements BaseAlgo {
         }
         return root.getBestMove();
     }
+
+    @Override
+    public String trace() {
+        return "";
+    }
 }

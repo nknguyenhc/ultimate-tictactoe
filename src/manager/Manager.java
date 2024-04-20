@@ -11,6 +11,11 @@ public class Manager {
     private final Scanner scanner = new Scanner(System.in);
     private Board board = new Board();
     private BaseAlgo algo;
+    private final boolean includeTrace;
+
+    public Manager(boolean includeTrace) {
+        this.includeTrace = includeTrace;
+    }
 
     public void run(BaseAlgo algo) {
         this.algo = algo;
@@ -123,6 +128,10 @@ public class Manager {
         Move move = this.algo.nextMove(this.board);
         System.out.printf("Algo chose: %s%n", move);
         this.board = this.board.move(move);
+
+        if (this.includeTrace) {
+            System.out.println(this.algo.trace());
+        }
     }
 
     private void notifyHumanWin() {
