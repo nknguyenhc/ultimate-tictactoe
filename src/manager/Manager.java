@@ -32,14 +32,17 @@ public class Manager {
                 } else {
                     this.notifyAlgoWin();
                 }
+                break;
             case O:
                 if (humanTurn) {
                     this.notifyAlgoWin();
                 } else {
                     this.notifyHumanWin();
                 }
+                break;
             case U:
                 this.notifyDraw();
+                break;
         }
     }
 
@@ -103,8 +106,8 @@ public class Manager {
         byte row;
         byte col;
         try {
-            row = (byte) (Byte.parseByte(numbers[0]));
-            col = (byte) (Byte.parseByte(numbers[1]));
+            row = (byte) (Byte.parseByte(numbers[0]) - 1);
+            col = (byte) (Byte.parseByte(numbers[1]) - 1);
         } catch (NumberFormatException e) {
             throw new InvalidMoveStringException();
         }

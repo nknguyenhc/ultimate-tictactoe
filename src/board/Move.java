@@ -34,6 +34,6 @@ public class Move {
 
     @Override
     public String toString() {
-        return String.format("(%d, %d)", this.row, this.col);
+        return String.format("(%d, %d)", this.row + 1, this.col + 1);
     }
 }

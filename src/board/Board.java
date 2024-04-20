@@ -13,6 +13,8 @@ public class Board {
     private final byte subBoardIndex;
     /** Represents the turn at this board. {@code true} if X, {@code false} otherwise. */
     private final boolean turn;
+    /** Cached value of the winner */
+    private Utils.Side winner = null;
 
     public Board() {
         this.subBoards = new SubBoard[] {
@@ -94,24 +96,24 @@ public class Board {
         return new Board(newSubBoards, nextSubBoardIndex, !this.turn);
     }
 
-    /**
-     * Determines the winner of this board.
-     * @return 0 if undetermined, 1 if X, 2 if O.
-     */
-    public Utils.Side winner() {
+    private Utils.Side determineWinner() {
         int Xboard = 0;
         int Oboard = 0;
+        int Dboard = 0;
         for (int i = 0; i < 9; i++) {
-            if (this.subBoards[i].getWinner() == Utils.Side.X) {
-                Xboard += 1 << i;
-            } else if (this.subBoards[i].getWinner() == Utils.Side.O) {
-                Oboard += 1 << i;
+            switch (this.subBoards[i].getWinner()) {
+                case X:
+                    Xboard += 1 << i;
+                    break;
+                case O:
+                    Oboard += 1 << i;
+                    break;
+                case D:
+                    Dboard += 1 << i;
+                    break;
             }
         }
 
-        if ((Xboard | Oboard) == Utils.filled) {
-            return Utils.Side.D;
-        }
         for (short line: Utils.winningLines) {
             if ((Xboard & line) == line) {
                 return Utils.Side.X;
@@ -119,7 +121,22 @@ public class Board {
                 return Utils.Side.O;
             }
         }
+        if ((Xboard | Oboard | Dboard) == Utils.filled) {
+            return Utils.Side.D;
+        }
         return Utils.Side.U;
+    }
+
+    /**
+     * Determines the winner of this board.
+     * Caches the value.
+     * @return 0 if undetermined, 1 if X, 2 if O.
+     */
+    public Utils.Side winner() {
+        if (this.winner == null) {
+            this.winner = this.determineWinner();
+        }
+        return this.winner;
     }
 
     /**
