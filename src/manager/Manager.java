@@ -46,7 +46,7 @@ public class Manager {
                     this.notifyHumanWin();
                 }
                 break;
-            case U:
+            case D:
                 this.notifyDraw();
                 break;
         }
@@ -148,6 +148,7 @@ public class Manager {
 
         if (this.includeTrace) {
             System.out.println(this.algo.trace());
+            System.out.printf("Algo chose: %s%n", move);
         }
     }
 

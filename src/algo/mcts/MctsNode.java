@@ -11,7 +11,7 @@ class MctsNode {
     /** The random number generator for this node. */
     private final Random rng = new Random();
     /** The value of winning. */
-    private static final double WIN = 10;
+    private static final double WIN = 1;
     private static final double C = 1.4;
     private int N = 0;
     private double U = 0;
@@ -37,7 +37,9 @@ class MctsNode {
         if (this.N == 0) {
             return Double.POSITIVE_INFINITY;
         }
-        return this.U / this.N + MctsNode.C * Math.sqrt(Math.log(this.parent.N) / this.N);
+        // To encourage the parent to explore nodes that causes opponent to lose,
+        // We invert the utility in UCB.
+        return -this.U / this.N + MctsNode.C * Math.sqrt(Math.log(this.parent.N) / this.N);
     }
 
     public MctsNode select() {
