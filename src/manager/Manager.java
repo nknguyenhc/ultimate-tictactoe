@@ -97,8 +97,8 @@ public class Manager {
             return;
         }
 
-        int row = boardIndex / 3;
-        int col = boardIndex % 3;
+        int row = boardIndex / 3 + 1;
+        int col = boardIndex % 3 + 1;
         System.out.printf("Board to move: (%d, %d)%n", row, col);
     }
 

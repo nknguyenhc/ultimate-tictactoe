@@ -2,6 +2,7 @@ import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
 import algo.random.RandomAlgo;
 import manager.Manager;
+import manager.Parser;
 
 public class Main {
     /** Algo to test. */
@@ -10,6 +11,22 @@ public class Main {
     private static final boolean includeTrace = true;
 
     public static void main(String[] args) {
-        new Manager(includeTrace).run(algo);
+        if (args.length == 0) {
+            System.out.println(
+                    "Usage: java Main [option]\n" +
+                    "Options:\n" +
+                    "  main: manually test the algo" +
+                    "  parser: parse a compact string");
+        }
+        switch (args[0]) {
+            case "main":
+                new Manager(includeTrace).run(algo);
+                break;
+            case "parser":
+                new Parser().run();
+                break;
+            default:
+                System.out.printf("Unrecognised argument: %s%n", args[0]);
+        }
     }
 }
