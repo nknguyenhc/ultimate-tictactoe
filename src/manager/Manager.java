@@ -2,6 +2,7 @@ package manager;
 
 import algo.BaseAlgo;
 import board.Board;
+import board.InvalidBoardStringException;
 import board.Move;
 import board.Utils;
 
@@ -49,6 +50,22 @@ public class Manager {
                 this.notifyDraw();
                 break;
         }
+    }
+
+    public void runWithStartBoard(BaseAlgo algo) {
+        System.out.print("Board to start (compact form): ");
+        String line = this.scanner.nextLine();
+        while (true) {
+            try {
+                this.board = Board.fromCompactString(line);
+                break;
+            } catch (InvalidBoardStringException e) {
+                System.out.println(e.getMessage());
+                System.out.print("Please key in your board again (compact form): ");
+                line = this.scanner.nextLine();
+            }
+        }
+        this.run(algo);
     }
 
     private void printWelcomeMessage() {

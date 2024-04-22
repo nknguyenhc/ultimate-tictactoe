@@ -25,6 +25,9 @@ public class Main {
             case "parser":
                 new Parser().run();
                 break;
+            case "custom":
+                new Manager(includeTrace).runWithStartBoard(algo);
+                break;
             default:
                 System.out.printf("Unrecognised argument: %s%n", args[0]);
         }
