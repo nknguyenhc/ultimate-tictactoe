@@ -16,5 +16,12 @@ public interface BaseAlgo {
      * which can be printed on the terminal for algo debugging.
      * The trace must from the last call to {@code nextMove}.
      */
-    public String trace();
+    String trace();
+
+    /**
+     * Returns the next move, but with time constraint.
+     * See {@code nextMove}.
+     * @param time The number of seconds allowed.
+     */
+    Move nextMoveWithTime(Board board, int time);
 }

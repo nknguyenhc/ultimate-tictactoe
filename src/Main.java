@@ -7,8 +7,10 @@ import manager.Parser;
 public class Main {
     /** Algo to test. */
     private static final BaseAlgo algo = new MctsAlgo();
-    /** Whether the print out the trace of the algo after every search. */
+    /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
+    /** Time control, in seconds.  */
+    private static final int timeControl = 5;
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -27,6 +29,9 @@ public class Main {
                 break;
             case "custom":
                 new Manager(includeTrace).runWithStartBoard(algo);
+                break;
+            case "time":
+                new Manager(includeTrace, timeControl).run(algo);
                 break;
             default:
                 System.out.printf("Unrecognised argument: %s%n", args[0]);

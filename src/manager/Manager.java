@@ -13,9 +13,16 @@ public class Manager {
     private Board board = new Board();
     private BaseAlgo algo;
     private final boolean includeTrace;
+    private final Integer timeControl;
 
     public Manager(boolean includeTrace) {
         this.includeTrace = includeTrace;
+        this.timeControl = null;
+    }
+
+    public Manager(boolean includeTrace, int timeControl) {
+        this.includeTrace = includeTrace;
+        this.timeControl = timeControl;
     }
 
     public void run(BaseAlgo algo) {
@@ -31,25 +38,7 @@ public class Manager {
             }
         }
 
-        switch (this.board.winner()) {
-            case X:
-                if (humanTurn) {
-                    this.notifyHumanWin();
-                } else {
-                    this.notifyAlgoWin();
-                }
-                break;
-            case O:
-                if (humanTurn) {
-                    this.notifyAlgoWin();
-                } else {
-                    this.notifyHumanWin();
-                }
-                break;
-            case D:
-                this.notifyDraw();
-                break;
-        }
+        this.announceResults(humanTurn);
     }
 
     public void runWithStartBoard(BaseAlgo algo) {
@@ -142,13 +131,40 @@ public class Manager {
     }
 
     private void algoTurn() {
-        Move move = this.algo.nextMove(this.board);
+        Move move;
+        if (this.timeControl == null) {
+            move = this.algo.nextMove(this.board);
+        } else {
+            move = this.algo.nextMoveWithTime(this.board, this.timeControl);
+        }
         System.out.printf("Algo chose: %s%n", move);
         this.board = this.board.move(move);
 
         if (this.includeTrace) {
             System.out.println(this.algo.trace());
             System.out.printf("Algo chose: %s%n", move);
+        }
+    }
+
+    private void announceResults(boolean humanTurn) {
+        switch (this.board.winner()) {
+            case X:
+                if (humanTurn) {
+                    this.notifyHumanWin();
+                } else {
+                    this.notifyAlgoWin();
+                }
+                break;
+            case O:
+                if (humanTurn) {
+                    this.notifyAlgoWin();
+                } else {
+                    this.notifyHumanWin();
+                }
+                break;
+            case D:
+                this.notifyDraw();
+                break;
         }
     }
 

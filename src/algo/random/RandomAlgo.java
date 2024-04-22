@@ -21,4 +21,9 @@ public class RandomAlgo implements BaseAlgo {
     public String trace() {
         return "No trace to print";
     }
+
+    @Override
+    public Move nextMoveWithTime(Board board, int time) {
+        return this.nextMove(board);
+    }
 }
