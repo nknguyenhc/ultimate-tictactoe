@@ -31,9 +31,13 @@ public class Parser {
         System.out.println(board);
 
         int boardIndex = board.getBoardIndexToMove();
-        int row = boardIndex / 3 + 1;
-        int col = boardIndex % 3 + 1;
-        System.out.printf("Board to move: (%d, %d)%n", row, col);
+        if (boardIndex == 9) {
+            System.out.println("Board to move: any board");
+        } else {
+            int row = boardIndex / 3 + 1;
+            int col = boardIndex % 3 + 1;
+            System.out.printf("Board to move: (%d, %d)%n", row, col);
+        }
         System.out.printf("Turn: %s%n", board.getTurn() ? "X" : "O");
     }
 }
