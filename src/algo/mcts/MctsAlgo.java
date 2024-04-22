@@ -7,10 +7,11 @@ import board.Move;
 public class MctsAlgo implements BaseAlgo {
     /** Number of epochs of simulation. */
     private final int epochs = 100000;
+    private MctsNode root;
 
     @Override
     public Move nextMove(Board board) {
-        MctsNode root = new MctsNode(null, null, board);
+        this.root = new MctsNode(null, null, board);
         for (int i = 0; i < this.epochs; i ++) {
             if (i % 10000 == 0) {
                 System.out.printf("Training epoch %d%n", i);
@@ -20,11 +21,18 @@ public class MctsAlgo implements BaseAlgo {
             double value = child.simulate();
             child.backPropagates(value);
         }
-        return root.getBestMove();
+        return this.root.getBestMove();
     }
 
     @Override
     public String trace() {
-        return "";
+        assert this.root != null;
+        StringBuilder stringBuilder = new StringBuilder();
+        MctsNode[] children = this.root.getChildren();
+        for (int i = 0; i < children.length; i++) {
+            stringBuilder.append(String.format("\nChild %d:\n", i));
+            stringBuilder.append(children[i].trace());
+        }
+        return stringBuilder.toString();
     }
 }

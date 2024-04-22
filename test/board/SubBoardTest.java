@@ -81,4 +81,11 @@ public class SubBoardTest {
         expectedBoard = expectedBoard.move(2, 2, true);
         assertEquals(expectedBoard, board);
     }
+
+    @Test
+    public void testToCompactString() throws Exception {
+        String string = "257,80";
+        SubBoard subBoard = SubBoard.fromCompactString(string);
+        assertEquals(string, subBoard.toCompactString());
+    }
 }

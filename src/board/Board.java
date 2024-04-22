@@ -316,4 +316,17 @@ public class Board {
         }
         return stringBuilder.toString();
     }
+
+    /**
+     * Returns the compact string representation, for ease of trace printing.
+     */
+    public String toCompactString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 9; i++) {
+            stringBuilder.append(this.subBoards[i].toCompactString());
+            stringBuilder.append(" ");
+        }
+        stringBuilder.append(String.format("%d,%d", this.getBoardIndexToMove(), this.getTurn() ? 0 : 1));
+        return stringBuilder.toString();
+    }
 }

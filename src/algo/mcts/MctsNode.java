@@ -112,10 +112,14 @@ class MctsNode {
     }
 
     /**
-     * Returns the optimal move at this state, based on the exploration.
-     * To be called in root node only. Assume that root node is not terminal.
+     * Returns the child that contains the best move.
+     * If this is a terminal node, returns null.
+     * Select based on the number of traversals.
      */
-    public Move getBestMove() {
+    private MctsNode getBestChild() {
+        if (this.children == null) {
+            return null;
+        }
         MctsNode bestChild = null;
         for (MctsNode child: this.children) {
             if (bestChild == null) {
@@ -126,7 +130,40 @@ class MctsNode {
                 bestChild = child;
             }
         }
+        return bestChild;
+    }
+
+    /**
+     * Returns the optimal move at this state, based on the exploration.
+     * To be called in root node only. Assume that root node is not terminal.
+     */
+    public Move getBestMove() {
+        MctsNode bestChild = this.getBestChild();
         assert bestChild != null;
         return bestChild.move;
+    }
+
+    /**
+     * Returns the trace of this node, if the agent were to choose a move from here.
+     */
+    public String trace() {
+        MctsNode curr = this;
+        StringBuilder trace = new StringBuilder();
+        MctsNode child = curr.getBestChild();
+        while (child != null) {
+            trace.append(curr.board.toCompactString());
+            trace.append(String.format("; Best move: %s; Utility: %.3f\n", child.move, curr.U));
+            curr = child;
+            child = curr.getBestChild();
+        }
+        return trace.toString();
+    }
+
+    /**
+     * Returns the children nodes of this node.
+     * Use a copy to prevent accidental edit.
+     */
+    public MctsNode[] getChildren() {
+        return this.children.clone();
     }
 }

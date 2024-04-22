@@ -184,4 +184,11 @@ public class BoardTest {
         assertEquals(7, board.getBoardIndexToMove());
         assertTrue(board.getTurn());
     }
+
+    @Test
+    public void testToCompactString() throws Exception {
+        String string = "4,0 0,0 0,128 0,0 16,1 0,0 0,0 0,0 0,0 7,0";
+        Board board = Board.fromCompactString(string);
+        assertEquals(string, board.toCompactString());
+    }
 }
