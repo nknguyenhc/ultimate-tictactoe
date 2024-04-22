@@ -39,6 +39,133 @@ public class Board {
     }
 
     /**
+     * Returns the board with the given string representation.
+     * The string representation must be the same as {@code toString} method,
+     * and must additional have two numbers, first representing {@code subBoardIndex},
+     * second representing {@code turn}.
+     * An example board is as follows:
+     *
+     * <pre>
+     * - - X  - - -  - - -
+     * - - -  - - -  - - -
+     * - - -  - - -  - O -
+     *
+     * - - -  O - -  - - -
+     * - - -  - X -  - - -
+     * - - -  - - -  - - -
+     *
+     * - - -  - - -  - - -
+     * - - -  - - -  - - -
+     * - - -  - - -  - - -
+     *
+     * 7,0
+     * </pre>
+     *
+     * This means that it is X's turn to go at board (3, 2).
+     */
+    public static Board fromString(String string) throws InvalidBoardStringException {
+        String[] strings = string.split("\n\n");
+        if (strings.length != 4) {
+            throw new InvalidBoardStringException(String.format(
+                    "String not enough length after \\n\\n separation: %s;\nExpected length: 4, actual length: %d",
+                    string, strings.length));
+        }
+
+        SubBoard[] subBoards = new SubBoard[9];
+        for (int i = 0; i < 3; i++) {
+            String[] lines = strings[i].split("\n");
+            if (lines.length != 3) {
+                throw new InvalidBoardStringException(String.format(
+                        "Group does not have the correct number of lines:\n%s;\nExpected length: 3, actual: %d",
+                        strings[i], lines.length));
+            }
+            String[][] subBoardLines = new String[3][];
+            for (int j = 0; j < 3; j++) {
+                subBoardLines[j] = lines[j].split("  ");
+                if (subBoardLines[j].length != 3) {
+                    throw new InvalidBoardStringException(String.format(
+                            "Long line does not have the correct number of groups: %s; Expected number of groups: %d",
+                            lines[j], subBoardLines[j].length));
+                }
+            }
+            for (int j = 0; j < 3; j++) {
+                subBoards[3 * i + j] = SubBoard.fromString(subBoardLines[0][j],
+                        subBoardLines[1][j], subBoardLines[2][j]);
+            }
+        }
+
+        String[] boardInfo = strings[3].split(",");
+        if (boardInfo.length != 2) {
+            throw new InvalidBoardStringException(String.format(
+                    "Wrong number of elements in last line: %s; Expected 2, received %d",
+                    strings[3], boardInfo.length));
+        }
+
+        int boardIndex;
+        int turnValue;
+        try {
+            boardIndex = Integer.parseInt(boardInfo[0]);
+            turnValue = Integer.parseInt(boardInfo[1]);
+        } catch (NumberFormatException e) {
+            throw new InvalidBoardStringException(String.format(
+                    "Last line contains an invalid number: %s", strings[3]));
+        }
+
+        validateBoardIndexAndTurnValue(boardIndex, turnValue);
+        return new Board(subBoards, (byte) boardIndex, turnValue == 0);
+    }
+
+    /**
+     * Gets the board from the compact string.
+     * The compact string is of the format {@code x1,y1 x2,y2 ... x9,y9 boardIndex,turnValue},
+     * where each {@code xi,yi} represents the corresponding sub-board.
+     */
+    public static Board fromCompactString(String string) throws InvalidBoardStringException {
+        String[] strings = string.split(" ");
+        if (strings.length != 10) {
+            throw new InvalidBoardStringException(String.format(
+                    "String does not the correct number of items: %s\nExpected 10, got: %d",
+                    string, strings.length));
+        }
+
+        SubBoard[] subBoards = new SubBoard[9];
+        for (int i = 0; i < 9; i++) {
+            subBoards[i] = SubBoard.fromCompactString(strings[i]);
+        }
+
+        String[] elems = strings[9].split(",");
+        if (elems.length != 2) {
+            throw new InvalidBoardStringException(String.format(
+                    "Invalid last element: %s; Expected 2, got: %d", strings[9], elems.length));
+        }
+
+        int boardIndex;
+        int turnValue;
+        try {
+            boardIndex = Integer.parseInt(elems[0]);
+            turnValue = Integer.parseInt(elems[1]);
+        } catch (NumberFormatException e) {
+            throw new InvalidBoardStringException(String.format(
+                    "Unable to parse numbers: %s", strings[9]));
+        }
+
+        validateBoardIndexAndTurnValue(boardIndex, turnValue);
+        return new Board(subBoards, (byte) boardIndex, turnValue == 0);
+    }
+
+    private static void validateBoardIndexAndTurnValue(int boardIndex, int turnValue)
+            throws InvalidBoardStringException {
+        if (boardIndex < 0 || boardIndex > 9) {
+            throw new InvalidBoardStringException(String.format(
+                    "Invalid board index: %d", boardIndex));
+        }
+        if (turnValue != 0 && turnValue != 1) {
+            throw new InvalidBoardStringException(String.format(
+                    "Invalid turn index: %d", turnValue));
+        }
+    }
+
+    /**
      * Obtains the list of move available for this board.
      */
     public List<Move> actions() {

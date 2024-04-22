@@ -59,4 +59,26 @@ public class SubBoardTest {
         board = board.move(2, 2, false);
         assertEquals(Utils.Side.D, board.getWinner());
     }
+
+    @Test
+    public void testFromString() throws Exception {
+        SubBoard board = SubBoard.fromString("X - -", "- O -", "O - X");
+        SubBoard expectedBoard = new SubBoard();
+        expectedBoard = expectedBoard.move(0, 0, true);
+        expectedBoard = expectedBoard.move(1, 1, false);
+        expectedBoard = expectedBoard.move(2, 0, false);
+        expectedBoard = expectedBoard.move(2, 2, true);
+        assertEquals(expectedBoard, board);
+    }
+
+    @Test
+    public void testFromCompactString() throws Exception {
+        SubBoard board = SubBoard.fromCompactString("257,80");
+        SubBoard expectedBoard = new SubBoard();
+        expectedBoard = expectedBoard.move(0, 0, true);
+        expectedBoard = expectedBoard.move(1, 1, false);
+        expectedBoard = expectedBoard.move(2, 0, false);
+        expectedBoard = expectedBoard.move(2, 2, true);
+        assertEquals(expectedBoard, board);
+    }
 }

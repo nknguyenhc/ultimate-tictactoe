@@ -1,6 +1,7 @@
 package board;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -129,5 +130,58 @@ public class BoardTest {
         Board board = new Board();
         board.move(new Move((byte) 4, (byte) 4));
         assertEquals(new Board(), board);
+    }
+
+    @Test
+    public void testFromString() throws Exception {
+        Board board = Board.fromString(
+                "- - X  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - O -\n" +
+                "\n" +
+                "- - -  O - -  - - -\n" +
+                "- - -  - X -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "\n" +
+                "7,0");
+        assertEquals(
+                "- - X  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - O -\n" +
+                "\n" +
+                "- - -  O - -  - - -\n" +
+                "- - -  - X -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n",
+                board.toString());
+        assertEquals(7, board.getBoardIndexToMove());
+        assertTrue(board.getTurn());
+    }
+
+    @Test
+    public void testFromCompactString() throws Exception {
+        Board board = Board.fromCompactString("4,0 0,0 0,128 0,0 16,1 0,0 0,0 0,0 0,0 7,0");
+        assertEquals(
+                "- - X  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - O -\n" +
+                "\n" +
+                "- - -  O - -  - - -\n" +
+                "- - -  - X -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n",
+                board.toString());
+        assertEquals(7, board.getBoardIndexToMove());
+        assertTrue(board.getTurn());
     }
 }
