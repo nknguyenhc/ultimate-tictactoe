@@ -149,10 +149,11 @@ class MctsNode {
     public String trace() {
         MctsNode curr = this;
         StringBuilder trace = new StringBuilder();
+        trace.append(String.format("Move: %s\n", this.move));
         MctsNode child = curr.getBestChild();
         while (child != null) {
             trace.append(curr.board.toCompactString());
-            trace.append(String.format("; Best move: %s; Utility: %.3f\n", child.move, curr.U));
+            trace.append(String.format("; Best move: %s; Utility: %.3f, Count: %d\n", child.move, curr.U, curr.N));
             curr = child;
             child = curr.getBestChild();
         }
