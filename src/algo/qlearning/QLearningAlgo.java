@@ -9,13 +9,16 @@ public class QLearningAlgo implements BaseAlgo {
     private QNode root;
     /** The move that the agent last chose. */
     private Move move;
-    private final int epochs = 10000;
+    /** Maximum probability of making a random move. */
+    private final double p = 0.1;
+    /** Number of training epochs, also used for calculating probability of making a random move. */
+    private final int epochs = 500000;
 
     @Override
     public Move nextMove(Board board) {
         this.setupRoot(board);
         for (int i = 0; i < this.epochs; i++) {
-            if (i % 1000 == 0) {
+            if (i % 10000 == 0) {
                 System.out.printf("Training loop %d%n", i);
             }
             this.root.train(this.calculateRandomProb(i));
@@ -39,7 +42,7 @@ public class QLearningAlgo implements BaseAlgo {
      * @param i The iteration count.
      */
     private double calculateRandomProb(int i) {
-        return (double) (this.epochs - i) / (2 * this.epochs);
+        return this.p - (double) i / this.epochs;
     }
 
     @Override

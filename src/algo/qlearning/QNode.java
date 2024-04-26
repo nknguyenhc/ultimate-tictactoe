@@ -109,7 +109,7 @@ class QNode {
                 bestChild = child;
                 continue;
             }
-            if (bestChild.qValue < child.qValue) {
+            if (child.qValue < bestChild.qValue) {
                 bestChild = child;
             }
         }
@@ -192,11 +192,11 @@ class QNode {
     public String trace() {
         QNode curr = this;
         StringBuilder trace = new StringBuilder();
-        trace.append(String.format("Move: %s; Utility: %.3f\n", this.move, this.qValue));
+        trace.append(String.format("Move: %s\n", this.move));
         QNode child = curr.selectBestMove();
         while (child != null) {
             trace.append(curr.board.toCompactString());
-            trace.append(String.format("; Best move: %s; Utility: %.3f\n", child.move, child.qValue));
+            trace.append(String.format("; Best move: %s; Utility: %.3f\n", child.move, curr.qValue));
             curr = child;
             child = curr.selectBestMove();
         }
