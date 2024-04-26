@@ -44,7 +44,13 @@ public class QLearningAlgo implements BaseAlgo {
 
     @Override
     public String trace() {
-        return "";
+        assert this.root != null;
+        StringBuilder stringBuilder = new StringBuilder();
+        QNode[] children = this.root.getChildren();
+        for (QNode child: children) {
+            stringBuilder.append(child.trace());
+        }
+        return stringBuilder.toString();
     }
 
     @Override

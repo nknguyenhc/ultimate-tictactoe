@@ -100,6 +100,9 @@ class QNode {
     }
 
     private QNode selectBestMove() {
+        if (this.children == null) {
+            return null;
+        }
         QNode bestChild = null;
         for (QNode child: this.children) {
             if (bestChild == null) {
@@ -135,7 +138,9 @@ class QNode {
      * Returns the best move at this node, in real game play.
      */
     public Move bestMove() {
-        return this.selectBestMove().move;
+        QNode node = this.selectBestMove();
+        assert node != null;
+        return node.move;
     }
 
     /**
@@ -171,5 +176,30 @@ class QNode {
      */
     public void makeRoot() {
         this.parent = null;
+    }
+
+    /**
+     * Returns the array of children nodes.
+     * Makes a copy to avoid accidental edits.
+     */
+    public QNode[] getChildren() {
+        return this.children.clone();
+    }
+
+    /**
+     * Returns the trace of this node for debugging.
+     */
+    public String trace() {
+        QNode curr = this;
+        StringBuilder trace = new StringBuilder();
+        trace.append(String.format("Move: %s; Utility: %.3f\n", this.move, this.qValue));
+        QNode child = curr.selectBestMove();
+        while (child != null) {
+            trace.append(curr.board.toCompactString());
+            trace.append(String.format("; Best move: %s; Utility: %.3f\n", child.move, child.qValue));
+            curr = child;
+            child = curr.selectBestMove();
+        }
+        return trace.toString();
     }
 }
