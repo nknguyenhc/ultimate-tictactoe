@@ -131,7 +131,12 @@ class QNode {
      * @param utility The utility obtained from results of training.
      */
     private double newQValue(double utility) {
-        return this.qValue + QNode.alpha * (utility - this.qValue);
+        QNode bestChild = this.selectBestMove();
+        if (bestChild == null) {
+            return utility;
+        } else {
+            return this.qValue + QNode.alpha * (utility - QNode.gamma * bestChild.qValue - this.qValue);
+        }
     }
 
     /**
