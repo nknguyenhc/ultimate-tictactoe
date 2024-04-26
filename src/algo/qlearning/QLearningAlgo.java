@@ -49,6 +49,7 @@ public class QLearningAlgo implements BaseAlgo {
     public String trace() {
         assert this.root != null;
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(String.format("Root utility: %.3f\n", this.root.getQValue()));
         QNode[] children = this.root.getChildren();
         for (QNode child: children) {
             stringBuilder.append(child.trace());

@@ -17,6 +17,7 @@ class QNode {
     /** The Q-value of this board. In other words, the Q-value of the parent board and the transitioning move. */
     private double qValue = 0;
     private QNode[] children;
+    private int numVisits = 0;
 
     /** Random number generator, for generating random moves and determining whether to select a random move. */
     private static final Random rng = new Random();
@@ -120,6 +121,7 @@ class QNode {
      * Updates the q value of this node with the given utility.
      */
     private void update(double utility) {
+        this.numVisits++;
         this.qValue = this.newQValue(utility);
         if (this.parent != null) {
             this.parent.update(-utility);
@@ -201,10 +203,16 @@ class QNode {
         QNode child = curr.selectBestMove();
         while (child != null) {
             trace.append(curr.board.toCompactString());
-            trace.append(String.format("; Best move: %s; Utility: %.3f\n", child.move, curr.qValue));
+            trace.append(String.format(
+                    "; Count: %d; Utility: %.3f; Best move: %s\n",
+                    curr.numVisits, curr.qValue, child.move));
             curr = child;
             child = curr.selectBestMove();
         }
         return trace.toString();
+    }
+
+    public double getQValue() {
+        return this.qValue;
     }
 }
