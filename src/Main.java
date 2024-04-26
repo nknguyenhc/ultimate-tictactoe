@@ -11,7 +11,7 @@ public class Main {
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
-    private static final int timeControl = 5;
+    private static final int timeControl = 8;
 
     public static void main(String[] args) {
         if (args.length == 0) {

@@ -58,6 +58,16 @@ public class QLearningAlgo implements BaseAlgo {
 
     @Override
     public Move nextMoveWithTime(Board board, int time) {
-        return null;
+        this.setupRoot(board);
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + time * 1000L;
+        int i = 0;
+        while (System.currentTimeMillis() < endTime) {
+            this.root.train(this.calculateRandomProb(i));
+            i++;
+        }
+        System.out.printf("Trained %d iterations%n", i);
+        this.move = this.root.bestMove();
+        return this.move;
     }
 }
