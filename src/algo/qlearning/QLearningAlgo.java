@@ -42,7 +42,7 @@ public class QLearningAlgo implements BaseAlgo {
      * @param i The iteration count.
      */
     private double calculateRandomProb(int i) {
-        return this.p - (double) i / this.epochs;
+        return this.p;
     }
 
     @Override
