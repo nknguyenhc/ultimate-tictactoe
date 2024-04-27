@@ -148,6 +148,7 @@ public class Manager {
     }
 
     private void announceResults(boolean humanTurn) {
+        System.out.println(this.board);
         switch (this.board.winner()) {
             case X:
                 if (humanTurn) {

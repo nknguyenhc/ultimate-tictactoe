@@ -22,13 +22,11 @@ class QNode {
     /** Random number generator, for generating random moves and determining whether to select a random move. */
     private static final Random rng = new Random();
     /** Maximum learning coefficient. */
-    private static final double alphaMax = 1.0;
+    private static final double alphaMax = 0.3;
     /** Minimum learning coefficient. */
-    private static final double alphaMin = 0.05;
+    private static final double alphaMin = 0.01;
     /** Move count that reaches {@code alphaMin}. */
-    private static final int maxMoveCount = 50;
-    /** Discount factor. */
-    private static final double gamma = 0.9;
+    private static final int maxMoveCount = 20;
     /** Utility value for a win. */
     private static final double WIN = 10;
 
