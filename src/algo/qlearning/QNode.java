@@ -21,8 +21,12 @@ class QNode {
 
     /** Random number generator, for generating random moves and determining whether to select a random move. */
     private static final Random rng = new Random();
-    /** Learning coefficient. */
-    private static final double alpha = 0.3;
+    /** Maximum learning coefficient. */
+    private static final double alphaMax = 1.0;
+    /** Minimum learning coefficient. */
+    private static final double alphaMin = 0.05;
+    /** Move count that reaches {@code alphaMin}. */
+    private static final int maxMoveCount = 50;
     /** Discount factor. */
     private static final double gamma = 0.9;
     /** Utility value for a win. */
@@ -73,11 +77,11 @@ class QNode {
             node.train(p);
         } else {
             if (this.board.winner() == Utils.Side.D) {
-                this.update(0);
+                this.update(0, 0);
             } else {
                 Utils.Side turn = this.board.getTurn() ? Utils.Side.X : Utils.Side.O;
                 double utility = this.board.winner() == turn ? QNode.WIN : -QNode.WIN;
-                this.update(utility);
+                this.update(utility, 0);
             }
         }
     }
@@ -120,11 +124,11 @@ class QNode {
     /**
      * Updates the q value of this node with the given utility.
      */
-    private void update(double utility) {
+    private void update(double utility, int moveCountFromEnd) {
         this.numVisits++;
-        this.qValue = this.newQValue(utility);
+        this.qValue = this.newQValue(utility, moveCountFromEnd);
         if (this.parent != null) {
-            this.parent.update(-utility);
+            this.parent.update(-utility, moveCountFromEnd + 1);
         }
     }
 
@@ -132,12 +136,11 @@ class QNode {
      * Computes the new q-value of this node.
      * @param utility The utility obtained from results of training.
      */
-    private double newQValue(double utility) {
-        if (this.children == null) {
-            return utility;
-        } else {
-            return this.qValue + QNode.alpha * (utility - this.qValue);
-        }
+    private double newQValue(double utility, int moveCountFromEnd) {
+        double alpha = Math.max(
+                QNode.alphaMax - (QNode.alphaMax - QNode.alphaMin) * moveCountFromEnd / QNode.maxMoveCount,
+                QNode.alphaMin);
+        return this.qValue + alpha * (utility - this.qValue);
     }
 
     /**

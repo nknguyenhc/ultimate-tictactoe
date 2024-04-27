@@ -31,6 +31,7 @@ public class Manager {
         boolean humanTurn = this.determineTurn();
         while (this.board.winner() == Utils.Side.U) {
             System.out.println(this.board);
+            System.out.printf("Compact string: %s%n", this.board.toCompactString());
             if (this.board.getTurn() == humanTurn) {
                 this.humanTurn();
             } else {
