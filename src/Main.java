@@ -2,6 +2,7 @@ import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
 import algo.qlearning.QLearningAlgo;
 import algo.random.RandomAlgo;
+import manager.AlgoFight;
 import manager.Manager;
 import manager.Parser;
 
@@ -13,12 +14,19 @@ public class Main {
     /** Time control, in seconds.  */
     private static final int timeControl = 8;
 
+    /** Algo 1 for automated fight. */
+    private static final BaseAlgo algo1 = new QLearningAlgo();
+    /** Algo 2 for automated fight. */
+    private static final BaseAlgo algo2 = new MctsAlgo();
+    private static final boolean includeTrace1 = true;
+    private static final boolean includeTrace2 = false;
+
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println(
                     "Usage: java Main [option]\n" +
                     "Options:\n" +
-                    "  main: manually test the algo" +
+                    "  main: manually test the algo\n" +
                     "  parser: parse a compact string");
         }
         switch (args[0]) {
@@ -33,6 +41,12 @@ public class Main {
                 break;
             case "time":
                 new Manager(includeTrace, timeControl).run(algo);
+                break;
+            case "fight":
+                new AlgoFight(algo1, algo2, includeTrace1, includeTrace2).run();
+                break;
+            case "fight-time":
+                new AlgoFight(algo1, algo2, includeTrace1, includeTrace2).runWithTime(timeControl);
                 break;
             default:
                 System.out.printf("Unrecognised argument: %s%n", args[0]);
