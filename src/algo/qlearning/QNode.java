@@ -133,11 +133,10 @@ class QNode {
      * @param utility The utility obtained from results of training.
      */
     private double newQValue(double utility) {
-        QNode bestChild = this.selectBestMove();
-        if (bestChild == null) {
+        if (this.children == null) {
             return utility;
         } else {
-            return this.qValue + QNode.alpha * (utility - QNode.gamma * bestChild.qValue - this.qValue);
+            return this.qValue + QNode.alpha * (utility - this.qValue);
         }
     }
 
@@ -199,7 +198,7 @@ class QNode {
     public String trace() {
         QNode curr = this;
         StringBuilder trace = new StringBuilder();
-        trace.append(String.format("Move: %s\n", this.move));
+        trace.append(String.format("Move: %s, Utility: %.3f; Count: %d\n", this.move, this.qValue, this.numVisits));
         QNode child = curr.selectBestMove();
         while (child != null) {
             trace.append(curr.board.toCompactString());
