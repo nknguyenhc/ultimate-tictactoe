@@ -22,7 +22,7 @@ class QNode {
     /** Random number generator, for generating random moves and determining whether to select a random move. */
     private static final Random rng = new Random();
     /** Maximum learning coefficient. */
-    private static final double alphaMax = 0.05;
+    private static final double alphaMax = 0.4;
     /** Minimum learning coefficient. */
     private static final double alphaMin = 0.01;
     /** Move count that reaches {@code alphaMin}. */
