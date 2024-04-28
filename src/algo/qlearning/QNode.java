@@ -44,10 +44,21 @@ class QNode {
         this.parent = parent;
         this.board = board;
         this.move = move;
+        this.earlyQValue();
+    }
+
+    /**
+     * Determines the q-value of this node, if the board is terminal.
+     */
+    private void earlyQValue() {
+        if (this.board.winner() == Utils.Side.X || this.board.winner() == Utils.Side.O) {
+            this.qValue = -QNode.WIN;
+        }
     }
 
     /**
      * Set up the children of this node.
+     * Not to be called at a terminal node.
      */
     private void setup() {
         if (this.children != null) {
@@ -77,9 +88,7 @@ class QNode {
             if (this.board.winner() == Utils.Side.D) {
                 this.update(0, 0);
             } else {
-                Utils.Side turn = this.board.getTurn() ? Utils.Side.X : Utils.Side.O;
-                double utility = this.board.winner() == turn ? QNode.WIN : -QNode.WIN;
-                this.update(utility, 0);
+                this.update(-QNode.WIN, 0);
             }
         }
     }
