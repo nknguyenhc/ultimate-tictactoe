@@ -26,7 +26,9 @@ class QNode {
     /** Minimum learning coefficient. */
     private static final double alphaMin = 0.01;
     /** Move count that reaches {@code alphaMin}. */
-    private static final int maxMoveCount = 20;
+    private static final int maxMoveCount = 30;
+    private static final double A = QNode.alphaMax;
+    private static final double k = Math.log(QNode.alphaMax / QNode.alphaMin) / (QNode.maxMoveCount);
     /** Utility value for a win. */
     private static final double WIN = 10;
 
@@ -145,7 +147,7 @@ class QNode {
      */
     private double newQValue(double utility, int moveCountFromEnd) {
         double alpha = Math.max(
-                QNode.alphaMax - (QNode.alphaMax - QNode.alphaMin) * moveCountFromEnd / QNode.maxMoveCount,
+                QNode.A * Math.exp(-QNode.k * moveCountFromEnd),
                 QNode.alphaMin);
         return this.qValue + alpha * (utility - this.qValue);
     }
