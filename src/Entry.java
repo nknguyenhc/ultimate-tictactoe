@@ -46,7 +46,7 @@ public class Entry {
         while (!isExit) {
             try {
                 int time = Integer.parseInt(response);
-                if (time < 0 || time > 10) {
+                if (time <= 0 || time > 10) {
                     System.out.print("Time control must be an integer between 1 and 10!\n" +
                             "Please key in time control again (1-10): ");
                     response = this.scanner.nextLine();
