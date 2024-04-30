@@ -27,11 +27,15 @@ public class Manager {
 
     public void run(BaseAlgo algo) {
         this.algo = algo;
-        this.printWelcomeMessage();
+        if (this.includeTrace) {
+            this.printWelcomeMessage();
+        }
         boolean humanTurn = this.determineTurn();
         while (this.board.winner() == Utils.Side.U) {
             System.out.println(this.board);
-            System.out.printf("Compact string: %s%n", this.board.toCompactString());
+            if (this.includeTrace) {
+                System.out.printf("Compact string: %s%n", this.board.toCompactString());
+            }
             if (this.board.getTurn() == humanTurn) {
                 this.humanTurn();
             } else {

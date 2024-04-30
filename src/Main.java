@@ -6,6 +6,9 @@ import manager.AlgoFight;
 import manager.Manager;
 import manager.Parser;
 
+/**
+ * The main testing routine.
+ */
 public class Main {
     /** Algo to test. */
     private static final BaseAlgo algo = new QLearningAlgo();
@@ -27,7 +30,11 @@ public class Main {
                     "Usage: java Main [option]\n" +
                     "Options:\n" +
                     "  main: manually test the algo\n" +
-                    "  parser: parse a compact string");
+                    "  parser: parse a compact string\n" +
+                    "  custom: start from a custom board\n" +
+                    "  time: manually test the algo with time control\n" +
+                    "  fight: run an automated fight between two algos\n" +
+                    "  fight-time: run an automated fight between two algos with time control\n");
         }
         switch (args[0]) {
             case "main":
