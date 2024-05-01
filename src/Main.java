@@ -2,6 +2,7 @@ import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
 import algo.qlearning.QLearningAlgo;
 import algo.random.RandomAlgo;
+import algo.sarsa.SarsaAlgo;
 import manager.AlgoFight;
 import manager.Manager;
 import manager.Parser;
@@ -11,7 +12,7 @@ import manager.Parser;
  */
 public class Main {
     /** Algo to test. */
-    private static final BaseAlgo algo = new QLearningAlgo();
+    private static final BaseAlgo algo = new SarsaAlgo();
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
