@@ -23,7 +23,7 @@ class SarsaNode {
     /** Discount factor. */
     private static final double gamma = 0.98;
     /** Learning rate. */
-    private static final double alpha = 0.3;
+    private static final double alpha = 0.15;
     /** Utility value for a win. */
     private static final double WIN = 100;
 
