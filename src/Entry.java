@@ -1,6 +1,7 @@
 import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
 import algo.qlearning.QLearningAlgo;
+import algo.sarsa.SarsaAlgo;
 import manager.Manager;
 
 import java.util.Scanner;
@@ -15,18 +16,23 @@ public class Entry {
 
     private void selectAlgo() {
         System.out.print("Algos to fight against:\n" +
-                "  1. Q-Learning (medium)\n" +
-                "  2. Monte-Carlo Tree Search (hard)\n" +
-                "Key in your choice (1-2): ");
+                "  1. SARSA (easy)\n" +
+                "  2. Q-Learning (medium)\n" +
+                "  3. Monte-Carlo Tree Search (hard)\n" +
+                "Key in your choice (1-3): ");
         String response = this.scanner.nextLine();
         boolean isExit = false;
         while (!isExit) {
             switch (response) {
                 case "1":
                     isExit = true;
-                    this.algo = new QLearningAlgo();
+                    this.algo = new SarsaAlgo();
                     break;
                 case "2":
+                    isExit = true;
+                    this.algo = new QLearningAlgo();
+                    break;
+                case "3":
                     isExit = true;
                     this.algo = new MctsAlgo();
                     break;

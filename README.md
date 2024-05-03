@@ -37,14 +37,14 @@ The most common policy for child selection is UCB.
 
 $$
 \begin{aligned}
-& UCB(n) = \frac{U(n)}{N(n)} + C\sqrt{\frac{ln(parent(n))}{N(n)}}
+& UCB(n) = \frac{U(n)}{N(n)} + C\sqrt{\frac{N(ln(n.parent))}{N(n)}}
 \end{aligned}
 $$
 
 Where,
 * $U(n)$: Total utility of node $n$ accumulated over the past simulations, initially $0$
 * $N(n)$: Number of simulations that visit node $n$.
-* $parent(n)$: The parent node of node $n$.
+* $n.parent$: The parent node of node $n$.
 
 The first term in UCB is the greedy term, while the second term is the exploration term. Constant $C$ is the balancing term between exploration and exploitation, and is usually $\sqrt{2}$. The child node select is then the child with the highest UCB value.
 
@@ -96,7 +96,7 @@ This is the routine to evaluate a child node. From the child selected, random mo
 This method is arguably not the optimal policy for board evaluation. However, it has the following advantages:
 
 * Comparing to static evaluation of a board, this method does not require the knowledge of evaluation of a board.
-* Comparing to selecting moves based on a heuristic, this method spends less time, and again, does not require the knowledge of what constitutes a good move.
+* Comparing to selecting moves based on a heuristic, this method spends less time, and does not require the knowledge of what constitutes a good move.
 
 Moreover, the board evaluation is more accurate as the tree of knowledge extends to greater depths.
 
@@ -227,6 +227,37 @@ Where $x$ is the number of steps away from the end of the game.
 
 After having constructed the Q-table, our task of selecting the move for the real game play is simple: we look at the next boards, and select the action that results in the board with the lowest possible Q-value.
 
+### Sarsa
+
+Sarsa is very similar to Q-learning, that it keeps a "knowledge table". The difference is that, during update of Q-value, Q-learning assumes perfect moves afterwards, while Sarsa takes into account the game progression from the simulation.
+
+Similar to Q-learning, we use tree implementation of the Q-table to save memory.
+
+There are two important steps in Sarsa, similar to Q-learning:
+
+1. Simulate
+2. Update
+
+#### Simulate
+
+Simulation in Sarsa is similar to Q-learning, where there is a small probability of choosing a random move, otherwise the engine chooses the best move from the current Q-table.
+
+Q-value of children are inverted in calculating the best move, as the engine should aim minimise the opponent's value.
+
+#### Update
+
+Q-update function is as follows:
+
+$$
+\begin{aligned}
+& Q[s, a] = Q[s, a] + \alpha (r - Q[s, a] + \gamma Q[s', a'])
+\end{aligned}
+$$
+
+Where $s'$ is the state obtained by applying action $a$ on state $s$, and $a'$ is the action taken at state $s'$ in the last simulation, and $\gamma$ is the discount factor, representing how much the engine should value future rewards.
+
+In the update function, we only reward the terminal states with non-zero values. All intermediate states receive 0 reward. Meanwhile, $\gamma$ is set close to $1$, so that the engine solely focuses on the future rewards, which is to win the game. $\gamma$ is set to $0.99$, so that a shorter sequence of moves to winning is preferred over a longer sequence.
+
 ## User guide
 
 1. Make sure that you have java version 11 on your computer. Key in the following command to check your version:
@@ -247,12 +278,6 @@ java -jar ultimate-tictactoe.jar
 
 5. Follow the instructions in the programme to set up the game, including selecting the algorithm you would like to fight against, select time control, select the side you are playing.
 
-6. At your turn, key in your move in the format `R, C`, where `R` is the row index and `C` is the column index. For example, if you want to go at row index 7 and column index 9, you should key in:
-
-```
-7, 9
-```
-
-Note that the move you key in must be a valid move at the board.
+6. At your turn, key in your move in the format `R, C`, where `R` is the row index and `C` is the column index. For example, if you want to go at row index 7 and column index 9, you should key in: `7, 9`. Note that the move you key in must be a valid move at the board.
 
 7. Enjoy!
