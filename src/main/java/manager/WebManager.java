@@ -6,6 +6,7 @@ import algo.qlearning.QLearningAlgo;
 import algo.sarsa.SarsaAlgo;
 import board.Board;
 import board.Move;
+import board.Utils;
 
 public class WebManager {
     private enum State {
@@ -15,6 +16,7 @@ public class WebManager {
         CHOOSE_SIDE,
         ALGO_TURN,
         HUMAN_TURN,
+        GAME_FINISHED,
     }
 
     private State state = State.START;
@@ -54,7 +56,7 @@ public class WebManager {
             case ALGO_TURN:
                 return this.algoTurn();
             default:
-                throw new RuntimeException("Should not reach here");
+                throw new InvalidStateException();
         }
     }
 
@@ -137,6 +139,10 @@ public class WebManager {
             return e.getMessage() + TURN_PROMPT_APPEND;
         }
         this.board = this.board.move(move);
+        if (this.board.winner() != Utils.Side.U) {
+            return this.gameJudge();
+        }
+
         this.state = State.ALGO_TURN;
         return this.boardInfo();
     }
@@ -166,7 +172,17 @@ public class WebManager {
     private String algoTurn() {
         Move move = this.algo.nextMoveWithTime(this.board, this.timeControl);
         this.board = this.board.move(move);
+        if (this.board.winner() != Utils.Side.U) {
+            return this.gameJudge();
+        }
+
         this.state = State.HUMAN_TURN;
         return String.format("Algo choose: %s\n", move) + this.promptTurn();
+    }
+
+    private String gameJudge() {
+        Utils.Side winner = this.board.winner();
+        this.state = State.GAME_FINISHED;
+        return this.board.toString() + String.format("%s won !!!", winner);
     }
 }
