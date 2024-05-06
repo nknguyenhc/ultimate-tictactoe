@@ -147,7 +147,8 @@ class QNode {
      */
     private double newQValue(double utility, int moveCountFromEnd) {
         double alpha = Math.max(
-                QNode.A * Math.exp(-QNode.k * moveCountFromEnd),
+                // Bytecoder currently does not support Math.exp
+                QNode.A * Math.pow(Math.E, -QNode.k * moveCountFromEnd),
                 QNode.alphaMin);
         return this.qValue + alpha * (utility - this.qValue);
     }

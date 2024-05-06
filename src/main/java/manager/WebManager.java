@@ -142,16 +142,16 @@ public class WebManager {
     }
 
     private Move parseMove(String input) throws InvalidMoveStringException {
-        String[] numbers = input.split(", ");
-        if (numbers.length != 2) {
+        // Bytecoder does not support String::split
+        if (input.length() != 4 || input.charAt(1) != ',' || input.charAt(2) != ' ') {
             throw new InvalidMoveStringException();
         }
 
         byte row;
         byte col;
         try {
-            row = (byte) (Byte.parseByte(numbers[0]) - 1);
-            col = (byte) (Byte.parseByte(numbers[1]) - 1);
+            row = (byte) (Byte.parseByte(String.valueOf(input.charAt(0))) - 1);
+            col = (byte) (Byte.parseByte(String.valueOf(input.charAt(3))) - 1);
         } catch (NumberFormatException e) {
             throw new InvalidMoveStringException();
         }
