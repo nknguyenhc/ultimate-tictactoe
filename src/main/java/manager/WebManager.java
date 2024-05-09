@@ -26,7 +26,7 @@ public class WebManager {
 
     private static final String WELCOME_MESSAGE =
             "Welcome! This is a programme to test out the engine.\n" +
-            "Please choose the algo you wish to fight against:" +
+            "Please choose the algo you wish to fight against:\n" +
             "  1. Sarsa (easy)\n" +
             "  2. Q-learning (medium)\n" +
             "  3. Monte-Carlo Tree Search (hard)\n" +
