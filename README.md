@@ -281,3 +281,83 @@ java -jar ultimate-tictactoe.jar
 6. At your turn, key in your move in the format `R, C`, where `R` is the row index and `C` is the column index. For example, if you want to go at row index 7 and column index 9, you should key in: `7, 9`. Note that the move you key in must be a valid move at the board.
 
 7. Enjoy!
+
+## Javascript release
+
+Bytecoder is not a perfect libraries. There are still bugs within the library. For that, there are a few required edits on the javascript:
+
+1. Some strings are segmented onto two different lines. Combine them into one line with delimiter `\n`.
+2. Rewrite `Array::clone` method. The method `clone` is poorly transpiled for the `Array` class. Find `de$mirkosertic$bytecoder$classlib$Array::Ljava$lang$Object$$clone$$` method, and replace it with the following method body:
+
+```js
+  Ljava$lang$Object$$clone$$() {
+    // source file is Array.java
+    // line number 24
+    const newArray = bytecoder.newarray(this.data.length, undefined);
+    newArray.data = [...this.data];
+    return newArray;
+  }
+```
+
+3. Write `String::format` method. This method is not written in the exported javascript. The method looks something like this:
+
+```js
+function formatString(format, args) {
+  let i = 0;
+  return format.replace(/%(\w)/g, (match, type) => {
+    const value = args[i];
+    i++;
+    switch (type) {
+      case "s":
+        return value;
+      case "d":
+        return parseInt(value);
+      case "c":
+        return String.fromCharCode(value);
+      case "n":
+        return "\n";
+    }
+    return match;
+  });
+}
+
+function objectToReplaceableValue(object) {
+  if (object.nativeObject) {
+    return object.nativeObject;
+  } else if (object.value) {
+    return object.value;
+  } else {
+    return object.Ljava$lang$String$$toString$$().nativeObject;
+  }
+}
+
+bytecoder.imports['java.lang.String'].Ljava$lang$String$$format$Ljava$lang$String$$$Ljava$lang$Object$ = (arg0, arg1) => {
+  const objects = arg1.data.map(object => objectToReplaceableValue(object));
+  const nativeString = formatString(arg0.nativeObject, objects);
+  return bytecoder.toBytecoderString(nativeString);
+};
+```
+
+4. Write `Math::pow` method. The method body looks something like this:
+
+```js
+bytecoder.imports['java.lang.Math'].D$pow$D$D =  (a, b) => {
+  return Math.pow(a, b);
+};
+```
+
+The `formatString` does not account for all formats, but those formats are sufficient to format the string.
+The method `objectToReplaceableValue` converts a bytecoder class to a native object/value that can be used in the `formatString` function.
+Finally, we add the function `Ljava$lang$String$$format$Ljava$lang$String$$$Ljava$lang$Object$` to the imports on `'java.lang.String'`, which will be called whenever `String::format` is called in java.
+
+On the user end, you need to take note of the following API. There is only one endpoint, `Web::getResponse(String)`. If in java, you would want to call the following:
+
+```java
+Web.getResponse("1");
+```
+
+Then in javascript, you would need to call the following:
+
+```js
+bytecoder.exports.getResponse(bytecoder.toBytecoderString("1"))
+```
