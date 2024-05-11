@@ -338,17 +338,17 @@ bytecoder.imports['java.lang.String'].Ljava$lang$String$$format$Ljava$lang$Strin
 };
 ```
 
-4. Write `Math::pow` method. The method body looks something like this:
-
-```js
-bytecoder.imports['java.lang.Math'].D$pow$D$D =  (a, b) => {
-  return Math.pow(a, b);
-};
-```
-
 The `formatString` does not account for all formats, but those formats are sufficient to format the string.
 The method `objectToReplaceableValue` converts a bytecoder class to a native object/value that can be used in the `formatString` function.
 Finally, we add the function `Ljava$lang$String$$format$Ljava$lang$String$$$Ljava$lang$Object$` to the imports on `'java.lang.String'`, which will be called whenever `String::format` is called in java.
+
+4. Write `Math::pow` method. The method body looks something like this:
+
+```js
+bytecoder.imports['java.lang.Math'].D$pow$D$D = (a, b) => {
+  return Math.pow(a, b);
+};
+```
 
 On the user end, you need to take note of the following API. There is only one endpoint, `Web::getResponse(String)`. If in java, you would want to call the following:
 

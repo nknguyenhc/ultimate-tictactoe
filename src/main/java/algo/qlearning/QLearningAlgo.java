@@ -67,7 +67,6 @@ public class QLearningAlgo implements BaseAlgo {
             this.root.train(this.calculateRandomProb(i));
             i++;
         }
-        System.out.printf("Trained %d iterations%n", i);
         this.move = this.root.bestMove();
         return this.move;
     }
