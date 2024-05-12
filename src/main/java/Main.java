@@ -1,7 +1,6 @@
 import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
 import algo.qlearning.QLearningAlgo;
-import algo.random.RandomAlgo;
 import algo.sarsa.SarsaAlgo;
 import manager.AlgoFight;
 import manager.Manager;
