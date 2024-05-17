@@ -1,5 +1,6 @@
 import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
+import algo.pv.PvAlgo;
 import algo.qlearning.QLearningAlgo;
 import algo.sarsa.SarsaAlgo;
 import manager.AlgoFight;
@@ -18,7 +19,7 @@ public class Main {
     private static final int timeControl = 8;
 
     /** Algo 1 for automated fight. */
-    private static final BaseAlgo algo1 = new QLearningAlgo();
+    private static final BaseAlgo algo1 = new PvAlgo();
     /** Algo 2 for automated fight. */
     private static final BaseAlgo algo2 = new MctsAlgo();
     private static final boolean includeTrace1 = true;

@@ -4,10 +4,11 @@ import board.Board;
 import board.Move;
 import board.Utils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-class PvNode {
+class PvNode implements Comparable<PvNode> {
     private PvNode parent = null;
     private final Move move;
     private final Board board;
@@ -18,8 +19,10 @@ class PvNode {
     private int N = 0;
     private double U = 0;
     private boolean isMctsRoot = false;
+
     private PvNode[] children = null;
-    private static final int epochs = 1000;
+    private PvNode bestChild;
+    private static final int epochs = 100;
 
     private PvNode(PvNode parent, Move move, Board board) {
         this.parent = parent;
@@ -64,15 +67,23 @@ class PvNode {
             return this;
         }
 
+        this.createChildren();
+        int index = this.rng.nextInt(this.children.length);
+        return this.children[index];
+    }
+
+    /**
+     * Instantiates the children of this node.
+     * Only call on non-terminal node,
+     * and assuming that the children array is not instantiated.
+     */
+    private void createChildren() {
         List<Move> actions = this.board.actions();
         this.children = new PvNode[actions.size()];
         for (int i = 0; i < actions.size(); i++) {
             Move action = actions.get(i);
             this.children[i] = new PvNode(this, action, this.board.move(action));
         }
-
-        int index = this.rng.nextInt(actions.size());
-        return this.children[index];
     }
 
     private double simulate() {
@@ -97,7 +108,24 @@ class PvNode {
         }
     }
 
+    private double utility() {
+        return this.U / this.N;
+    }
+
+    @Override
+    public int compareTo(PvNode node) {
+        return Double.compare(node.utility(), this.utility());
+    }
+
     public double evaluate() {
+        if (this.board.winner() != Utils.Side.U) {
+            if (this.board.winner() == Utils.Side.D) {
+                return 0;
+            } else {
+                return -PvNode.WIN;
+            }
+        }
+
         this.isMctsRoot = true;
         for (int i = 0; i < PvNode.epochs; i++) {
             PvNode node = this.select();
@@ -106,6 +134,54 @@ class PvNode {
             child.backPropagates(value);
         }
         this.isMctsRoot = false;
-        return this.U / this.N;
+        return this.utility();
+    }
+
+    /**
+     * Sort the children of this tree, with most promising child in front.
+     * Only call this on a non-terminal node.
+     */
+    private void sortChildren() {
+        if (this.children == null) {
+            this.createChildren();
+        }
+        Arrays.sort(this.children);
+    }
+
+    /**
+     * Searches this subtree and returns the evaluation of this subtree.
+     */
+    private double search(int depth, double alpha, double beta) {
+        if (depth == 0 || this.board.winner() != Utils.Side.U) {
+            return this.evaluate();
+        }
+
+        if (depth == 1) {
+            this.sortChildren();
+        }
+
+        double bestValue = -PvNode.WIN;
+        for (PvNode child: this.children) {
+            double value = -child.search(depth - 1, -beta, -alpha);
+            if (value > bestValue) {
+                bestValue = value;
+                this.bestChild = child;
+            }
+            if (bestValue > alpha) {
+                alpha = bestValue;
+            }
+            if (alpha > beta) {
+                break;
+            }
+        }
+        return bestValue;
+    }
+
+    /**
+     * Entry point of the search routine.
+     */
+    public Move search(int depth) {
+        this.search(depth, -PvNode.WIN, PvNode.WIN);
+        return this.bestChild.move;
     }
 }
