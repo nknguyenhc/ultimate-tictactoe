@@ -162,6 +162,10 @@ class MctsNode {
         return trace.toString();
     }
 
+    public double evaluate() {
+        return this.U / this.N;
+    }
+
     /**
      * Returns the children nodes of this node.
      * Use a copy to prevent accidental edit.

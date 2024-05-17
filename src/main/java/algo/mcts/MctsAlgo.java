@@ -50,4 +50,11 @@ public class MctsAlgo implements BaseAlgo {
         }
         return this.root.getBestMove();
     }
+
+    /**
+     * Returns the evaluation of the last run board.
+     */
+    public double evaluate() {
+        return this.root.evaluate();
+    }
 }
