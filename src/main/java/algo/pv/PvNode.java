@@ -109,12 +109,15 @@ class PvNode implements Comparable<PvNode> {
     }
 
     private double utility() {
+        if (this.N == 0) {
+            return 0;
+        }
         return this.U / this.N;
     }
 
     @Override
     public int compareTo(PvNode node) {
-        return Double.compare(node.utility(), this.utility());
+        return Double.compare(this.utility(), node.utility());
     }
 
     public double evaluate() {
@@ -156,7 +159,7 @@ class PvNode implements Comparable<PvNode> {
             return this.evaluate();
         }
 
-        if (depth == 1) {
+        if (depth == 1 || depth == 2) {
             this.sortChildren();
         }
 
@@ -170,7 +173,7 @@ class PvNode implements Comparable<PvNode> {
             if (bestValue > alpha) {
                 alpha = bestValue;
             }
-            if (alpha > beta) {
+            if (alpha >= beta) {
                 break;
             }
         }
@@ -183,5 +186,10 @@ class PvNode implements Comparable<PvNode> {
     public Move search(int depth) {
         this.search(depth, -PvNode.WIN, PvNode.WIN);
         return this.bestChild.move;
+    }
+
+    @Override
+    public String toString() {
+        return Double.toString(this.utility());
     }
 }
