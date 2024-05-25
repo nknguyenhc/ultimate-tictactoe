@@ -5,7 +5,7 @@ import board.Board;
 import board.Move;
 
 public class PvAlgo implements BaseAlgo {
-    private final int maxDepth = 4;
+    private final int maxDepth = 5;
     private PvNode root;
 
     @Override

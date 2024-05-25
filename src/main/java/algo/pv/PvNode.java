@@ -48,14 +48,12 @@ class PvNode implements Comparable<PvNode> {
             return this;
         }
 
-        double bestValue = 0;
         PvNode bestChild = null;
         for (PvNode child: this.children) {
-            if (bestChild != null && child.ucb() <= bestValue) {
+            if (bestChild != null && child.ucb() <= bestChild.ucb()) {
                 continue;
             }
             bestChild = child;
-            bestValue = child.ucb();
         }
         assert bestChild != null;
         return bestChild.select();
