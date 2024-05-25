@@ -150,6 +150,28 @@ class PvNode implements Comparable<PvNode> {
     }
 
     /**
+     * Called whenever best child is updated.
+     * Best child is moved to the front, to be explored first in a later depth.
+     */
+    private void moveBestChildToFront() {
+        if (this.children[0] == this.bestChild) {
+            return;
+        }
+        PvNode temp = this.children[0];
+        for (int i = 1; i < this.children.length; i++) {
+            if (this.children[i] == this.bestChild) {
+                this.children[i] = temp;
+                this.children[0] = this.bestChild;
+                return;
+            }
+            PvNode shifted = this.children[i];
+            this.children[i] = temp;
+            temp = shifted;
+        }
+        assert false: "Best child not found!";
+    }
+
+    /**
      * Searches this subtree and returns the evaluation of this subtree.
      */
     private double search(int depth, double alpha, double beta) {
@@ -167,6 +189,7 @@ class PvNode implements Comparable<PvNode> {
             if (value > bestValue) {
                 bestValue = value;
                 this.bestChild = child;
+                this.moveBestChildToFront();
             }
             if (bestValue > alpha) {
                 alpha = bestValue;
