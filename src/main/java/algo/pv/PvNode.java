@@ -209,8 +209,20 @@ class PvNode implements Comparable<PvNode> {
         return this.bestChild.move;
     }
 
-    @Override
-    public String toString() {
-        return Double.toString(this.utility());
+    public String trace() {
+        PvNode node = this;
+        StringBuilder trace = new StringBuilder();
+        trace.append(String.format("Move: %s\n", this.move));
+        while (node.bestChild != null) {
+            trace.append(node.board.toCompactString());
+            trace.append(String.format("; Utility: %,3f, Best move: %s\n", node.utility(), node.bestChild.move));
+            node = node.bestChild;
+        }
+        return trace.toString();
+    }
+
+    public PvNode[] getChildren() {
+        assert this.children != null;
+        return this.children.clone();
     }
 }

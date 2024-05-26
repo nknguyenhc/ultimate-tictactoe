@@ -23,7 +23,7 @@ public class Main {
     /** Algo 2 for automated fight. */
     private static final BaseAlgo algo2 = new MctsAlgo();
     private static final boolean includeTrace1 = true;
-    private static final boolean includeTrace2 = false;
+    private static final boolean includeTrace2 = true;
 
     public static void main(String[] args) {
         if (args.length == 0) {

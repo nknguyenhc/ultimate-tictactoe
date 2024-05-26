@@ -27,6 +27,13 @@ public class PvAlgo implements BaseAlgo {
 
     @Override
     public String trace() {
-        return "";
+        assert this.root != null;
+        StringBuilder stringBuilder = new StringBuilder();
+        PvNode[] children = this.root.getChildren();
+        for (int i = 0; i < children.length; i++) {
+            stringBuilder.append(String.format("\nChild %d:\n", i));
+            stringBuilder.append(children[i].trace());
+        }
+        return stringBuilder.toString();
     }
 }
