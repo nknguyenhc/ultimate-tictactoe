@@ -190,6 +190,10 @@ class PvNode implements Comparable<PvNode> {
         double bestValue = -PvNode.WIN;
         BoundType boundType = BoundType.UPPER;
         boolean nullSearch = false;
+        if (this.children == null) {
+            this.createChildren();
+            this.sortChildren();
+        }
         for (PvNode child: this.children) {
             double value = 0;
             boolean doFullSearch = true;

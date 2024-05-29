@@ -19,9 +19,9 @@ public class Main {
     private static final int timeControl = 8;
 
     /** Algo 1 for automated fight. */
-    private static final BaseAlgo algo1 = new PvAlgo();
+    private static final BaseAlgo algo1 = new MctsAlgo();
     /** Algo 2 for automated fight. */
-    private static final BaseAlgo algo2 = new MctsAlgo();
+    private static final BaseAlgo algo2 = new PvAlgo();
     private static final boolean includeTrace1 = true;
     private static final boolean includeTrace2 = true;
 
