@@ -12,7 +12,7 @@ public class QLearningAlgo implements BaseAlgo {
     /** Maximum probability of making a random move. */
     private final double p = 0.1;
     /** Number of training epochs, also used for calculating probability of making a random move. */
-    private final int epochs = 40000;
+    private final int epochs = 80000;
 
     @Override
     public Move nextMove(Board board) {

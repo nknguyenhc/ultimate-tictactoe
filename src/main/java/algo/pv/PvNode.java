@@ -24,6 +24,10 @@ class PvNode implements Comparable<PvNode> {
     private PvNode bestChild;
     private static final int epochs = 100;
 
+    private static final double NULL_WINDOW_RATIO = 0.001;
+    private BoundType boundType = BoundType.NONE;
+    private double ttScore = 0;
+
     private PvNode(PvNode parent, Move move, Board board) {
         this.parent = parent;
         this.move = move;
@@ -174,7 +178,7 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Searches this subtree and returns the evaluation of this subtree.
      */
-    private double search(int depth, double alpha, double beta) {
+    private double search(int depth, double alpha, double beta, NodeType nodeType) {
         if (depth == 0 || this.board.winner() != Utils.Side.U) {
             return this.evaluate();
         }
@@ -184,8 +188,19 @@ class PvNode implements Comparable<PvNode> {
         }
 
         double bestValue = -PvNode.WIN;
+        BoundType boundType = BoundType.UPPER;
+        boolean nullSearch = false;
         for (PvNode child: this.children) {
-            double value = -child.search(depth - 1, -beta, -alpha);
+            double value = 0;
+            boolean doFullSearch = true;
+            if (nullSearch) {
+                value = -child.search(depth - 1,
+                        Math.max(-beta, -alpha - NULL_WINDOW_RATIO), -alpha, NodeType.NON_PV);
+                doFullSearch = alpha < value && value < beta;
+            }
+            if (doFullSearch) {
+                value = -child.search(depth - 1, -beta, -alpha, NodeType.PV);
+            }
             if (value > bestValue) {
                 bestValue = value;
                 this.bestChild = child;
@@ -193,19 +208,28 @@ class PvNode implements Comparable<PvNode> {
             }
             if (bestValue > alpha) {
                 alpha = bestValue;
+                boundType = BoundType.EXACT;
+                nullSearch = true;
             }
             if (alpha >= beta) {
-                break;
+                this.updateTt(BoundType.LOWER, bestValue);
+                return bestValue;
             }
         }
+        this.updateTt(boundType, alpha);
         return bestValue;
+    }
+
+    private void updateTt(BoundType boundType, double score) {
+        this.boundType = boundType;
+        this.ttScore = score;
     }
 
     /**
      * Entry point of the search routine.
      */
     public Move search(int depth) {
-        this.search(depth, -PvNode.WIN, PvNode.WIN);
+        this.search(depth, -PvNode.WIN, PvNode.WIN, NodeType.ROOT);
         return this.bestChild.move;
     }
 
