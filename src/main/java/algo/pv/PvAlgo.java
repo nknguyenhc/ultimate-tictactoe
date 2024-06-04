@@ -25,6 +25,15 @@ public class PvAlgo implements BaseAlgo {
         return null;
     }
 
+    private void setupRoot(Board board) {
+        if (this.root == null) {
+            this.root = new PvNode(board);
+        } else {
+            this.root = this.root.grandchild(board);
+            this.root.makeRoot();
+        }
+    }
+
     @Override
     public String trace() {
         assert this.root != null;

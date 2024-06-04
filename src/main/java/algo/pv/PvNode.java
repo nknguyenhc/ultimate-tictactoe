@@ -262,4 +262,24 @@ class PvNode implements Comparable<PvNode> {
         assert this.children != null;
         return this.children.clone();
     }
+
+    /**
+     * Returns the grandchild with the given board
+     */
+    public PvNode grandchild(Board board) {
+        for (PvNode grandchild: this.bestChild.children) {
+            if (grandchild.board.equals(board)) {
+                return grandchild;
+            }
+        }
+        assert false: "Grandchild with the given board not found";
+        return null;
+    }
+
+    /**
+     * Makes this node a root node.
+     */
+    public void makeRoot() {
+        this.parent = null;
+    }
 }
