@@ -15,10 +15,14 @@ public class PvNodeTest {
         mctsAlgo.nextMoveWithTime(board, time);
         double expected = mctsAlgo.evaluate();
 
+        mctsAlgo = new MctsAlgo();
+        mctsAlgo.nextMoveWithTime(board, time);
+        double expected2 = mctsAlgo.evaluate();
+
         PvNode node = new PvNode(board);
         double actual = node.evaluate();
 
-        System.out.printf("Expected: %.3f, Actual: %.3f\n", expected, actual);
+        System.out.printf("Expected: %.3f, Expected2: %.3f, Actual: %.3f\n", expected, expected2, actual);
     }
 
     @Test
