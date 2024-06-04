@@ -24,9 +24,10 @@ class PvNode implements Comparable<PvNode> {
     private PvNode bestChild;
     private static final int epochs = 100;
 
-    private static final double NULL_WINDOW_RATIO = 0.001;
+    private static final double NULL_WINDOW_RATIO = 0.0001;
     private BoundType boundType = BoundType.NONE;
     private double ttScore = 0;
+    private int ttDepth = 0;
 
     private PvNode(PvNode parent, Move move, Board board) {
         this.parent = parent;
@@ -183,6 +184,13 @@ class PvNode implements Comparable<PvNode> {
             return this.evaluate();
         }
 
+        if (nodeType == NodeType.NON_PV && this.ttDepth >= depth
+                && (this.boundType == BoundType.EXACT
+                || (this.boundType == BoundType.UPPER && this.ttScore <= alpha)
+                || (this.boundType == BoundType.LOWER && this.ttScore >= beta))) {
+            return this.ttScore;
+        }
+
         if (depth == 1 || depth == 2) {
             this.sortChildren();
         }
@@ -216,17 +224,18 @@ class PvNode implements Comparable<PvNode> {
                 nullSearch = true;
             }
             if (alpha >= beta) {
-                this.updateTt(BoundType.LOWER, bestValue);
+                this.updateTt(BoundType.LOWER, bestValue, depth);
                 return bestValue;
             }
         }
-        this.updateTt(boundType, alpha);
+        this.updateTt(boundType, alpha, depth);
         return bestValue;
     }
 
-    private void updateTt(BoundType boundType, double score) {
+    private void updateTt(BoundType boundType, double score, int depth) {
         this.boundType = boundType;
         this.ttScore = score;
+        this.ttDepth = depth;
     }
 
     /**
