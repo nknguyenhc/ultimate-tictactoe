@@ -29,6 +29,9 @@ class PvNode implements Comparable<PvNode> {
     private double ttScore = 0;
     private int ttDepth = 0;
 
+    private static long endTime = 0;
+    private static boolean isTrackingTime = false;
+
     private PvNode(PvNode parent, Move move, Board board) {
         this.parent = parent;
         this.move = move;
@@ -179,7 +182,11 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Searches this subtree and returns the evaluation of this subtree.
      */
-    private double search(int depth, double alpha, double beta, NodeType nodeType) {
+    private double search(int depth, double alpha, double beta, NodeType nodeType) throws TimeoutException {
+        if (PvNode.isTrackingTime && System.currentTimeMillis() >= PvNode.endTime) {
+            throw new TimeoutException();
+        }
+
         if (depth == 0 || this.board.winner() != Utils.Side.U) {
             return this.evaluate();
         }
@@ -242,6 +249,21 @@ class PvNode implements Comparable<PvNode> {
      * Entry point of the search routine.
      */
     public Move search(int depth) {
+        PvNode.isTrackingTime = false;
+        try {
+            this.search(depth, -PvNode.WIN, PvNode.WIN, NodeType.ROOT);
+        } catch (TimeoutException e) {
+            // Should not reach here
+        }
+        return this.bestChild.move;
+    }
+
+    /**
+     * Entry point of the search routine, with time constraint.
+     */
+    public Move search(int depth, long endTime) throws TimeoutException {
+        PvNode.endTime = endTime;
+        PvNode.isTrackingTime = true;
         this.search(depth, -PvNode.WIN, PvNode.WIN, NodeType.ROOT);
         return this.bestChild.move;
     }

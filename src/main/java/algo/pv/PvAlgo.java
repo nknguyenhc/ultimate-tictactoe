@@ -22,7 +22,24 @@ public class PvAlgo implements BaseAlgo {
 
     @Override
     public Move nextMoveWithTime(Board board, int time) {
-        return null;
+        this.root = new PvNode(board);
+        Move move = null;
+        long endTime = time * 1000L + System.currentTimeMillis();
+        this.root.evaluate();
+        int i = 1;
+        while (true) {
+            System.out.printf("Searching depth %d\n", i);
+            try {
+                move = this.root.search(i, endTime);
+            } catch (TimeoutException e) {
+                break;
+            }
+            i += 1;
+            if (i > 80) {
+                break;
+            }
+        }
+        return move;
     }
 
     private void setupRoot(Board board) {

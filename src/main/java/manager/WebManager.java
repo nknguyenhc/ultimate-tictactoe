@@ -2,6 +2,7 @@ package manager;
 
 import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
+import algo.pv.PvAlgo;
 import algo.qlearning.QLearningAlgo;
 import algo.sarsa.SarsaAlgo;
 import board.Board;
@@ -30,6 +31,7 @@ public class WebManager {
             "  1. Sarsa (easy)\n" +
             "  2. Q-learning (medium)\n" +
             "  3. Monte-Carlo Tree Search (hard)\n" +
+            "  4. PV-Algo (extreme)\n" +
             "Your choice (1-3):";
     private static final String INVALID_ALGO_MESSAGE = "Invalid choice, please indicate again (1-3):";
     private static final String CHOOSE_TIME_MESSAGE =
@@ -75,6 +77,9 @@ public class WebManager {
                 return this.promptTime();
             case "3":
                 this.algo = new MctsAlgo();
+                return this.promptTime();
+            case "4":
+                this.algo = new PvAlgo();
                 return this.promptTime();
             default:
                 return INVALID_ALGO_MESSAGE;
