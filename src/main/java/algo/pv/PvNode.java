@@ -22,7 +22,7 @@ class PvNode implements Comparable<PvNode> {
 
     private PvNode[] children = null;
     private PvNode bestChild;
-    private static final int epochs = 100;
+    private static final int epochs = 150;
 
     private static final double NULL_WINDOW_RATIO = 0.0001;
     private BoundType boundType = BoundType.NONE;
@@ -136,7 +136,7 @@ class PvNode implements Comparable<PvNode> {
         }
 
         this.isMctsRoot = true;
-        for (int i = 0; i < PvNode.epochs; i++) {
+        while (this.N < PvNode.epochs) {
             PvNode node = this.select();
             PvNode child = node.expand();
             double value = child.simulate();
