@@ -10,7 +10,7 @@ public class PvAlgo implements BaseAlgo {
 
     @Override
     public Move nextMove(Board board) {
-        this.root = new PvNode(board);
+        this.setupRoot(board);
         Move move = null;
         this.root.evaluate();
         for (int i = 1; i <= this.maxDepth; i++) {
@@ -22,7 +22,7 @@ public class PvAlgo implements BaseAlgo {
 
     @Override
     public Move nextMoveWithTime(Board board, int time) {
-        this.root = new PvNode(board);
+        this.setupRoot(board);
         Move move = null;
         long endTime = time * 1000L + System.currentTimeMillis();
         this.root.evaluate();
