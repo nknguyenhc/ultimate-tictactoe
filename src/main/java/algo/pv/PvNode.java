@@ -211,14 +211,18 @@ class PvNode implements Comparable<PvNode> {
         }
         for (PvNode child: this.children) {
             double value = 0;
-            boolean doFullSearch = true;
-            if (nullSearch) {
-                value = -child.search(depth - 1,
-                        Math.max(-beta, -alpha - NULL_WINDOW_RATIO), -alpha, NodeType.NON_PV);
-                doFullSearch = alpha < value && value < beta;
-            }
-            if (doFullSearch) {
-                value = -child.search(depth - 1, -beta, -alpha, NodeType.PV);
+            if (nodeType != NodeType.NON_PV) {
+                boolean doFullSearch = true;
+                if (nullSearch) {
+                    value = -child.search(depth - 1,
+                            Math.max(-beta, -alpha - NULL_WINDOW_RATIO), -alpha, NodeType.NON_PV);
+                    doFullSearch = alpha < value && value < beta;
+                }
+                if (doFullSearch) {
+                    value = -child.search(depth - 1, -beta, -alpha, NodeType.PV);
+                }
+            } else {
+                value = -child.search(depth - 1, -beta, -alpha, NodeType.NON_PV);
             }
             if (value > bestValue) {
                 bestValue = value;

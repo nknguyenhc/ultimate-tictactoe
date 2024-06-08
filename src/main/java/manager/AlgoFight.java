@@ -12,11 +12,16 @@ public class AlgoFight {
     private final boolean includeTrace2;
     private Board game = new Board();
 
+    private final AlgoTimer timer1;
+    private final AlgoTimer timer2;
+
     public AlgoFight(BaseAlgo algo1, BaseAlgo algo2, boolean includeTrace1, boolean includeTrace2) {
         this.algo1 = algo1;
         this.algo2 = algo2;
         this.includeTrace1 = includeTrace1;
         this.includeTrace2 = includeTrace2;
+        this.timer1 = new AlgoTimer(this.algo1, this.includeTrace1, this);
+        this.timer2 = new AlgoTimer(this.algo2, this.includeTrace2, this);
     }
 
     public void run() {
@@ -24,13 +29,14 @@ public class AlgoFight {
         while (this.game.winner() == Utils.Side.U) {
             this.printGame();
             if (this.game.getTurn()) {
-                this.algoTurn(this.algo1, this.includeTrace1);
+                this.timer1.time();
             } else {
-                this.algoTurn(this.algo2, this.includeTrace2);
+                this.timer2.time();
             }
         }
         System.out.println(this.game);
         this.judge();
+        this.timeAnalysis();
     }
 
     public void runWithTime(int time) {
@@ -69,7 +75,7 @@ public class AlgoFight {
         return algo.getClass().getSimpleName();
     }
 
-    private void algoTurn(BaseAlgo algo, boolean includeTrace) {
+    public void algoTurn(BaseAlgo algo, boolean includeTrace) {
         this.announceTurn(algo);
         Move move = algo.nextMove(this.game);
         if (includeTrace) {
@@ -108,5 +114,14 @@ public class AlgoFight {
                 System.out.printf("%s wins!%n", this.getAlgoName(this.algo2));
                 break;
         }
+    }
+
+    private void timeAnalysis() {
+        System.out.printf("%s took %.3f on average\n",
+                this.getAlgoName(this.algo1),
+                this.timer1.getAverageTimeSeconds());
+        System.out.printf("%s took %.3f on average\n",
+                this.getAlgoName(this.algo2),
+                this.timer2.getAverageTimeSeconds());
     }
 }
