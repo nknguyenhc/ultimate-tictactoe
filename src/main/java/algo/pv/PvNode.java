@@ -202,6 +202,26 @@ class PvNode implements Comparable<PvNode> {
             this.sortChildren();
         }
 
+        // futility pruning
+        double staticEval;
+        if (this.boundType == BoundType.EXACT) {
+            staticEval = this.ttScore;
+        } else {
+            staticEval = this.evaluate();
+        }
+        if (this.boundType != BoundType.NONE) {
+            if ((this.boundType == BoundType.UPPER && this.ttScore < staticEval)
+                    || (this.boundType == BoundType.LOWER && this.ttScore > staticEval)) {
+                staticEval = this.ttScore;
+            }
+        }
+        if (nodeType == NodeType.NON_PV
+                && depth < 3
+                && staticEval >= beta
+                && boundType != BoundType.NONE) {
+            return staticEval;
+        }
+
         double bestValue = -PvNode.WIN;
         BoundType boundType = BoundType.UPPER;
         boolean nullSearch = false;
