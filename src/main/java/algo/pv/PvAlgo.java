@@ -23,7 +23,7 @@ public class PvAlgo implements BaseAlgo {
     @Override
     public Move nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
-        Move move = null;
+        Move move;
         long endTime = time * 1000L + System.currentTimeMillis();
         this.root.evaluate();
         int i = 1;
@@ -32,6 +32,7 @@ public class PvAlgo implements BaseAlgo {
             try {
                 move = this.root.search(i, endTime);
             } catch (TimeoutException e) {
+                move = this.root.getBestMove();
                 break;
             }
             i += 1;

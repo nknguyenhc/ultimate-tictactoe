@@ -272,6 +272,13 @@ class PvNode implements Comparable<PvNode> {
         return this.bestChild.move;
     }
 
+    /**
+     * Returns the best move. In the case of timeout.
+     */
+    public Move getBestMove() {
+        return this.bestChild.move;
+    }
+
     public String trace() {
         PvNode node = this;
         StringBuilder trace = new StringBuilder();
