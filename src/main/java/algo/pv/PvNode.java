@@ -217,8 +217,7 @@ class PvNode implements Comparable<PvNode> {
         }
         if (nodeType == NodeType.NON_PV
                 && depth < 3
-                && staticEval >= beta
-                && boundType != BoundType.NONE) {
+                && staticEval >= beta) {
             return staticEval;
         }
 

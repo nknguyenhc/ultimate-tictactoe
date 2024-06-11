@@ -6,7 +6,7 @@ import board.Move;
 
 public class MctsAlgo implements BaseAlgo {
     /** Number of epochs of simulation. */
-    private final int epochs = 100000;
+    private final int epochs = 80000;
     private MctsNode root;
 
     @Override
