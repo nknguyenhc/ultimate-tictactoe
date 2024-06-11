@@ -229,12 +229,20 @@ class PvNode implements Comparable<PvNode> {
             this.createChildren();
             this.sortChildren();
         }
+        int moveCount = 0;
         for (PvNode child: this.children) {
+            moveCount++;
             double value = 0;
             if (nodeType != NodeType.NON_PV) {
                 boolean doFullSearch = true;
                 if (nullSearch) {
-                    value = -child.search(depth - 1,
+                    // late move reduction
+                    int newDepth = depth - 1;
+                    if (moveCount > 3 && depth >= 2) {
+                        newDepth--;
+                    }
+
+                    value = -child.search(newDepth,
                             Math.max(-beta, -alpha - NULL_WINDOW_RATIO), -alpha, NodeType.NON_PV);
                     doFullSearch = alpha < value && value < beta;
                 }
