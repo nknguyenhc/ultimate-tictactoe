@@ -17,7 +17,7 @@ class PvNode implements Comparable<PvNode> {
     private final Board board;
 
     /** A random number generator for this class. */
-    private final Random rng = new Random();
+    private static final Random rng = new Random();
     /** Score/reward for winning a game. */
     private static final double WIN = 1;
     /** MCTS coefficient that balances exploitation and exploration. */
@@ -114,7 +114,7 @@ class PvNode implements Comparable<PvNode> {
         }
 
         this.createChildren();
-        int index = this.rng.nextInt(this.children.length);
+        int index = PvNode.rng.nextInt(this.children.length);
         return this.children[index];
     }
 
@@ -140,7 +140,7 @@ class PvNode implements Comparable<PvNode> {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
             List<Move> actions = board.actions();
-            int index = this.rng.nextInt(actions.size());
+            int index = PvNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
         if (board.winner() == Utils.Side.D) {
