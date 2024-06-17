@@ -9,40 +9,72 @@ import java.util.List;
 import java.util.Random;
 
 class PvNode implements Comparable<PvNode> {
+    /** The parent node of this node. */
     private PvNode parent = null;
+    /** The move that transitions from the parent node to this node. */
     private final Move move;
+    /** The board that this node represents. */
     private final Board board;
 
+    /** A random number generator for this class. */
     private final Random rng = new Random();
+    /** Score/reward for winning a game. */
     private static final double WIN = 1;
+    /** MCTS coefficient that balances exploitation and exploration. */
     private static final double C = 1.4;
+    /** Number of MCTS visits to this node. */
     private int N = 0;
+    /** Total utilities of all MCTS visits to this node. */
     private double U = 0;
+    /** Whether this node is the root of an MCTS search, in evaluation. */
     private boolean isMctsRoot = false;
 
+    /** Children node of this node. */
     private PvNode[] children = null;
+    /** The child node that contains the current best move. */
     private PvNode bestChild;
+    /** Number of training epochs for MCTS evaluation. */
     private static final int epochs = 150;
 
+    /** Size of null-search window, in PV search. */
     private static final double NULL_WINDOW_RATIO = 0.0001;
+    /** The bound type of this node in transposition table. */
     private BoundType boundType = BoundType.NONE;
+    /** The score of a previous search, in transposition table. */
     private double ttScore = 0;
+    /** The depth of a previous search, in transposition table. */
     private int ttDepth = 0;
 
+    /** End time of the search, if there is time limit. */
     private static long endTime = 0;
+    /** Whether we are doing a time-limited search. */
     private static boolean isTrackingTime = false;
 
+    /**
+     * Constructs a new node.
+     * @param parent The parent node of this node.
+     * @param move The move that transitions from the parent node to this node.
+     * @param board The board that this node represents.
+     */
     private PvNode(PvNode parent, Move move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
     }
 
+    /**
+     * Constructs a new root node of a PV search.
+     * @param board The board that the root node represents.
+     */
     public PvNode(Board board) {
         this.move = null;
         this.board = board;
     }
 
+    /**
+     * Selection policy in MCTS.
+     * @return The priority level for exploration of this node.
+     */
     private double ucb() {
         assert !this.isMctsRoot;
         if (this.N == 0) {
@@ -51,6 +83,10 @@ class PvNode implements Comparable<PvNode> {
         return -this.U / this.N + PvNode.C * Math.sqrt(Math.log(this.parent.N) / this.N);
     }
 
+    /**
+     * MCTS selection.
+     * @return The child node selected, or itself if this node has not been expanded.
+     */
     private PvNode select() {
         if (this.children == null) {
             return this;
@@ -67,6 +103,10 @@ class PvNode implements Comparable<PvNode> {
         return bestChild.select();
     }
 
+    /**
+     * MCTS expansion. Assumes that this node has not been expanded.
+     * @return A random children after expansion, or itself if this is a terminal node.
+     */
     private PvNode expand() {
         assert this.children == null;
         if (this.board.winner() != Utils.Side.U) {
@@ -92,6 +132,10 @@ class PvNode implements Comparable<PvNode> {
         }
     }
 
+    /**
+     * MCTS simulation.
+     * @return The evaluation of this board based on the simulation.
+     */
     private double simulate() {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
@@ -106,6 +150,9 @@ class PvNode implements Comparable<PvNode> {
         return board.winner() == side ? PvNode.WIN : -PvNode.WIN;
     }
 
+    /**
+     * Updates the utility values of this node based on the result of an MCTS simulation.
+     */
     private void backPropagates(double utility) {
         this.U += utility;
         this.N += 1;
@@ -114,6 +161,9 @@ class PvNode implements Comparable<PvNode> {
         }
     }
 
+    /**
+     * Returns the utility value of this node, based on MCTS search.
+     */
     private double utility() {
         if (this.N == 0) {
             return 0;
@@ -126,6 +176,10 @@ class PvNode implements Comparable<PvNode> {
         return Double.compare(this.utility(), node.utility());
     }
 
+    /**
+     * Evaluation routine, when PV search at depth <= 0.
+     * Makes use of MCTS.
+     */
     public double evaluate() {
         if (this.board.winner() != Utils.Side.U) {
             if (this.board.winner() == Utils.Side.D) {
@@ -270,6 +324,10 @@ class PvNode implements Comparable<PvNode> {
         return bestValue;
     }
 
+    /**
+     * Updates the transposition entry of this node.
+     * Mutates the respective fields of this node.
+     */
     private void updateTt(BoundType boundType, double score, int depth) {
         this.boundType = boundType;
         this.ttScore = score;
