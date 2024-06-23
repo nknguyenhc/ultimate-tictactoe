@@ -3,6 +3,8 @@ package algo;
 import board.Board;
 import board.Move;
 
+import java.util.List;
+
 public interface BaseAlgo {
     /**
      * Returns the next move. The move must be legal.
@@ -24,4 +26,11 @@ public interface BaseAlgo {
      * @param time The number of seconds allowed.
      */
     Move nextMoveWithTime(Board board, int time);
+
+    /**
+     * Returns the prediction on the next moves from this move,
+     * based on the last search.
+     * Includes the next move to be made by this algo.
+     */
+    List<Move> getMovePredictions();
 }

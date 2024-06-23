@@ -4,6 +4,7 @@ import board.Board;
 import board.Move;
 import board.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -143,6 +144,20 @@ class MctsNode {
         MctsNode bestChild = this.getBestChild();
         assert bestChild != null;
         return bestChild.move;
+    }
+
+    /**
+     * Returns the best move sequence from this board,
+     * including the move for the current board.
+     */
+    public List<Move> bestMoveSequence() {
+        MctsNode node = this.getBestChild();
+        List<Move> sequence = new ArrayList<>();
+        while (node != null) {
+            sequence.add(node.move);
+            node = node.getBestChild();
+        }
+        return sequence;
     }
 
     /**

@@ -4,6 +4,8 @@ import algo.BaseAlgo;
 import board.Board;
 import board.Move;
 
+import java.util.List;
+
 public class QLearningAlgo implements BaseAlgo {
     /** Root node of the last call to {@code nextMove}. */
     private QNode root;
@@ -55,6 +57,12 @@ public class QLearningAlgo implements BaseAlgo {
             stringBuilder.append(child.trace());
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public List<Move> getMovePredictions() {
+        assert this.root != null;
+        return this.root.bestMoveSequence();
     }
 
     @Override

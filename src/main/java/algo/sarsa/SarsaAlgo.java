@@ -4,6 +4,8 @@ import algo.BaseAlgo;
 import board.Board;
 import board.Move;
 
+import java.util.List;
+
 public class SarsaAlgo implements BaseAlgo {
     /** Root node of the last call to {@code nextMove}. */
     private SarsaNode root;
@@ -57,5 +59,11 @@ public class SarsaAlgo implements BaseAlgo {
             stringBuilder.append(child.trace());
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public List<Move> getMovePredictions() {
+        assert this.root != null;
+        return this.root.bestMoveSequence();
     }
 }

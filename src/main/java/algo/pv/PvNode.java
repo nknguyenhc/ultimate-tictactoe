@@ -4,6 +4,7 @@ import board.Board;
 import board.Move;
 import board.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -362,6 +363,19 @@ class PvNode implements Comparable<PvNode> {
      */
     public Move getBestMove() {
         return this.bestChild.move;
+    }
+
+    /**
+     * Returns the optimal sequence starting from this board.
+     */
+    public List<Move> bestMoveSequence() {
+        PvNode node = this.bestChild;
+        List<Move> sequence = new ArrayList<>();
+        while (node != null) {
+            sequence.add(node.move);
+            node = node.bestChild;
+        }
+        return sequence;
     }
 
     public String trace() {

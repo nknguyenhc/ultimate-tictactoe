@@ -4,6 +4,7 @@ import board.Board;
 import board.Move;
 import board.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -142,6 +143,19 @@ class SarsaNode {
         SarsaNode node = this.selectBestNode();
         assert node != null;
         return node.move;
+    }
+
+    /**
+     * Returns the sequence of best move starting from this board.
+     */
+    public List<Move> bestMoveSequence() {
+        SarsaNode node = this.selectBestNode();
+        List<Move> sequence = new ArrayList<>();
+        while (node != null) {
+            sequence.add(node.move);
+            node = node.selectBestNode();
+        }
+        return sequence;
     }
 
     /**

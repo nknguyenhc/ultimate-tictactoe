@@ -4,6 +4,7 @@ import board.Board;
 import board.Move;
 import board.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -160,6 +161,19 @@ class QNode {
         QNode node = this.selectBestMove();
         assert node != null;
         return node.move;
+    }
+
+    /**
+     * Returns the sequence of best moves.
+     */
+    public List<Move> bestMoveSequence() {
+        QNode node = this.selectBestMove();
+        List<Move> sequence = new ArrayList<>();
+        while (node != null) {
+            sequence.add(node.move);
+            node = node.selectBestMove();
+        }
+        return sequence;
     }
 
     /**

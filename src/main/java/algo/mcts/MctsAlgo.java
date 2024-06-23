@@ -4,6 +4,8 @@ import algo.BaseAlgo;
 import board.Board;
 import board.Move;
 
+import java.util.List;
+
 public class MctsAlgo implements BaseAlgo {
     /** Number of epochs of simulation. */
     private final int epochs = 80000;
@@ -38,6 +40,12 @@ public class MctsAlgo implements BaseAlgo {
             stringBuilder.append(children[i].trace());
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public List<Move> getMovePredictions() {
+        assert this.root != null;
+        return this.root.bestMoveSequence();
     }
 
     @Override

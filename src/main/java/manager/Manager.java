@@ -147,6 +147,7 @@ public class Manager {
 
         if (this.includeTrace) {
             System.out.println(this.algo.trace());
+            System.out.println(this.algo.getMovePredictions());
             System.out.printf("Algo chose: %s%n", move);
         }
     }

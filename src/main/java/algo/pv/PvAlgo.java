@@ -4,6 +4,8 @@ import algo.BaseAlgo;
 import board.Board;
 import board.Move;
 
+import java.util.List;
+
 public class PvAlgo implements BaseAlgo {
     private final int maxDepth = 6;
     private PvNode root;
@@ -62,5 +64,11 @@ public class PvAlgo implements BaseAlgo {
             stringBuilder.append(children[i].trace());
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public List<Move> getMovePredictions() {
+        assert this.root != null;
+        return this.root.bestMoveSequence();
     }
 }
