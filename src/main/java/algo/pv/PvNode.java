@@ -307,6 +307,7 @@ class PvNode implements Comparable<PvNode> {
                 value = -child.search(depth - 1, -beta, -alpha, NodeType.NON_PV);
             }
             if (value > bestValue) {
+                moveCount = 1;
                 bestValue = value;
                 this.bestChild = child;
                 this.moveBestChildToFront();
