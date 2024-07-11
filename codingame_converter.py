@@ -14,7 +14,7 @@ def config():
             "algo/BaseAlgo.java",
         ],
         "output": {
-            "prepend": "import java.util.*;\n\nclass Player {\n",
+            "prepend": "import java.util.*;\nimport java.io.*;\n\nclass Player {\n",
             "append": "    public static void main(String[] args) {\n        new CodinGame().run();\n    }\n}\n",
         }
     }
