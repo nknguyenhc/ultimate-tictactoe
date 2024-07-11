@@ -28,7 +28,7 @@ public class CodinGame {
                 opponentRow = Integer.parseInt(inputs[0]);
                 opponentCol = Integer.parseInt(inputs[1]);
                 int validActionCount = Integer.parseInt(in.readLine());
-                in.skip(validActionCount * 5);
+                in.skip(validActionCount * 4);
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
