@@ -39,11 +39,11 @@ public class CodinGame {
                 if (opponentRow != -1) {
                     this.board = this.board.move(new Move((byte) opponentRow, (byte) opponentCol));
                 }
-                action = this.algo.nextMoveWithTime(this.board, 990);
+                action = this.algo.nextMoveWithTime(this.board, 985);
                 this.isFirstTurn = false;
             } else {
                 this.board = this.board.move(new Move((byte) opponentRow, (byte) opponentCol));
-                action = this.algo.nextMoveWithTime(this.board, 90);
+                action = this.algo.nextMoveWithTime(this.board, 85);
             }
             System.out.println(action.sparString());
             this.board = this.board.move(action);
