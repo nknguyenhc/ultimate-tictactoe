@@ -22,9 +22,8 @@ public class CodinGame {
             int opponentRow = in.nextInt();
             int opponentCol = in.nextInt();
             int validActionCount = in.nextInt();
-            for (int i = 0; i < validActionCount; i++) {
-                int row = in.nextInt();
-                int col = in.nextInt();
+            for (int i = 0; i <= validActionCount; i++) {
+                in.nextLine();
             }
 
             Move action;
@@ -40,7 +39,6 @@ public class CodinGame {
             }
             System.out.println(action.sparString());
             this.board = this.board.move(action);
-            System.out.println(board);
         }
     }
 }
