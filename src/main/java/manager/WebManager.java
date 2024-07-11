@@ -175,7 +175,7 @@ public class WebManager {
     }
 
     private String algoTurn() {
-        Move move = this.algo.nextMoveWithTime(this.board, this.timeControl);
+        Move move = this.algo.nextMoveWithTime(this.board, this.timeControl * 1000);
         this.board = this.board.move(move);
         if (this.board.winner() != Utils.Side.U) {
             return this.gameJudge();

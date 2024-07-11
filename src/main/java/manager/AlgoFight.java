@@ -86,7 +86,7 @@ public class AlgoFight {
 
     private void algoTurnWithTime(BaseAlgo algo, int time, boolean includeTrace) {
         this.announceTurn(algo);
-        Move move = algo.nextMoveWithTime(this.game, time);
+        Move move = algo.nextMoveWithTime(this.game, time * 1000);
         if (includeTrace) {
             System.out.println(algo.trace());
         }
