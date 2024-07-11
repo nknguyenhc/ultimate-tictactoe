@@ -69,7 +69,7 @@ public class QLearningAlgo implements BaseAlgo {
     public Move nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
         long startTime = System.currentTimeMillis();
-        long endTime = startTime + time * 1000L;
+        long endTime = startTime + time;
         int i = 0;
         while (System.currentTimeMillis() < endTime) {
             this.root.train(this.calculateRandomProb(i));

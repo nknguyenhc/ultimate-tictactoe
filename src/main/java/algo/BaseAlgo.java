@@ -23,7 +23,7 @@ public interface BaseAlgo {
     /**
      * Returns the next move, but with time constraint.
      * See {@code nextMove}.
-     * @param time The number of seconds allowed.
+     * @param time The number of milliseconds allowed.
      */
     Move nextMoveWithTime(Board board, int time);
 

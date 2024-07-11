@@ -42,7 +42,7 @@ public class SarsaAlgo implements BaseAlgo {
     @Override
     public Move nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
-        long endTime = System.currentTimeMillis() + time * 1000L;
+        long endTime = System.currentTimeMillis() + time;
         while (System.currentTimeMillis() < endTime) {
             this.root.train(this.p);
         }

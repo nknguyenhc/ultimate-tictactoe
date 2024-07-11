@@ -36,4 +36,8 @@ public class Move {
     public String toString() {
         return String.format("(%d, %d)", this.row + 1, this.col + 1);
     }
+
+    public String sparString() {
+        return String.format("%d %d", this.row, this.col);
+    }
 }

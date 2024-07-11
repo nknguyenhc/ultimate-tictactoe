@@ -26,7 +26,7 @@ public class PvAlgo implements BaseAlgo {
     public Move nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
         Move move;
-        long endTime = time * 1000L + System.currentTimeMillis();
+        long endTime = time + System.currentTimeMillis();
         this.root.evaluate();
         int i = 1;
         while (true) {

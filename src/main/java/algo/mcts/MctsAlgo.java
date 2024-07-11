@@ -52,7 +52,7 @@ public class MctsAlgo implements BaseAlgo {
     public Move nextMoveWithTime(Board board, int time) {
         this.root = new MctsNode(null, null, board);
         long startTime = System.currentTimeMillis();
-        long endTime = startTime + time * 1000L;
+        long endTime = startTime + time;
         while (System.currentTimeMillis() < endTime) {
             this.search();
         }
