@@ -184,16 +184,21 @@ class MctsNode {
     /**
      * Selects the child that has the board.
      * Makes the child the root node.
+     * Returns self if it cannot find child.
+     * This is only because pondering was called on the same board,
+     * on the first turn in CodinGame.
      */
     public MctsNode child(Board board) {
+        if (this.children == null) {
+            return this;
+        }
         for (MctsNode child: this.children) {
             if (child.board.equals(board)) {
                 child.parent = null;
                 return child;
             }
         }
-        assert false;
-        return null;
+        return this;
     }
 
     /**

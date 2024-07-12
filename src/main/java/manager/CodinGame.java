@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 
 public class CodinGame {
     private final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    private final BaseAlgo algo = new MctsAlgo();
+    private final BaseAlgo algo = new MctsAlgo(true);
     private boolean isFirstTurn = true;
     private Board board = new Board();
 
@@ -21,6 +21,7 @@ public class CodinGame {
      */
     public void run() {
         while (true) {
+            this.algo.ponder();
             int opponentRow;
             int opponentCol;
             try {
@@ -33,6 +34,7 @@ public class CodinGame {
                 e.printStackTrace();
                 break;
             }
+            this.algo.stopPondering();
 
             Move action;
             if (this.isFirstTurn) {
