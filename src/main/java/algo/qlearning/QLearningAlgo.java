@@ -78,4 +78,9 @@ public class QLearningAlgo implements BaseAlgo {
         this.move = this.root.bestMove();
         return this.move;
     }
+
+    @Override
+    public void ponder() {
+
+    }
 }

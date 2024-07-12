@@ -66,4 +66,9 @@ public class SarsaAlgo implements BaseAlgo {
         assert this.root != null;
         return this.root.bestMoveSequence();
     }
+
+    @Override
+    public void ponder() {
+        
+    }
 }

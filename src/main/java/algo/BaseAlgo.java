@@ -33,4 +33,10 @@ public interface BaseAlgo {
      * Includes the next move to be made by this algo.
      */
     List<Move> getMovePredictions();
+
+    /**
+     * Thinks while the opponent is making a move.
+     * The agent must be able to handle the states itself.
+     */
+    void ponder();
 }

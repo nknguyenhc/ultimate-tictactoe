@@ -65,4 +65,9 @@ public class MctsAlgo implements BaseAlgo {
     public double evaluate() {
         return this.root.evaluate();
     }
+
+    @Override
+    public void ponder() {
+
+    }
 }
