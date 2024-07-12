@@ -12,18 +12,18 @@ import manager.Parser;
  */
 public class Main {
     /** Algo to test. */
-    private static final BaseAlgo algo = new SarsaAlgo();
+    private static final BaseAlgo algo = new MctsAlgo();
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
-    private static final int timeControl = 8;
+    private static final int timeControl = 1;
 
     /** Algo 1 for automated fight. */
     private static final BaseAlgo algo1 = new MctsAlgo();
     /** Algo 2 for automated fight. */
-    private static final BaseAlgo algo2 = new PvAlgo();
-    private static final boolean includeTrace1 = true;
-    private static final boolean includeTrace2 = true;
+    private static final BaseAlgo algo2 = new MctsAlgo(true);
+    private static final boolean includeTrace1 = false;
+    private static final boolean includeTrace2 = false;
 
     public static void main(String[] args) {
         if (args.length == 0) {

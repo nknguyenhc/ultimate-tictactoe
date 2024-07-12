@@ -10,6 +10,15 @@ public class MctsAlgo implements BaseAlgo {
     /** Number of epochs of simulation. */
     private final int epochs = 80000;
     private MctsNode root;
+    private final boolean continueLastSearch;
+
+    public MctsAlgo() {
+        this.continueLastSearch = false;
+    }
+
+    public MctsAlgo(boolean continueLastSearch) {
+        this.continueLastSearch = continueLastSearch;
+    }
 
     @Override
     public Move nextMove(Board board) {
@@ -50,13 +59,25 @@ public class MctsAlgo implements BaseAlgo {
 
     @Override
     public Move nextMoveWithTime(Board board, int time) {
-        this.root = new MctsNode(null, null, board);
+        if (this.continueLastSearch) {
+            this.setupRoot(board);
+        } else {
+            this.root = new MctsNode(null, null, board);
+        }
         long startTime = System.currentTimeMillis();
         long endTime = startTime + time;
         while (System.currentTimeMillis() < endTime) {
             this.search();
         }
         return this.root.getBestMove();
+    }
+
+    private void setupRoot(Board board) {
+        if (this.root == null) {
+            this.root = new MctsNode(null, null, board);
+        } else {
+            this.root = this.root.grandchild(board);
+        }
     }
 
     /**

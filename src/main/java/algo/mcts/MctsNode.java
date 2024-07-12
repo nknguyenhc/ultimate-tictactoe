@@ -17,7 +17,7 @@ class MctsNode {
     private int N = 0;
     private double U = 0;
     /** The parent node of this node. Only {@code null} if this is root node. */
-    private final MctsNode parent;
+    private MctsNode parent;
     /** The move that led to this state. */
     private final Move move;
     private final Board board;
@@ -179,6 +179,23 @@ class MctsNode {
 
     public double evaluate() {
         return this.U / this.N;
+    }
+
+    /**
+     * Selects the grandchild that has the board.
+     * Makes the grandchild the root node.
+     */
+    public MctsNode grandchild(Board board) {
+        MctsNode child = this.getBestChild();
+        assert child != null;
+        for (MctsNode grandchild: child.children) {
+            if (grandchild.board.equals(board)) {
+                grandchild.parent = null;
+                return grandchild;
+            }
+        }
+        assert false;
+        return null;
     }
 
     /**
