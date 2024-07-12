@@ -10,16 +10,19 @@ public class AlgoFight {
     private final BaseAlgo algo2;
     private final boolean includeTrace1;
     private final boolean includeTrace2;
+    private final boolean allowPondering;
     private Board game = new Board();
 
     private final AlgoTimer timer1;
     private final AlgoTimer timer2;
 
-    public AlgoFight(BaseAlgo algo1, BaseAlgo algo2, boolean includeTrace1, boolean includeTrace2) {
+    public AlgoFight(BaseAlgo algo1, BaseAlgo algo2, boolean includeTrace1, boolean includeTrace2,
+                     boolean allowPondering) {
         this.algo1 = algo1;
         this.algo2 = algo2;
         this.includeTrace1 = includeTrace1;
         this.includeTrace2 = includeTrace2;
+        this.allowPondering = allowPondering;
         this.timer1 = new AlgoTimer(this.algo1, this.includeTrace1, this);
         this.timer2 = new AlgoTimer(this.algo2, this.includeTrace2, this);
     }
@@ -44,9 +47,9 @@ public class AlgoFight {
         while (this.game.winner() == Utils.Side.U) {
             this.printGame();
             if (this.game.getTurn()) {
-                this.algoTurnWithTime(this.algo1, time, this.includeTrace1);
+                this.algoTurnWithTime(this.algo1, this.algo2, time, this.includeTrace1);
             } else {
-                this.algoTurnWithTime(this.algo2, time, this.includeTrace2);
+                this.algoTurnWithTime(this.algo2, this.algo1, time, this.includeTrace2);
             }
         }
         System.out.println(this.game);
@@ -84,9 +87,15 @@ public class AlgoFight {
         this.processMove(algo, move);
     }
 
-    private void algoTurnWithTime(BaseAlgo algo, int time, boolean includeTrace) {
+    private void algoTurnWithTime(BaseAlgo algo, BaseAlgo ponderingAlgo, int time, boolean includeTrace) {
         this.announceTurn(algo);
+        if (this.allowPondering) {
+            ponderingAlgo.ponder();
+        }
         Move move = algo.nextMoveWithTime(this.game, time * 1000);
+        if (this.allowPondering) {
+            ponderingAlgo.stopPondering();
+        }
         if (includeTrace) {
             System.out.println(algo.trace());
         }

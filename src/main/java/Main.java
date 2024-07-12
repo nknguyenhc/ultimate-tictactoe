@@ -17,6 +17,7 @@ public class Main {
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
     private static final int timeControl = 1;
+    private static final boolean allowPondering = true;
 
     /** Algo 1 for automated fight. */
     private static final BaseAlgo algo1 = new MctsAlgo();
@@ -51,10 +52,10 @@ public class Main {
                 new Manager(includeTrace, timeControl).run(algo);
                 break;
             case "fight":
-                new AlgoFight(algo1, algo2, includeTrace1, includeTrace2).run();
+                new AlgoFight(algo1, algo2, includeTrace1, includeTrace2, allowPondering).run();
                 break;
             case "fight-time":
-                new AlgoFight(algo1, algo2, includeTrace1, includeTrace2).runWithTime(timeControl);
+                new AlgoFight(algo1, algo2, includeTrace1, includeTrace2, allowPondering).runWithTime(timeControl);
                 break;
             default:
                 System.out.printf("Unrecognised argument: %s%n", args[0]);

@@ -71,4 +71,9 @@ public class SarsaAlgo implements BaseAlgo {
     public void ponder() {
         
     }
+
+    @Override
+    public void stopPondering() {
+
+    }
 }

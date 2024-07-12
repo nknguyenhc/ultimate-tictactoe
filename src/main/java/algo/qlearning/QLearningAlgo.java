@@ -83,4 +83,9 @@ public class QLearningAlgo implements BaseAlgo {
     public void ponder() {
 
     }
+
+    @Override
+    public void stopPondering() {
+
+    }
 }

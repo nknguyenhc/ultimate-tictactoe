@@ -119,7 +119,7 @@ class MctsNode {
      * If this is a terminal node, returns null.
      * Select based on the number of traversals.
      */
-    private MctsNode getBestChild() {
+    public MctsNode getBestChild() {
         if (this.children == null) {
             return null;
         }
@@ -179,6 +179,21 @@ class MctsNode {
 
     public double evaluate() {
         return this.U / this.N;
+    }
+
+    /**
+     * Selects the child that has the board.
+     * Makes the child the root node.
+     */
+    public MctsNode child(Board board) {
+        for (MctsNode child: this.children) {
+            if (child.board.equals(board)) {
+                child.parent = null;
+                return child;
+            }
+        }
+        assert false;
+        return null;
     }
 
     /**

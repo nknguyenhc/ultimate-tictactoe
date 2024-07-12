@@ -76,4 +76,9 @@ public class PvAlgo implements BaseAlgo {
     public void ponder() {
 
     }
+
+    @Override
+    public void stopPondering() {
+
+    }
 }

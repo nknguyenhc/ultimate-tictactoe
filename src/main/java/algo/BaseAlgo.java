@@ -39,4 +39,10 @@ public interface BaseAlgo {
      * The agent must be able to handle the states itself.
      */
     void ponder();
+
+    /**
+     * Stops pondering.
+     * This allows graceful exit of the pondering process.
+     */
+    void stopPondering();
 }

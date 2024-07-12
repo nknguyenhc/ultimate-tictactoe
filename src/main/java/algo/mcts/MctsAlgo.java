@@ -12,6 +12,9 @@ public class MctsAlgo implements BaseAlgo {
     private MctsNode root;
     private final boolean continueLastSearch;
 
+    private boolean hasPonderedAfterSearch = false;
+    private boolean isPondering = false;
+
     public MctsAlgo() {
         this.continueLastSearch = false;
     }
@@ -76,6 +79,15 @@ public class MctsAlgo implements BaseAlgo {
         if (this.root == null) {
             this.root = new MctsNode(null, null, board);
         } else {
+            this.continueSearch(board);
+        }
+    }
+
+    private void continueSearch(Board board) {
+        if (this.hasPonderedAfterSearch) {
+            this.root = this.root.child(board);
+            this.hasPonderedAfterSearch = false;
+        } else {
             this.root = this.root.grandchild(board);
         }
     }
@@ -89,6 +101,31 @@ public class MctsAlgo implements BaseAlgo {
 
     @Override
     public void ponder() {
+        if (!this.continueLastSearch) {
+            // No point pondering if not continuing last search
+            return;
+        }
 
+        this.setupRootForPondering();
+        this.hasPonderedAfterSearch = true;
+        this.isPondering = true;
+        new Thread(() -> {
+            while (this.isPondering) {
+                this.search();
+            }
+        }).start();
+    }
+
+    private void setupRootForPondering() {
+        if (this.root == null) {
+            this.root = new MctsNode(null, null, new Board());
+        } else {
+            this.root = this.root.getBestChild();
+        }
+    }
+
+    @Override
+    public void stopPondering() {
+        this.isPondering = false;
     }
 }
