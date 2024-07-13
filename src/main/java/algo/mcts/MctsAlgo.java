@@ -86,6 +86,9 @@ public class MctsAlgo implements BaseAlgo {
     private void continueSearch(Board board) {
         if (this.hasPonderedAfterSearch) {
             this.root = this.root.child(board);
+            if (this.root == null) {
+                this.root = new MctsNode(null, null, board);
+            }
             this.hasPonderedAfterSearch = false;
         } else {
             this.root = this.root.grandchild(board);
