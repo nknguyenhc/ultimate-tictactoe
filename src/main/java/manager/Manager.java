@@ -140,7 +140,7 @@ public class Manager {
         if (this.timeControl == null) {
             move = this.algo.nextMove(this.board);
         } else {
-            move = this.algo.nextMoveWithTime(this.board, this.timeControl * 1000);
+            move = this.algo.nextMoveWithTime(this.board, this.timeControl);
         }
         System.out.printf("Algo chose: %s%n", move);
         this.board = this.board.move(move);

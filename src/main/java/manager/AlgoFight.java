@@ -92,7 +92,7 @@ public class AlgoFight {
         if (this.allowPondering) {
             ponderingAlgo.ponder();
         }
-        Move move = algo.nextMoveWithTime(this.game, time * 1000);
+        Move move = algo.nextMoveWithTime(this.game, time);
         if (this.allowPondering) {
             ponderingAlgo.stopPondering();
         }

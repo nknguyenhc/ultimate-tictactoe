@@ -68,6 +68,7 @@ public class MctsAlgo implements BaseAlgo {
         } else {
             this.root = new MctsNode(null, null, board);
         }
+        System.gc();
         long startTime = System.currentTimeMillis();
         long endTime = startTime + time;
         while (System.currentTimeMillis() < endTime) {
@@ -131,6 +132,9 @@ public class MctsAlgo implements BaseAlgo {
 
     @Override
     public void stopPondering() {
+        if (!this.continueLastSearch) {
+            return;
+        }
         this.isPondering = false;
         try {
             this.ponderingThread.join();

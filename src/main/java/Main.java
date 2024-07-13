@@ -16,7 +16,7 @@ public class Main {
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
-    private static final int timeControl = 1;
+    private static final int timeControl = 100;
     private static final boolean allowPondering = true;
 
     /** Algo 1 for automated fight. */
