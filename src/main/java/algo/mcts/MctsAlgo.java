@@ -14,6 +14,7 @@ public class MctsAlgo implements BaseAlgo {
 
     private boolean hasPonderedAfterSearch = false;
     private boolean isPondering = false;
+    private Thread ponderingThread = null;
 
     public MctsAlgo() {
         this.continueLastSearch = false;
@@ -112,11 +113,12 @@ public class MctsAlgo implements BaseAlgo {
         this.setupRootForPondering();
         this.hasPonderedAfterSearch = true;
         this.isPondering = true;
-        new Thread(() -> {
+        this.ponderingThread = new Thread(() -> {
             while (this.isPondering) {
                 this.search();
             }
-        }).start();
+        });
+        this.ponderingThread.start();
     }
 
     private void setupRootForPondering() {
@@ -130,5 +132,10 @@ public class MctsAlgo implements BaseAlgo {
     @Override
     public void stopPondering() {
         this.isPondering = false;
+        try {
+            this.ponderingThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

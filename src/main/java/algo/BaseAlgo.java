@@ -43,6 +43,7 @@ public interface BaseAlgo {
     /**
      * Stops pondering.
      * This allows graceful exit of the pondering process.
+     * This method must be called only when {@code ponder} has been called.
      */
     void stopPondering();
 }
