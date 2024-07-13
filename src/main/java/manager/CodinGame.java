@@ -34,18 +34,20 @@ public class CodinGame {
                 e.printStackTrace();
                 break;
             }
+            long startTime = System.currentTimeMillis();
             this.algo.stopPondering();
+            int timeTaken = (int) (System.currentTimeMillis() - startTime);
 
             Move action;
             if (this.isFirstTurn) {
                 if (opponentRow != -1) {
                     this.board = this.board.move(new Move((byte) opponentRow, (byte) opponentCol));
                 }
-                action = this.algo.nextMoveWithTime(this.board, 985);
+                action = this.algo.nextMoveWithTime(this.board, 980 - timeTaken);
                 this.isFirstTurn = false;
             } else {
                 this.board = this.board.move(new Move((byte) opponentRow, (byte) opponentCol));
-                action = this.algo.nextMoveWithTime(this.board, 85);
+                action = this.algo.nextMoveWithTime(this.board, 80 - timeTaken);
             }
             System.out.println(action.sparString());
             this.board = this.board.move(action);
