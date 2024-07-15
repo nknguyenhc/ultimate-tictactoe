@@ -44,13 +44,13 @@ public class WebManager {
     private static final String INVALID_TURN_MESSAGE = "Invalid choice, please indicate again (X/O):";
     private static final String TURN_PROMPT_APPEND = "\nPlease indicate your move, in the format R, C :";
     private static final String REFRESH_KEY = "refresh";
-    private static final String REFRESHED_MESSAGE = "Refreshed!\n";
+    private static final String REFRESHED_MESSAGE = "Refreshed!";
     private static final String NOTIFY_REFRESH = "Game has finished.\nPlease type \"refresh\" to start a new game.";
 
     public String getResponse(String input) {
         if (REFRESH_KEY.equals(input)) {
             this.refresh();
-            return REFRESHED_MESSAGE + this.start();
+            return REFRESHED_MESSAGE;
         }
 
         switch (this.state) {
