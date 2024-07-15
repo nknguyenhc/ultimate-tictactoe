@@ -44,7 +44,7 @@ public class Entry {
                     this.algo = new PvAlgo();
                     break;
                 default:
-                    System.out.print("Invalid choice, please key in your choice again (1-2): ");
+                    System.out.print("Invalid choice, please key in your choice again (1-4): ");
                     response = this.scanner.nextLine();
             }
         }

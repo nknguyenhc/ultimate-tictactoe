@@ -27,13 +27,14 @@ public class WebManager {
 
     private static final String WELCOME_MESSAGE =
             "Welcome! This is a programme to test out the engine.\n" +
+            "Key in \"refresh\" any time to restart the game\n" +
             "Please choose the algo you wish to fight against:\n" +
             "  1. Sarsa (easy)\n" +
             "  2. Q-learning (medium)\n" +
             "  3. Monte-Carlo Tree Search (hard)\n" +
             "  4. PV-Algo (hard)\n" +
-            "Your choice (1-3):";
-    private static final String INVALID_ALGO_MESSAGE = "Invalid choice, please indicate again (1-3):";
+            "Your choice (1-4):";
+    private static final String INVALID_ALGO_MESSAGE = "Invalid choice, please indicate again (1-4):";
     private static final String CHOOSE_TIME_MESSAGE =
             "Please indicate time control for the algo, between 1 to 5 seconds.\n" +
             "Note that this time control does not apply to you (1-5):";
@@ -42,11 +43,12 @@ public class WebManager {
             "Please indicate which side you want to play as, X goes first, O goes second (X/O):";
     private static final String INVALID_TURN_MESSAGE = "Invalid choice, please indicate again (X/O):";
     private static final String TURN_PROMPT_APPEND = "\nPlease indicate your move, in the format R, C :";
+    private static final String REFRESH_KEY = "refresh";
     private static final String REFRESHED_MESSAGE = "Refreshed!\n";
     private static final String NOTIFY_REFRESH = "Game has finished.\nPlease type \"refresh\" to start a new game.";
 
     public String getResponse(String input) {
-        if (input.equals("refresh")) {
+        if (REFRESH_KEY.equals(input)) {
             this.refresh();
             return REFRESHED_MESSAGE + this.start();
         }
@@ -72,6 +74,7 @@ public class WebManager {
     }
 
     private void refresh() {
+        this.board = new Board();
         this.state = State.START;
     }
 
