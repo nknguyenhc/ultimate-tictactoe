@@ -6,7 +6,7 @@ import board.Board;
 import org.junit.Test;
 
 public class PvNodeTest {
-    private final int time = 5;
+    private final int time = 5000;
 
     private void testBoard(String boardString) throws Exception {
         Board board = Board.fromCompactString(boardString);

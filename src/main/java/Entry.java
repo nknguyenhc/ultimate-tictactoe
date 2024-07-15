@@ -14,6 +14,7 @@ public class Entry {
     private final Scanner scanner = new Scanner(System.in);
     private BaseAlgo algo;
     private int time;
+    private boolean allowPondering;
 
     private void selectAlgo() {
         System.out.print("Algos to fight against:\n" +
@@ -74,10 +75,32 @@ public class Entry {
         }
     }
 
+    private void selectPondering() {
+        System.out.print("Allow the algo to think while you are thinking? (Y/N) ");
+        String response = this.scanner.nextLine();
+        boolean isExit = false;
+        while (!isExit) {
+            switch (response) {
+                case "Y":
+                    isExit = true;
+                    this.allowPondering = true;
+                    break;
+                case "N":
+                    isExit = true;
+                    this.allowPondering = false;
+                    break;
+                default:
+                    System.out.print("Invalid response, please indicate again (Y/N): ");
+                    response = this.scanner.nextLine();
+            }
+        }
+    }
+
     private void run() {
         this.selectAlgo();
         this.selectTimeControl();
-        new Manager(false, this.time).run(this.algo);
+        this.selectPondering();
+        new Manager(false, this.time, this.allowPondering).run(this.algo);
     }
 
     public static void main(String[] args) {

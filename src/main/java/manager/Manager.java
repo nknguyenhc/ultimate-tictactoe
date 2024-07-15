@@ -14,15 +14,24 @@ public class Manager {
     private BaseAlgo algo;
     private final boolean includeTrace;
     private final Integer timeControl;
+    private final boolean allowPondering;
 
     public Manager(boolean includeTrace) {
         this.includeTrace = includeTrace;
         this.timeControl = null;
+        this.allowPondering = false;
     }
 
     public Manager(boolean includeTrace, int timeControl) {
         this.includeTrace = includeTrace;
         this.timeControl = timeControl;
+        this.allowPondering = false;
+    }
+
+    public Manager(boolean includeTrace, int timeControl, boolean allowPondering) {
+        this.includeTrace = includeTrace;
+        this.timeControl = timeControl;
+        this.allowPondering = allowPondering;
     }
 
     public void run(BaseAlgo algo) {
@@ -84,6 +93,9 @@ public class Manager {
     }
 
     private void humanTurn() {
+        if (this.allowPondering) {
+            this.algo.ponder();
+        }
         this.printBoardIndexToMove();
         System.out.print("Please indicate your move, in the format R, C : ");
         String line = this.scanner.nextLine();
@@ -99,6 +111,9 @@ public class Manager {
             }
         }
         this.board = this.board.move(move);
+        if (this.allowPondering) {
+            this.algo.stopPondering();
+        }
     }
 
     private void printBoardIndexToMove() {

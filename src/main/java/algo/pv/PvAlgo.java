@@ -30,7 +30,6 @@ public class PvAlgo implements BaseAlgo {
         this.root.evaluate();
         int i = 1;
         while (true) {
-            System.out.printf("Searching depth %d\n", i);
             try {
                 move = this.root.search(i, endTime);
             } catch (TimeoutException e) {
