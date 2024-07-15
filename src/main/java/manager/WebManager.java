@@ -31,7 +31,7 @@ public class WebManager {
             "  1. Sarsa (easy)\n" +
             "  2. Q-learning (medium)\n" +
             "  3. Monte-Carlo Tree Search (hard)\n" +
-            "  4. PV-Algo (extreme)\n" +
+            "  4. PV-Algo (hard)\n" +
             "Your choice (1-3):";
     private static final String INVALID_ALGO_MESSAGE = "Invalid choice, please indicate again (1-3):";
     private static final String CHOOSE_TIME_MESSAGE =

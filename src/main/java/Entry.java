@@ -1,5 +1,6 @@
 import algo.BaseAlgo;
 import algo.mcts.MctsAlgo;
+import algo.pv.PvAlgo;
 import algo.qlearning.QLearningAlgo;
 import algo.sarsa.SarsaAlgo;
 import manager.Manager;
@@ -19,6 +20,7 @@ public class Entry {
                 "  1. SARSA (easy)\n" +
                 "  2. Q-Learning (medium)\n" +
                 "  3. Monte-Carlo Tree Search (hard)\n" +
+                "  4. PV Search (hard)\n" +
                 "Key in your choice (1-3): ");
         String response = this.scanner.nextLine();
         boolean isExit = false;
@@ -35,6 +37,10 @@ public class Entry {
                 case "3":
                     isExit = true;
                     this.algo = new MctsAlgo();
+                    break;
+                case "4":
+                    isExit = true;
+                    this.algo = new PvAlgo();
                     break;
                 default:
                     System.out.print("Invalid choice, please key in your choice again (1-2): ");
