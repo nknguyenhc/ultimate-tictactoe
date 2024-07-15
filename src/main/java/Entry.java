@@ -21,7 +21,7 @@ public class Entry {
                 "  2. Q-Learning (medium)\n" +
                 "  3. Monte-Carlo Tree Search (hard)\n" +
                 "  4. PV Search (hard)\n" +
-                "Key in your choice (1-3): ");
+                "Key in your choice (1-4): ");
         String response = this.scanner.nextLine();
         boolean isExit = false;
         while (!isExit) {
@@ -64,7 +64,7 @@ public class Entry {
                     response = this.scanner.nextLine();
                     continue;
                 }
-                this.time = time;
+                this.time = time * 1000;
                 isExit = true;
             } catch (NumberFormatException e) {
                 System.out.print("Time control must be an integer between 1 and 10!\n" +
