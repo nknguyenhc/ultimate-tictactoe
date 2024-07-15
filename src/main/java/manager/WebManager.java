@@ -42,8 +42,15 @@ public class WebManager {
             "Please indicate which side you want to play as, X goes first, O goes second (X/O):";
     private static final String INVALID_TURN_MESSAGE = "Invalid choice, please indicate again (X/O):";
     private static final String TURN_PROMPT_APPEND = "\nPlease indicate your move, in the format R, C :";
+    private static final String REFRESHED_MESSAGE = "Refreshed!\n";
+    private static final String NOTIFY_REFRESH = "Game has finished.\nPlease type \"refresh\" to start a new game.";
 
     public String getResponse(String input) {
+        if (input.equals("refresh")) {
+            this.refresh();
+            return REFRESHED_MESSAGE + this.start();
+        }
+
         switch (this.state) {
             case START:
                 return this.start();
@@ -57,9 +64,15 @@ public class WebManager {
                 return this.humanTurn(input);
             case ALGO_TURN:
                 return this.algoTurn();
+            case GAME_FINISHED:
+                return this.notifyRefresh();
             default:
                 throw new InvalidStateException();
         }
+    }
+
+    private void refresh() {
+        this.state = State.START;
     }
 
     private String start() {
@@ -189,5 +202,9 @@ public class WebManager {
         Utils.Side winner = this.board.winner();
         this.state = State.GAME_FINISHED;
         return this.board.toString() + String.format("%s won !!!", winner);
+    }
+
+    private String notifyRefresh() {
+        return NOTIFY_REFRESH;
     }
 }
