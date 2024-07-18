@@ -95,11 +95,40 @@ public class ParallelMctsAlgo implements BaseAlgo {
 
     @Override
     public void ponder() {
+        if (!this.continueLastSearch) {
+            return;
+        }
 
+        this.setupRootForPondering();
+        this.hasPonderedAfterSearch = true;
+        this.isPondering = true;
+        this.ponderingThread = new Thread(() -> {
+            while (this.isPondering) {
+                this.root.search();
+            }
+        });
+        this.ponderingThread.start();
+    }
+
+    private void setupRootForPondering() {
+        if (this.root == null) {
+            this.root = new ParallelMctsNode(new Board());
+        } else {
+            this.root = this.root.getBestUtility();
+        }
     }
 
     @Override
     public void stopPondering() {
+        if (!this.continueLastSearch) {
+            return;
+        }
 
+        this.isPondering = false;
+        try {
+            this.ponderingThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

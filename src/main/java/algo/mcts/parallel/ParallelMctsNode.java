@@ -103,7 +103,7 @@ public class ParallelMctsNode {
         }
     }
 
-    private void search() {
+    public void search() {
         ParallelMctsNode leaf = this.select();
         ParallelMctsNode child = leaf.expand();
         int value = child.simulate();
@@ -130,7 +130,7 @@ public class ParallelMctsNode {
         return bestChild;
     }
 
-    private ParallelMctsNode getBestUtility() {
+    public ParallelMctsNode getBestUtility() {
         if (this.children == null) {
             return null;
         }

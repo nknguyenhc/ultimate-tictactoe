@@ -17,11 +17,11 @@ public class Main {
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
-    private static final int timeControl = 1000;
+    private static final int timeControl = 100;
     private static final boolean allowPondering = true;
 
     /** Algo 1 for automated fight. */
-    private static final BaseAlgo algo1 = new MctsAlgo();
+    private static final BaseAlgo algo1 = new MctsAlgo(true);
     /** Algo 2 for automated fight. */
     private static final BaseAlgo algo2 = new ParallelMctsAlgo(true);
     private static final boolean includeTrace1 = false;
