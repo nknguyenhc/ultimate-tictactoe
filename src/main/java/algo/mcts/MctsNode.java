@@ -10,7 +10,7 @@ import java.util.Random;
 
 class MctsNode {
     /** The random number generator for this node. */
-    private final Random rng = new Random();
+    private static final Random rng = new Random();
     /** The value of winning. */
     private static final double WIN = 1;
     private static final double C = 1.4;
@@ -82,7 +82,7 @@ class MctsNode {
             this.children[i] = new MctsNode(this, actions.get(i), board.move(actions.get(i)));
         }
 
-        int index = this.rng.nextInt(actions.size());
+        int index = MctsNode.rng.nextInt(actions.size());
         return this.children[index];
     }
 
@@ -93,7 +93,7 @@ class MctsNode {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
             List<Move> actions = board.actions();
-            int index = this.rng.nextInt(actions.size());
+            int index = MctsNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
         if (board.winner() == Utils.Side.D) {
