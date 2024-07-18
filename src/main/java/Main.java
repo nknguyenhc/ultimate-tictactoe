@@ -21,9 +21,9 @@ public class Main {
     private static final boolean allowPondering = true;
 
     /** Algo 1 for automated fight. */
-    private static final BaseAlgo algo1 = new MctsAlgo(true);
+    private static final BaseAlgo algo1 = new ParallelMctsAlgo(true, false);
     /** Algo 2 for automated fight. */
-    private static final BaseAlgo algo2 = new ParallelMctsAlgo(true);
+    private static final BaseAlgo algo2 = new ParallelMctsAlgo(true, true);
     private static final boolean includeTrace1 = false;
     private static final boolean includeTrace2 = false;
 

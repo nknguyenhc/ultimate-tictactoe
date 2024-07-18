@@ -14,13 +14,20 @@ import java.util.concurrent.Future;
 public class ParallelMctsAlgo implements BaseAlgo {
     private ParallelMctsNode root;
     private final boolean continueLastSearch;
+    private final boolean multiThreadedPondering;
 
     private boolean hasPonderedAfterSearch = false;
     private boolean isPondering = false;
-    private Thread ponderingThread = null;
+    private List<Thread> ponderingThreads = null;
 
-    public ParallelMctsAlgo(boolean continueLastSearch) {
+    public ParallelMctsAlgo() {
+        this.continueLastSearch = true;
+        this.multiThreadedPondering = true;
+    }
+
+    public ParallelMctsAlgo(boolean continueLastSearch, boolean multiThreadedPondering) {
         this.continueLastSearch = continueLastSearch;
+        this.multiThreadedPondering = multiThreadedPondering;
     }
 
     @Override
@@ -43,10 +50,9 @@ public class ParallelMctsAlgo implements BaseAlgo {
 
         ExecutorService executorService = Executors.newFixedThreadPool(childrenCount);
         List<Future<Void>> futures = new ArrayList<>();
-        for (int i = 0; i < childrenCount; i++) {
-            final int threadNumber = i;
+        for (ParallelMctsNode child: children) {
             Future<Void> future = executorService.submit(() -> {
-                children[threadNumber].search(endTime);
+                child.search(endTime);
                 return null;
             });
             futures.add(future);
@@ -102,12 +108,37 @@ public class ParallelMctsAlgo implements BaseAlgo {
         this.setupRootForPondering();
         this.hasPonderedAfterSearch = true;
         this.isPondering = true;
-        this.ponderingThread = new Thread(() -> {
+        if (this.multiThreadedPondering) {
+            this.startMultiThreadPondering();
+        } else {
+            this.startSingleThreadPondering();
+        }
+    }
+
+    private void startSingleThreadPondering() {
+        this.ponderingThreads = new ArrayList<>();
+        Thread ponderingThread = new Thread(() -> {
             while (this.isPondering) {
                 this.root.search();
             }
         });
-        this.ponderingThread.start();
+        this.ponderingThreads.add(ponderingThread);
+        ponderingThread.start();
+    }
+
+    private void startMultiThreadPondering() {
+        this.root.setupChildren();
+        ParallelMctsNode[] children = this.root.getChildren();
+        this.ponderingThreads = new ArrayList<>();
+        for (ParallelMctsNode child: children) {
+            Thread ponderingThread = new Thread(() -> {
+                while (this.isPondering) {
+                    child.search();
+                }
+            });
+            this.ponderingThreads.add(ponderingThread);
+            ponderingThread.start();
+        }
     }
 
     private void setupRootForPondering() {
@@ -126,7 +157,9 @@ public class ParallelMctsAlgo implements BaseAlgo {
 
         this.isPondering = false;
         try {
-            this.ponderingThread.join();
+            for (Thread ponderingThread: this.ponderingThreads) {
+                ponderingThread.join();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
