@@ -122,7 +122,8 @@ public class ParallelMctsAlgo implements BaseAlgo {
         this.setupRootForPondering();
         this.hasPonderedAfterSearch = true;
         this.isPondering = true;
-        if (this.multiThreadedPondering) {
+        int childrenCount = this.root.setupChildren();
+        if (this.multiThreadedPondering && childrenCount <= this.childrenCountCutoff) {
             this.startMultiThreadPondering();
         } else {
             this.startSingleThreadPondering();
