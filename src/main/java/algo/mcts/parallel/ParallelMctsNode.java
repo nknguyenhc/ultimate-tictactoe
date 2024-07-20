@@ -168,7 +168,6 @@ public class ParallelMctsNode {
                 return child;
             }
         }
-        assert false;
         return null;
     }
 

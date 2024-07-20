@@ -6,10 +6,6 @@ import board.Move;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class ParallelMctsAlgo implements BaseAlgo {
     private ParallelMctsNode root;
@@ -37,6 +33,7 @@ public class ParallelMctsAlgo implements BaseAlgo {
 
     @Override
     public Move nextMoveWithTime(Board board, int time) {
+        final long endTime = System.currentTimeMillis() + time;
         if (this.continueLastSearch) {
             this.setupRoot(board);
         } else {
@@ -44,28 +41,25 @@ public class ParallelMctsAlgo implements BaseAlgo {
         }
 
         System.gc();
-        final long endTime = System.currentTimeMillis() + time;
-        int childrenCount = this.root.setupChildren();
+        this.root.setupChildren();
         ParallelMctsNode[] children = this.root.getChildren();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(childrenCount);
-        List<Future<Void>> futures = new ArrayList<>();
+        List<Thread> threads = new ArrayList<>();
         for (ParallelMctsNode child: children) {
-            Future<Void> future = executorService.submit(() -> {
+            Thread newThread = new Thread(() -> {
                 child.search(endTime);
-                return null;
             });
-            futures.add(future);
+            threads.add(newThread);
+            newThread.start();
         }
 
-        for (Future<Void> future: futures) {
+        for (Thread thread: threads) {
             try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
+                thread.join();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        executorService.shutdown();
         return this.root.getBestMove();
     }
 
