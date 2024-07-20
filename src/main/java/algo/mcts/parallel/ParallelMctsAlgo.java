@@ -16,6 +16,9 @@ public class ParallelMctsAlgo implements BaseAlgo {
     private boolean isPondering = false;
     private List<Thread> ponderingThreads = null;
 
+    private final int childrenCountCutoff = 9;
+    Move lastMove = null;
+
     public ParallelMctsAlgo() {
         this.continueLastSearch = true;
         this.multiThreadedPondering = true;
@@ -41,9 +44,17 @@ public class ParallelMctsAlgo implements BaseAlgo {
         }
 
         System.gc();
-        this.root.setupChildren();
-        ParallelMctsNode[] children = this.root.getChildren();
+        int childrenCount = this.root.setupChildren();
+        if (childrenCount <= this.childrenCountCutoff) {
+            this.lastMove = nextMoveMultiThreaded(endTime);
+        } else {
+            this.lastMove = nextMoveSingleThreaded(endTime);
+        }
+        return this.lastMove;
+    }
 
+    private Move nextMoveMultiThreaded(long endTime) {
+        ParallelMctsNode[] children = this.root.getChildren();
         List<Thread> threads = new ArrayList<>();
         for (ParallelMctsNode child: children) {
             Thread newThread = new Thread(() -> {
@@ -60,7 +71,12 @@ public class ParallelMctsAlgo implements BaseAlgo {
                 e.printStackTrace();
             }
         }
-        return this.root.getBestMove();
+        return this.root.getBestMoveByUtility();
+    }
+
+    private Move nextMoveSingleThreaded(long endTime) {
+        this.root.search(endTime);
+        return this.root.getBestMoveByRollout();
     }
 
     private void setupRoot(Board board) {
@@ -70,10 +86,14 @@ public class ParallelMctsAlgo implements BaseAlgo {
             this.root = this.root.child(board);
             if (this.root == null) {
                 this.root = new ParallelMctsNode(board);
+            } else {
+                this.root.makeRoot();
             }
             this.hasPonderedAfterSearch = false;
         } else {
-            this.root = this.root.grandchild(board);
+            ParallelMctsNode child = this.root.child(this.lastMove);
+            this.root = child.child(board);
+            this.root.makeRoot();
         }
     }
 
@@ -139,7 +159,7 @@ public class ParallelMctsAlgo implements BaseAlgo {
         if (this.root == null) {
             this.root = new ParallelMctsNode(new Board());
         } else {
-            this.root = this.root.getBestUtility();
+            this.root = this.root.child(this.lastMove);
         }
     }
 

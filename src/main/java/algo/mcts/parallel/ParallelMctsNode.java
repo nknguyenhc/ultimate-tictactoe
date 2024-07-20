@@ -130,7 +130,7 @@ public class ParallelMctsNode {
         return bestChild;
     }
 
-    public ParallelMctsNode getBestUtility() {
+    private ParallelMctsNode getBestUtility() {
         if (this.children == null) {
             return null;
         }
@@ -145,8 +145,14 @@ public class ParallelMctsNode {
         return bestChild;
     }
 
-    public Move getBestMove() {
+    public Move getBestMoveByUtility() {
         ParallelMctsNode bestChild = this.getBestUtility();
+        assert bestChild != null;
+        return bestChild.move;
+    }
+
+    public Move getBestMoveByRollout() {
+        ParallelMctsNode bestChild = this.getBestRollout();
         assert bestChild != null;
         return bestChild.move;
     }
@@ -164,17 +170,26 @@ public class ParallelMctsNode {
         }
         for (ParallelMctsNode child: this.children) {
             if (child.board.equals(board)) {
-                child.parent = null;
                 return child;
             }
         }
         return null;
     }
 
-    public ParallelMctsNode grandchild(Board board) {
-        ParallelMctsNode child = this.getBestUtility();
-        assert child != null;
-        return child.child(board);
+    public ParallelMctsNode child(Move move) {
+        if (this.children == null) {
+            return null;
+        }
+        for (ParallelMctsNode child: this.children) {
+            if (child.move.equals(move)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    public void makeRoot() {
+        this.parent = null;
     }
 
     public double utility() {
