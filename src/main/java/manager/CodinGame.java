@@ -1,7 +1,7 @@
 package manager;
 
 import algo.BaseAlgo;
-import algo.mcts.MctsAlgo;
+import algo.mcts.parallel.ParallelMctsAlgo;
 import board.Board;
 import board.Move;
 
@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 
 public class CodinGame {
     private final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    private final BaseAlgo algo = new MctsAlgo(true);
+    private final BaseAlgo algo = new ParallelMctsAlgo();
     private boolean isFirstTurn = true;
     private Board board = new Board();
 

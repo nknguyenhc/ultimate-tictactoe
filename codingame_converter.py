@@ -4,7 +4,7 @@ import os
 
 def config():
     return {
-        "algo": "mcts",
+        "algo": "mcts/parallel",
         "base_dir": "src/main/java",
         "folders": [
             "board",
@@ -14,7 +14,7 @@ def config():
             "algo/BaseAlgo.java",
         ],
         "output": {
-            "prepend": "import java.util.*;\nimport java.io.*;\n\nclass Player {\n",
+            "prepend": "import java.util.*;\nimport java.io.*;\nimport java.util.concurrent.*;\n\nclass Player {\n",
             "append": "    public static void main(String[] args) {\n        new CodinGame().run();\n    }\n}\n",
         }
     }
