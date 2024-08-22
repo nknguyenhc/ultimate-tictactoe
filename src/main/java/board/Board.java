@@ -335,4 +335,107 @@ public class Board {
     public int hashCode() {
         return Objects.hash(Arrays.hashCode(this.subBoards), this.subBoardIndex);
     }
+
+    /**
+     * Determines if this board can be morphed to itself using the provided transformation.
+     * @param morph The transformation to consider.
+     */
+    public boolean isMorphable(Utils.Morph morph) {
+        switch (morph) {
+            case NORTH:
+                return this.isNorthMorphable();
+            case NORTHEAST:
+                return this.isNortheastMorphable();
+            case EAST:
+                return this.isEastMorphable();
+            case SOUTHEAST:
+                return this.isSoutheastMorphable();
+            case CLOCKWISE:
+                return this.isClockwiseMorphable();
+            case ANTICLOCKWISE:
+                return this.isAnticlockwiseMorphable();
+            case SEMICIRCLE:
+                return this.isSemiCircleMorphable();
+            default:
+                return false;
+        }
+    }
+
+    private boolean isNorthMorphable() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col <= 1; col++) {
+                if (!this.subBoards[3 * row + col].isSameAs(Utils.Morph.NORTH, this.subBoards[3 * row + 2 - col])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isNortheastMorphable() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3 - row; col++) {
+                if (!this.subBoards[3 * row + col].isSameAs(
+                        Utils.Morph.NORTHEAST, this.subBoards[3 * (2 - col) + 2 - row])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isEastMorphable() {
+        for (int row = 0; row <= 1; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (!this.subBoards[3 * row + col].isSameAs(Utils.Morph.EAST, this.subBoards[3 * (2 - row) + col])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isSoutheastMorphable() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = row; col < 3; col++) {
+                if (!this.subBoards[3 * row + col].isSameAs(Utils.Morph.SOUTHEAST, this.subBoards[3 * col + row])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isClockwiseMorphable() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (!this.subBoards[3 * row + col].isSameAs(
+                        Utils.Morph.CLOCKWISE, this.subBoards[3 * col + 2 - row])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isAnticlockwiseMorphable() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (!this.subBoards[3 * row + col].isSameAs(
+                        Utils.Morph.ANTICLOCKWISE, this.subBoards[3 * (2 - col) + row])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isSemiCircleMorphable() {
+        for (int i = 0; i < 9; i++) {
+            if (!this.subBoards[i].isSameAs(Utils.Morph.SEMICIRCLE, this.subBoards[8 - i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

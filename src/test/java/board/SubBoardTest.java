@@ -1,6 +1,8 @@
 package board;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -87,5 +89,75 @@ public class SubBoardTest {
         String string = "257,80";
         SubBoard subBoard = SubBoard.fromCompactString(string);
         assertEquals(string, subBoard.toCompactString());
+    }
+
+    @Test
+    public void testNorthMorph() throws Exception {
+        SubBoard similarBoard1 = SubBoard.fromString("X - -", "- O -", "O X -");
+        SubBoard similarBoard2 = SubBoard.fromString("- - X", "- O -", "- X O");
+        assertTrue(similarBoard1.isSameAs(Utils.Morph.NORTH, similarBoard2));
+
+        SubBoard differentBoard = SubBoard.fromString("X - -", "- O -", "- X O");
+        assertFalse(similarBoard1.isSameAs(Utils.Morph.NORTH, differentBoard));
+    }
+
+    @Test
+    public void testNortheastMorph() throws Exception {
+        SubBoard similarBoard1 = SubBoard.fromString("X - -", "- O -", "O X -");
+        SubBoard similarBoard2 = SubBoard.fromString("- - -", "X O -", "O - X");
+        assertTrue(similarBoard1.isSameAs(Utils.Morph.NORTHEAST, similarBoard2));
+
+        SubBoard differentBoard = SubBoard.fromString("- - -", "X - -", "O - X");
+        assertFalse(similarBoard1.isSameAs(Utils.Morph.NORTHEAST, differentBoard));
+    }
+
+    @Test
+    public void testEastMorph() throws Exception {
+        SubBoard similarBoard1 = SubBoard.fromString("X - -", "- O -", "O X -");
+        SubBoard similarBoard2 = SubBoard.fromString("O X -", "- O -", "X - -");
+        assertTrue(similarBoard1.isSameAs(Utils.Morph.EAST, similarBoard2));
+
+        SubBoard differentBoard = SubBoard.fromString("O X -", "X O X", "X - -");
+        assertFalse(similarBoard1.isSameAs(Utils.Morph.EAST, differentBoard));
+    }
+
+    @Test
+    public void testSoutheastMorph() throws Exception {
+        SubBoard similarBoard1 = SubBoard.fromString("X - -", "- O -", "O X -");
+        SubBoard similarBoard2 = SubBoard.fromString("X - O", "- O X", "- - -");
+        assertTrue(similarBoard1.isSameAs(Utils.Morph.SOUTHEAST, similarBoard2));
+
+        SubBoard differentBoard = SubBoard.fromString("X - -", "- X X", "- - -");
+        assertFalse(similarBoard1.isSameAs(Utils.Morph.SOUTHEAST, differentBoard));
+    }
+
+    @Test
+    public void testClockwiseMorph() throws Exception {
+        SubBoard similarBoard1 = SubBoard.fromString("X - -", "- O -", "O X -");
+        SubBoard similarBoard2 = SubBoard.fromString("O - X", "X O -", "- - -");
+        assertTrue(similarBoard1.isSameAs(Utils.Morph.CLOCKWISE, similarBoard2));
+
+        SubBoard differentBoard = SubBoard.fromString("X - O", "- O X", "- - -");
+        assertFalse(similarBoard1.isSameAs(Utils.Morph.CLOCKWISE, differentBoard));
+    }
+
+    @Test
+    public void testAnticlockwiseMorph() throws Exception {
+        SubBoard similarBoard1 = SubBoard.fromString("X - -", "- O -", "O X -");
+        SubBoard similarBoard2 = SubBoard.fromString("- - -", "- O X", "X - O");
+        assertTrue(similarBoard1.isSameAs(Utils.Morph.ANTICLOCKWISE, similarBoard2));
+
+        SubBoard differentBoard = SubBoard.fromString("- - -", "X - -", "O - X");
+        assertFalse(similarBoard1.isSameAs(Utils.Morph.ANTICLOCKWISE, differentBoard));
+    }
+
+    @Test
+    public void testSemicircleMorph() throws Exception {
+        SubBoard similarBoard1 = SubBoard.fromString("X - -", "- O -", "O X -");
+        SubBoard similarBoard2 = SubBoard.fromString("- X O", "- O -", "- - X");
+        assertTrue(similarBoard1.isSameAs(Utils.Morph.SEMICIRCLE, similarBoard2));
+
+        SubBoard differentBoard = SubBoard.fromString("O X -", "- O -", "X - -");
+        assertFalse(similarBoard1.isSameAs(Utils.Morph.SEMICIRCLE, differentBoard));
     }
 }

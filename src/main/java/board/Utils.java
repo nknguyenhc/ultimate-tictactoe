@@ -26,5 +26,18 @@ public class Utils {
         D,
     }
 
+    /**
+     * Represents a morph that transforms a board to itself.
+     */
+    public enum Morph {
+        NORTH,
+        NORTHEAST,
+        EAST,
+        SOUTHEAST,
+        CLOCKWISE,
+        ANTICLOCKWISE,
+        SEMICIRCLE,
+    }
+
     static short filled = 0b111111111;
 }

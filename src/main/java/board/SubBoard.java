@@ -233,4 +233,126 @@ public class SubBoard {
     public int hashCode() {
         return Objects.hash(this.Xboard, this.Oboard);
     }
+
+    /**
+     * Determines if this board can be morphed into the given sub-board.
+     * @param morph The transformation to consider.
+     * @param other The sub-board to check.
+     */
+    public boolean isSameAs(Utils.Morph morph, SubBoard other) {
+        switch (morph) {
+            case NORTH:
+                return this.isNorthMorphable(other);
+            case NORTHEAST:
+                return this.isNortheastMorphable(other);
+            case EAST:
+                return this.isEastMorphable(other);
+            case SOUTHEAST:
+                return this.isSoutheastMorphable(other);
+            case CLOCKWISE:
+                return this.isClockwiseMorphable(other);
+            case ANTICLOCKWISE:
+                return this.isAnticlockwiseMorphable(other);
+            case SEMICIRCLE:
+                return this.isSemicircleMorphable(other);
+            default:
+                return false;
+        }
+    }
+
+    private boolean isNorthMorphable(SubBoard other) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (((this.Xboard >> (3 * row + col)) & 1) != ((other.Xboard >> (3 * row + 2 - col)) & 1)) {
+                    return false;
+                }
+                if (((this.Oboard >> (3 * row + col)) & 1) != ((other.Oboard >> (3 * row + 2 - col)) & 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isNortheastMorphable(SubBoard other) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (((this.Xboard >> (3 * row + col)) & 1) != ((other.Xboard >> (3 * (2 - col) + 2 - row)) & 1)) {
+                    return false;
+                }
+                if (((this.Oboard >> (3 * row + col)) & 1) != ((other.Oboard >> (3 * (2 - col) + 2 - row)) & 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isEastMorphable(SubBoard other) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (((this.Xboard >> (3 * row + col)) & 1) != ((other.Xboard >> (3 * (2 - row) + col)) & 1)) {
+                    return false;
+                }
+                if (((this.Oboard >> (3 * row + col)) & 1) != ((other.Oboard >> (3 * (2 - row) + col)) & 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isSoutheastMorphable(SubBoard other) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (((this.Xboard >> (3 * row + col)) & 1) != ((other.Xboard >> (3 * col + row)) & 1)) {
+                    return false;
+                }
+                if (((this.Oboard >> (3 * row + col)) & 1) != ((other.Oboard >> (3 * col + row)) & 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isClockwiseMorphable(SubBoard other) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (((this.Xboard >> (3 * row + col)) & 1) != ((other.Xboard >> (3 * col + (2 - row))) & 1)) {
+                    return false;
+                }
+                if (((this.Oboard >> (3 * row + col)) & 1) != ((other.Oboard >> (3 * col + (2 - row))) & 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isAnticlockwiseMorphable(SubBoard other) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (((this.Xboard >> (3 * row + col)) & 1) != ((other.Xboard >> (3 * (2 - col) + row)) & 1)) {
+                    return false;
+                }
+                if (((this.Oboard >> (3 * row + col)) & 1) != ((other.Oboard >> (3 * (2 - col) + row)) & 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isSemicircleMorphable(SubBoard other) {
+        for (int i = 0; i < 9; i++) {
+            if (((this.Xboard >> i) & 1) != ((other.Xboard >> (8 - i)) & 1)) {
+                return false;
+            }
+            if (((this.Oboard >> i) & 1) != ((other.Oboard >> (8 - i)) & 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

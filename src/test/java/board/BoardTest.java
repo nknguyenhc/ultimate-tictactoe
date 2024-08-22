@@ -191,4 +191,137 @@ public class BoardTest {
         Board board = Board.fromCompactString(string);
         assertEquals(string, board.toCompactString());
     }
+
+    @Test
+    public void testNorthMorphable() throws Exception {
+        Board morphable = Board.fromString(
+                "- - X  - O -  X - -\n" +
+                "O X -  - X -  - X O\n" +
+                "O - -  X - X  - - O\n" +
+                "\n" +
+                "- - -  - X -  - - -\n" +
+                "O O O  X O X  O O O\n" +
+                "X - -  - - -  - - X\n" +
+                "\n" +
+                "X X O  - - -  O X X\n" +
+                "X O O  - O -  O O X\n" +
+                "- - X  - - -  X - -\n" +
+                "\n" +
+                "4,0");
+        assertTrue(morphable.isMorphable(Utils.Morph.NORTH));
+    }
+
+    @Test
+    public void testNortheastMorphable() throws Exception {
+        Board morphable = Board.fromString(
+                "- - X  - O O  X - -\n" +
+                "O X X  - O X  O O -\n" +
+                "O - -  - - O  - O X\n" +
+                "\n" +
+                "X - -  O O X  O X O\n" +
+                "O - X  - - O  - O O\n" +
+                "- - -  - - O  - - -\n" +
+                "\n" +
+                "O - -  - X -  - X X\n" +
+                "X X -  - - -  - X -\n" +
+                "X X O  - O X  O O -\n" +
+                "\n" +
+                "8,0");
+        assertTrue(morphable.isMorphable(Utils.Morph.NORTHEAST));
+    }
+
+    @Test
+    public void testEastMorphable() throws Exception {
+        Board morphable = Board.fromString(
+                "- - X  O O -  - - X\n" +
+                "- X O  X - -  O O O\n" +
+                "X O -  O - -  - - -\n" +
+                "\n" +
+                "- - O  O - -  X O X\n" +
+                "X O X  O O -  X - -\n" +
+                "- - O  O - -  X O X\n" +
+                "\n" +
+                "X O -  O - -  - - -\n" +
+                "- X O  X - -  O O O\n" +
+                "- - X  O O -  - - X\n" +
+                "\n" +
+                "1,0");
+        assertTrue(morphable.isMorphable(Utils.Morph.EAST));
+    }
+
+    @Test
+    public void testSoutheastMorphable() throws Exception {
+        Board morphable = Board.fromString(
+                "- - X  O O -  - - X\n" +
+                "- - O  O X -  - - X\n" +
+                "X O O  X - -  O - -\n" +
+                "\n" +
+                "O O X  X - -  O X O\n" +
+                "O X -  - O X  - - -\n" +
+                "- - -  - X -  - X -\n" +
+                "\n" +
+                "- - O  O - -  X O O\n" +
+                "- - -  X - X  O - -\n" +
+                "X X -  O - -  O - -\n" +
+                "\n" +
+                "4,0");
+        assertTrue(morphable.isMorphable(Utils.Morph.SOUTHEAST));
+    }
+
+    @Test
+    public void testClockwiseMorphable() throws Exception {
+        Board morphable = Board.fromString(
+                "- - X  X O -  X O -\n" +
+                "O - -  - X -  O - -\n" +
+                "X O O  - X -  O - X\n" +
+                "\n" +
+                "- - -  O X O  - - X\n" +
+                "O X X  X - X  X X O\n" +
+                "X - -  O X O  - - -\n" +
+                "\n" +
+                "X - O  - X -  O O X\n" +
+                "- - O  - X -  - - O\n" +
+                "- O X  - O X  X - -\n" +
+                "\n" +
+                "4,0");
+        assertTrue(morphable.isMorphable(Utils.Morph.CLOCKWISE));
+    }
+
+    @Test
+    public void testAnticlockwiseMorphable() throws Exception {
+        Board morphable = Board.fromString(
+                "- - X  X O -  X O -\n" +
+                "O - -  - X -  O - -\n" +
+                "X O O  - X -  O - X\n" +
+                "\n" +
+                "- - -  O X O  - - X\n" +
+                "O X X  X - X  X X O\n" +
+                "X - -  O X O  - - -\n" +
+                "\n" +
+                "X - O  - X -  O O X\n" +
+                "- - O  - X -  - - O\n" +
+                "- O X  - O X  X - -\n" +
+                "\n" +
+                "4,0");
+        assertTrue(morphable.isMorphable(Utils.Morph.ANTICLOCKWISE));
+    }
+
+    @Test
+    public void testSemicircleMorphable() throws Exception {
+        Board morphable = Board.fromString(
+                "- - X  X O -  X - O\n" +
+                "- X -  O - -  X - -\n" +
+                "- - O  O - -  - - -\n" +
+                "\n" +
+                "- - O  X X O  X - -\n" +
+                "O - -  - - -  - - O\n" +
+                "- - X  O X X  O - -\n" +
+                "\n" +
+                "- - -  - - O  O - -\n" +
+                "- - X  - - O  - X -\n" +
+                "O - X  - O X  X - -\n" +
+                "\n" +
+                "6,0");
+        assertTrue(morphable.isMorphable(Utils.Morph.SEMICIRCLE));
+    }
 }
