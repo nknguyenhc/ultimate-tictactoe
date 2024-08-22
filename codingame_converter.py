@@ -4,7 +4,7 @@ import os
 
 def config():
     return {
-        "algo": "mcts/parallel",
+        "algo": "mcts",
         "base_dir": "src/main/java",
         "folders": [
             "board",
