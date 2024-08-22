@@ -4,6 +4,7 @@ import board.Board;
 import board.Move;
 import board.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -155,6 +156,16 @@ public class ParallelMctsNode {
         ParallelMctsNode bestChild = this.getBestRollout();
         assert bestChild != null;
         return bestChild.move;
+    }
+
+    public List<Move> bestMoveSequence(Move bestMove) {
+        ParallelMctsNode node = this.child(bestMove);
+        List<Move> sequence = new ArrayList<>();
+        while (node != null) {
+            sequence.add(node.move);
+            node = node.getBestRollout();
+        }
+        return sequence;
     }
 
     /**

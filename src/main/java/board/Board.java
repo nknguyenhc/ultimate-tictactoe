@@ -3,6 +3,7 @@ package board;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a 9x9 ultimate tictactoe board.
@@ -328,5 +329,10 @@ public class Board {
         }
         stringBuilder.append(String.format("%d,%d", this.getBoardIndexToMove(), this.getTurn() ? 0 : 1));
         return stringBuilder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(this.subBoards), this.subBoardIndex);
     }
 }

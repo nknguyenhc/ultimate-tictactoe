@@ -1,5 +1,7 @@
 package board;
 
+import java.util.Objects;
+
 /**
  * Represents a 3x3 sub-board within an ultimate tictactoe board.
  */
@@ -225,5 +227,10 @@ public class SubBoard {
 
         SubBoard board = (SubBoard) object;
         return this.Xboard == board.Xboard && this.Oboard == board.Oboard;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.Xboard, this.Oboard);
     }
 }

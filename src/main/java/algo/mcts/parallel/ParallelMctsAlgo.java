@@ -99,7 +99,8 @@ public class ParallelMctsAlgo implements BaseAlgo {
 
     @Override
     public List<Move> getMovePredictions() {
-        return null;
+        assert this.root != null;
+        return this.root.bestMoveSequence(this.lastMove);
     }
 
     @Override
