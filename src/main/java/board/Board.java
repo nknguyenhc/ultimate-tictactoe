@@ -257,7 +257,6 @@ public class Board {
     /**
      * Determines the winner of this board.
      * Caches the value.
-     * @return 0 if undetermined, 1 if X, 2 if O.
      */
     public Utils.Side winner() {
         if (this.winner == null) {

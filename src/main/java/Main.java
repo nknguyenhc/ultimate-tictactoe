@@ -5,8 +5,11 @@ import algo.pv.PvAlgo;
 import algo.qlearning.QLearningAlgo;
 import algo.sarsa.SarsaAlgo;
 import manager.AlgoFight;
+import manager.Evaluator;
 import manager.Manager;
 import manager.Parser;
+
+import java.util.function.Supplier;
 
 /**
  * The main testing routine.
@@ -17,7 +20,7 @@ public class Main {
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
-    private static final int timeControl = 100;
+    private static final int timeControl = 1000;
     private static final boolean allowPondering = true;
 
     /** Algo 1 for automated fight. */
@@ -26,6 +29,13 @@ public class Main {
     private static final BaseAlgo algo2 = new ParallelMctsAlgo(true, false);
     private static final boolean includeTrace1 = false;
     private static final boolean includeTrace2 = false;
+
+    /** Base algo to benchmark against. */
+    private static final Supplier<BaseAlgo> baseAlgoSupplier = () -> new MctsAlgo(true);
+    /** Algo to benchmark. */
+    private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new ParallelMctsAlgo(true, false);
+    /** Number of games used to benchmark. */
+    private static final int numOfGames = 20;
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -37,7 +47,8 @@ public class Main {
                     "  custom: start from a custom board\n" +
                     "  time: manually test the algo with time control\n" +
                     "  fight: run an automated fight between two algos\n" +
-                    "  fight-time: run an automated fight between two algos with time control\n");
+                    "  fight-time: run an automated fight between two algos with time control\n" +
+                    "  evaluate: run multiple fights to benchmark an algo.\n");
         }
         switch (args[0]) {
             case "main":
@@ -57,6 +68,9 @@ public class Main {
                 break;
             case "fight-time":
                 new AlgoFight(algo1, algo2, includeTrace1, includeTrace2, allowPondering).runWithTime(timeControl);
+                break;
+            case "evaluate":
+                new Evaluator(baseAlgoSupplier, testAlgoSupplier).run(timeControl, numOfGames);
                 break;
             default:
                 System.out.printf("Unrecognised argument: %s%n", args[0]);
