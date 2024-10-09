@@ -20,7 +20,7 @@ public class Main {
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
-    private static final int timeControl = 100;
+    private static final int timeControl = 1000;
     private static final boolean allowPondering = true;
 
     /** Algo 1 for automated fight. */
@@ -33,9 +33,9 @@ public class Main {
     /** Base algo to benchmark against. */
     private static final Supplier<BaseAlgo> baseAlgoSupplier = () -> new MctsAlgo(true, 1);
     /** Algo to benchmark. */
-    private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new MctsAlgo(true, 1.2);
+    private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new ParallelMctsAlgo(true, false);
     /** Number of games used to benchmark. */
-    private static final int numOfGames = 100;
+    private static final int numOfGames = 20;
 
     public static void main(String[] args) {
         if (args.length == 0) {

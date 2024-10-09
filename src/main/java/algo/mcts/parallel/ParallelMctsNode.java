@@ -10,7 +10,7 @@ import java.util.Random;
 public class ParallelMctsNode {
     private static final Random rng = new Random();
     private static final int WIN = 1;
-    private static final double C = 1.4;
+    private static final double C = 1;
     private int N = 0;
     private int U = 0;
 
