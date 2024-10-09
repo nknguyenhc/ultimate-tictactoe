@@ -20,22 +20,22 @@ public class Main {
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = true;
     /** Time control, in seconds.  */
-    private static final int timeControl = 1000;
+    private static final int timeControl = 100;
     private static final boolean allowPondering = true;
 
     /** Algo 1 for automated fight. */
     private static final BaseAlgo algo1 = new MctsAlgo(true);
     /** Algo 2 for automated fight. */
-    private static final BaseAlgo algo2 = new ParallelMctsAlgo(true, false);
+    private static final BaseAlgo algo2 = new MctsAlgo(true, 1);
     private static final boolean includeTrace1 = false;
     private static final boolean includeTrace2 = false;
 
     /** Base algo to benchmark against. */
-    private static final Supplier<BaseAlgo> baseAlgoSupplier = () -> new MctsAlgo(true);
+    private static final Supplier<BaseAlgo> baseAlgoSupplier = () -> new MctsAlgo(true, 1);
     /** Algo to benchmark. */
-    private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new ParallelMctsAlgo(true, false);
+    private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new MctsAlgo(true, 1.2);
     /** Number of games used to benchmark. */
-    private static final int numOfGames = 20;
+    private static final int numOfGames = 100;
 
     public static void main(String[] args) {
         if (args.length == 0) {
