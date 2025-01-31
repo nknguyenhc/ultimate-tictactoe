@@ -17,7 +17,7 @@ public class SubBoard {
     /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
     private final Utils.Side winner;
     /** Actions */
-    private final List<Move> actions;
+    private final List<Integer> actions;
 
     public SubBoard(byte row, byte col) {
         this.Xboard = 0;
@@ -116,18 +116,17 @@ public class SubBoard {
     /**
      * Makes a move on the board, assuming that the board is valid.
      * Does not mutate the current board.
-     * @param row The row index to move, between 0 and 2 inclusive.
-     * @param col The column to move, between 0 and 2 inclusive.
+     * @param i The index of the cell to move on.
      * @param side The side to move, {@code true} for X, {@code false} for O.
      * @return The new board.
      */
-    public SubBoard move(int row, int col, boolean side) {
+    public SubBoard move(int i, boolean side) {
         short newXboard = this.Xboard;
         short newOboard = this.Oboard;
         if (side) {
-            newXboard |= 1 << (3 * row + col);
+            newXboard |= 1 << i;
         } else {
-            newOboard |= 1 << (3 * row + col);
+            newOboard |= 1 << i;
         }
         return new SubBoard(newXboard, newOboard, this.row, this.col);
     }
@@ -173,25 +172,21 @@ public class SubBoard {
      * Pre-calculates the actions available on this board.
      * To be used only in constructor.
      */
-    private List<Move> determineActions() {
+    private List<Integer> determineActions() {
         if (this.winner != Utils.Side.U) {
             return List.of();
         }
         int occupationBoard = this.Xboard | this.Oboard;
-        List<Move> actions = new ArrayList<>();
-        for (byte row = 0; row < 3; row++) {
-            for (byte col = 0; col < 3; col++) {
-                if (((occupationBoard >> (3 * row + col)) & 1) == 0) {
-                    actions.add(new Move(
-                            (byte) (this.row * 3 + row),
-                            (byte) (this.col * 3 + col)));
-                }
+        List<Integer> actions = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            if (((occupationBoard >> i) & 1) == 0) {
+                actions.add((this.row * 3 + this.col) * 9 + i);
             }
         }
         return actions;
     }
 
-    public List<Move> getActions() {
+    public List<Integer> getActions() {
         return this.actions;
     }
 

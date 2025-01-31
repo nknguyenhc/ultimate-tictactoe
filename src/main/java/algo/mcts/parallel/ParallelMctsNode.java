@@ -1,7 +1,6 @@
 package algo.mcts.parallel;
 
 import board.Board;
-import board.Move;
 import board.Utils;
 
 import java.util.List;
@@ -15,12 +14,12 @@ public class ParallelMctsNode {
     private int U = 0;
 
     private ParallelMctsNode parent;
-    private final Move move;
+    private final int move;
     private final Board board;
 
     private ParallelMctsNode[] children = null;
 
-    private ParallelMctsNode(ParallelMctsNode parent, Move move, Board board) {
+    private ParallelMctsNode(ParallelMctsNode parent, int move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -28,7 +27,7 @@ public class ParallelMctsNode {
 
     public ParallelMctsNode(Board board) {
         this.parent = null;
-        this.move = null;
+        this.move = -1;
         this.board = board;
     }
 
@@ -70,11 +69,11 @@ public class ParallelMctsNode {
             return this.children.length;
         }
 
-        List<Move> actions = this.board.actions();
+        List<Integer> actions = this.board.actions();
         int childrenCount = actions.size();
         this.children = new ParallelMctsNode[childrenCount];
         for (int i = 0; i < childrenCount; i++) {
-            Move move = actions.get(i);
+            int move = actions.get(i);
             this.children[i] = new ParallelMctsNode(this, move, this.board.move(move));
         }
         return childrenCount;
@@ -83,7 +82,7 @@ public class ParallelMctsNode {
     private int simulate() {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
-            List<Move> actions = board.actions();
+            List<Integer> actions = board.actions();
             int index = ParallelMctsNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
@@ -145,13 +144,13 @@ public class ParallelMctsNode {
         return bestChild;
     }
 
-    public Move getBestMoveByUtility() {
+    public int getBestMoveByUtility() {
         ParallelMctsNode bestChild = this.getBestUtility();
         assert bestChild != null;
         return bestChild.move;
     }
 
-    public Move getBestMoveByRollout() {
+    public int getBestMoveByRollout() {
         ParallelMctsNode bestChild = this.getBestRollout();
         assert bestChild != null;
         return bestChild.move;
@@ -176,12 +175,12 @@ public class ParallelMctsNode {
         return null;
     }
 
-    public ParallelMctsNode child(Move move) {
+    public ParallelMctsNode child(int move) {
         if (this.children == null) {
             return null;
         }
         for (ParallelMctsNode child: this.children) {
-            if (child.move.equals(move)) {
+            if (child.move == move) {
                 return child;
             }
         }

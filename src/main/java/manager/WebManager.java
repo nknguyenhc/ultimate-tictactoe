@@ -6,7 +6,6 @@ import algo.pv.PvAlgo;
 import algo.qlearning.QLearningAlgo;
 import algo.sarsa.SarsaAlgo;
 import board.Board;
-import board.Move;
 import board.Utils;
 
 public class WebManager {
@@ -153,7 +152,7 @@ public class WebManager {
     }
 
     private String humanTurn(String input) {
-        Move move;
+        int move;
         try {
             move = this.parseMove(input);
         } catch (InvalidMoveStringException e) {
@@ -168,22 +167,24 @@ public class WebManager {
         return this.boardInfo();
     }
 
-    private Move parseMove(String input) throws InvalidMoveStringException {
+    private int parseMove(String input) throws InvalidMoveStringException {
         // Bytecoder does not support String::split
         if (input.length() != 4 || input.charAt(1) != ',' || input.charAt(2) != ' ') {
             throw new InvalidMoveStringException();
         }
 
-        byte row;
-        byte col;
+        int row;
+        int col;
         try {
-            row = (byte) (Byte.parseByte(String.valueOf(input.charAt(0))) - 1);
-            col = (byte) (Byte.parseByte(String.valueOf(input.charAt(3))) - 1);
+            row = Integer.parseInt(String.valueOf(input.charAt(0))) - 1;
+            col = Integer.parseInt(String.valueOf(input.charAt(3))) - 1;
         } catch (NumberFormatException e) {
             throw new InvalidMoveStringException();
         }
 
-        Move move = new Move(row, col);
+        int boardIndex = 3 * (row / 3) + (col / 3);
+        int index = 3 * (row % 3) + (col % 3);
+        int move = 9 * boardIndex + index;
         if (!this.board.actions().contains(move)) {
             throw new InvalidMoveStringException();
         }
@@ -191,7 +192,7 @@ public class WebManager {
     }
 
     private String algoTurn() {
-        Move move = this.algo.nextMoveWithTime(this.board, this.timeControl * 1000);
+        int move = this.algo.nextMoveWithTime(this.board, this.timeControl * 1000);
         this.board = this.board.move(move);
         if (this.board.winner() != Utils.Side.U) {
             return this.gameJudge();

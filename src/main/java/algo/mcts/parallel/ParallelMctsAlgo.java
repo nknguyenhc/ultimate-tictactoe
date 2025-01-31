@@ -2,7 +2,6 @@ package algo.mcts.parallel;
 
 import algo.BaseAlgo;
 import board.Board;
-import board.Move;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ public class ParallelMctsAlgo implements BaseAlgo {
     private List<Thread> ponderingThreads = null;
 
     private final int childrenCountCutoff = 9;
-    Move lastMove = null;
+    int lastMove = -1;
 
     public ParallelMctsAlgo() {
         this.continueLastSearch = true;
@@ -30,12 +29,12 @@ public class ParallelMctsAlgo implements BaseAlgo {
     }
 
     @Override
-    public Move nextMove(Board board) {
-        return null;
+    public int nextMove(Board board) {
+        return -1;
     }
 
     @Override
-    public Move nextMoveWithTime(Board board, int time) {
+    public int nextMoveWithTime(Board board, int time) {
         final long endTime = System.currentTimeMillis() + time;
         if (this.continueLastSearch) {
             this.setupRoot(board);
@@ -53,7 +52,7 @@ public class ParallelMctsAlgo implements BaseAlgo {
         return this.lastMove;
     }
 
-    private Move nextMoveMultiThreaded(long endTime) {
+    private int nextMoveMultiThreaded(long endTime) {
         ParallelMctsNode[] children = this.root.getChildren();
         List<Thread> threads = new ArrayList<>();
         for (ParallelMctsNode child: children) {
@@ -74,7 +73,7 @@ public class ParallelMctsAlgo implements BaseAlgo {
         return this.root.getBestMoveByUtility();
     }
 
-    private Move nextMoveSingleThreaded(long endTime) {
+    private int nextMoveSingleThreaded(long endTime) {
         this.root.search(endTime);
         return this.root.getBestMoveByRollout();
     }
@@ -98,7 +97,7 @@ public class ParallelMctsAlgo implements BaseAlgo {
     }
 
     @Override
-    public List<Move> getMovePredictions() {
+    public List<Integer> getMovePredictions() {
         return null;
     }
 

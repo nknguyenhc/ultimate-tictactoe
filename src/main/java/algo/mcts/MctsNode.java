@@ -1,7 +1,6 @@
 package algo.mcts;
 
 import board.Board;
-import board.Move;
 import board.Utils;
 
 import java.util.ArrayList;
@@ -19,12 +18,12 @@ class MctsNode {
     /** The parent node of this node. Only {@code null} if this is root node. */
     private MctsNode parent;
     /** The move that led to this state. */
-    private final Move move;
+    private final int move;
     private final Board board;
     /** {@code null} if not expanded, an array otherwise. */
     private MctsNode[] children = null;
 
-    public MctsNode(MctsNode parent, Move move, Board board, double C) {
+    public MctsNode(MctsNode parent, int move, Board board, double C) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -77,7 +76,7 @@ class MctsNode {
             return this;
         }
 
-        List<Move> actions = this.board.actions();
+        List<Integer> actions = this.board.actions();
         this.children = new MctsNode[actions.size()];
         for (int i = 0; i < actions.size(); i++) {
             this.children[i] = new MctsNode(this, actions.get(i), board.move(actions.get(i)), this.C);
@@ -93,7 +92,7 @@ class MctsNode {
     public double simulate() {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
-            List<Move> actions = board.actions();
+            List<Integer> actions = board.actions();
             int index = MctsNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
@@ -141,7 +140,7 @@ class MctsNode {
      * Returns the optimal move at this state, based on the exploration.
      * To be called in root node only. Assume that root node is not terminal.
      */
-    public Move getBestMove() {
+    public int getBestMove() {
         MctsNode bestChild = this.getBestChild();
         assert bestChild != null;
         return bestChild.move;
@@ -151,9 +150,9 @@ class MctsNode {
      * Returns the best move sequence from this board,
      * including the move for the current board.
      */
-    public List<Move> bestMoveSequence() {
+    public List<Integer> bestMoveSequence() {
         MctsNode node = this.getBestChild();
-        List<Move> sequence = new ArrayList<>();
+        List<Integer> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.getBestChild();

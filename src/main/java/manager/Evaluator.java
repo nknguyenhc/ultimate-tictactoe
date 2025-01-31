@@ -2,7 +2,6 @@ package manager;
 
 import algo.BaseAlgo;
 import board.Board;
-import board.Move;
 import board.Utils;
 
 import java.util.function.Supplier;
@@ -67,7 +66,7 @@ public class Evaluator {
             if (moveCount % 10 == 0) {
                 System.out.print(moveCount + " ");
             }
-            Move move;
+            int move;
             if (baseGoFirst ^ (moveCount % 2 == 1)) {
                 move = baseAlgo.nextMoveWithTime(board, timePerStep);
             } else {

@@ -2,7 +2,6 @@ package manager;
 
 import algo.BaseAlgo;
 import board.Board;
-import board.Move;
 import board.Utils;
 
 public class AlgoFight {
@@ -80,7 +79,7 @@ public class AlgoFight {
 
     public void algoTurn(BaseAlgo algo, boolean includeTrace) {
         this.announceTurn(algo);
-        Move move = algo.nextMove(this.game);
+        int move = algo.nextMove(this.game);
         if (includeTrace) {
             System.out.println(algo.trace());
         }
@@ -92,7 +91,7 @@ public class AlgoFight {
         if (this.allowPondering) {
             ponderingAlgo.ponder();
         }
-        Move move = algo.nextMoveWithTime(this.game, time);
+        int move = algo.nextMoveWithTime(this.game, time);
         if (this.allowPondering) {
             ponderingAlgo.stopPondering();
         }
@@ -106,7 +105,7 @@ public class AlgoFight {
         System.out.printf("Turn: %s%n", this.getAlgoName(algo));
     }
 
-    private void processMove(BaseAlgo algo, Move move) {
+    private void processMove(BaseAlgo algo, int move) {
         this.game = this.game.move(move);
         System.out.printf("Algo %s chose: %s%n", this.getAlgoName(algo), move);
     }

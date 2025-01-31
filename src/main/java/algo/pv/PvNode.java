@@ -1,7 +1,6 @@
 package algo.pv;
 
 import board.Board;
-import board.Move;
 import board.Utils;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ class PvNode implements Comparable<PvNode> {
     /** The parent node of this node. */
     private PvNode parent = null;
     /** The move that transitions from the parent node to this node. */
-    private final Move move;
+    private final int move;
     /** The board that this node represents. */
     private final Board board;
 
@@ -57,7 +56,7 @@ class PvNode implements Comparable<PvNode> {
      * @param move The move that transitions from the parent node to this node.
      * @param board The board that this node represents.
      */
-    private PvNode(PvNode parent, Move move, Board board) {
+    private PvNode(PvNode parent, int move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -68,7 +67,7 @@ class PvNode implements Comparable<PvNode> {
      * @param board The board that the root node represents.
      */
     public PvNode(Board board) {
-        this.move = null;
+        this.move = -1;
         this.board = board;
     }
 
@@ -125,10 +124,10 @@ class PvNode implements Comparable<PvNode> {
      * and assuming that the children array is not instantiated.
      */
     private void createChildren() {
-        List<Move> actions = this.board.actions();
+        List<Integer> actions = this.board.actions();
         this.children = new PvNode[actions.size()];
         for (int i = 0; i < actions.size(); i++) {
-            Move action = actions.get(i);
+            int action = actions.get(i);
             this.children[i] = new PvNode(this, action, this.board.move(action));
         }
     }
@@ -140,7 +139,7 @@ class PvNode implements Comparable<PvNode> {
     private double simulate() {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
-            List<Move> actions = board.actions();
+            List<Integer> actions = board.actions();
             int index = PvNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
@@ -339,7 +338,7 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Entry point of the search routine.
      */
-    public Move search(int depth) {
+    public int search(int depth) {
         PvNode.isTrackingTime = false;
         try {
             this.search(depth, -PvNode.WIN, PvNode.WIN, NodeType.ROOT);
@@ -352,7 +351,7 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Entry point of the search routine, with time constraint.
      */
-    public Move search(int depth, long endTime) throws TimeoutException {
+    public int search(int depth, long endTime) throws TimeoutException {
         PvNode.endTime = endTime;
         PvNode.isTrackingTime = true;
         this.search(depth, -PvNode.WIN, PvNode.WIN, NodeType.ROOT);
@@ -362,16 +361,16 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Returns the best move. In the case of timeout.
      */
-    public Move getBestMove() {
+    public int getBestMove() {
         return this.bestChild.move;
     }
 
     /**
      * Returns the optimal sequence starting from this board.
      */
-    public List<Move> bestMoveSequence() {
+    public List<Integer> bestMoveSequence() {
         PvNode node = this.bestChild;
-        List<Move> sequence = new ArrayList<>();
+        List<Integer> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.bestChild;

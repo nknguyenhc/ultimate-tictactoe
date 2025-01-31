@@ -2,7 +2,6 @@ package algo.pv;
 
 import algo.BaseAlgo;
 import board.Board;
-import board.Move;
 
 import java.util.List;
 
@@ -11,9 +10,9 @@ public class PvAlgo implements BaseAlgo {
     private PvNode root;
 
     @Override
-    public Move nextMove(Board board) {
+    public int nextMove(Board board) {
         this.setupRoot(board);
-        Move move = null;
+        int move = -1;
         this.root.evaluate();
         for (int i = 1; i <= this.maxDepth; i++) {
             System.out.printf("Searching depth %d\n", i);
@@ -23,9 +22,9 @@ public class PvAlgo implements BaseAlgo {
     }
 
     @Override
-    public Move nextMoveWithTime(Board board, int time) {
+    public int nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
-        Move move;
+        int move;
         long endTime = time + System.currentTimeMillis();
         this.root.evaluate();
         int i = 1;
@@ -66,7 +65,7 @@ public class PvAlgo implements BaseAlgo {
     }
 
     @Override
-    public List<Move> getMovePredictions() {
+    public List<Integer> getMovePredictions() {
         assert this.root != null;
         return this.root.bestMoveSequence();
     }

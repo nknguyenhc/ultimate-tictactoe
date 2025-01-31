@@ -1,7 +1,6 @@
 package algo.sarsa;
 
 import board.Board;
-import board.Move;
 import board.Utils;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ class SarsaNode {
     /** The board that this node encapsulates. */
     private final Board board;
     /** The node that transitions the parent node to this node. */
-    private final Move move;
+    private final int move;
     private SarsaNode parent;
     /** The q-value of this node. */
     private double qValue = 0;
@@ -28,7 +27,7 @@ class SarsaNode {
     /** Utility value for a win. */
     private static final double WIN = 100;
 
-    private SarsaNode(SarsaNode parent, Move move, Board board) {
+    private SarsaNode(SarsaNode parent, int move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -37,7 +36,7 @@ class SarsaNode {
 
     public SarsaNode(Board board) {
         this.parent = null;
-        this.move = null;
+        this.move = -1;
         this.board = board;
     }
 
@@ -65,10 +64,10 @@ class SarsaNode {
             return;
         }
 
-        List<Move> moves = this.board.actions();
+        List<Integer> moves = this.board.actions();
         this.children = new SarsaNode[moves.size()];
         for (int i = 0; i < moves.size(); i++) {
-            Move move = moves.get(i);
+            int move = moves.get(i);
             Board nextBoard = this.board.move(move);
             this.children[i] = new SarsaNode(this, move, nextBoard);
         }
@@ -139,7 +138,7 @@ class SarsaNode {
     /**
      * Returns the best move at this node, in a real game play.
      */
-    public Move bestMove() {
+    public int bestMove() {
         SarsaNode node = this.selectBestNode();
         assert node != null;
         return node.move;
@@ -148,9 +147,9 @@ class SarsaNode {
     /**
      * Returns the sequence of best move starting from this board.
      */
-    public List<Move> bestMoveSequence() {
+    public List<Integer> bestMoveSequence() {
         SarsaNode node = this.selectBestNode();
-        List<Move> sequence = new ArrayList<>();
+        List<Integer> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.selectBestNode();
@@ -161,9 +160,9 @@ class SarsaNode {
     /**
      * Selects the child node with the given move.
      */
-    public SarsaNode child(Move move) {
+    public SarsaNode child(int move) {
         for (SarsaNode child: this.children) {
-            if (child.move.equals(move)) {
+            if (child.move == move) {
                 return child;
             }
         }

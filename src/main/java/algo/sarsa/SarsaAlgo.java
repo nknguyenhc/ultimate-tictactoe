@@ -2,7 +2,6 @@ package algo.sarsa;
 
 import algo.BaseAlgo;
 import board.Board;
-import board.Move;
 
 import java.util.List;
 
@@ -10,14 +9,14 @@ public class SarsaAlgo implements BaseAlgo {
     /** Root node of the last call to {@code nextMove}. */
     private SarsaNode root;
     /** The move that the agent last chose. */
-    private Move move;
+    private int move;
     /** Probability of making a random move. */
     private final double p = 0.1;
     /** Number of training epochs. */
     private final int epochs = 500000;
 
     @Override
-    public Move nextMove(Board board) {
+    public int nextMove(Board board) {
         this.setupRoot(board);
         for (int i = 0; i < this.epochs; i++) {
             if (i % 10000 == 0) {
@@ -40,7 +39,7 @@ public class SarsaAlgo implements BaseAlgo {
     }
 
     @Override
-    public Move nextMoveWithTime(Board board, int time) {
+    public int nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
         long endTime = System.currentTimeMillis() + time;
         while (System.currentTimeMillis() < endTime) {
@@ -62,7 +61,7 @@ public class SarsaAlgo implements BaseAlgo {
     }
 
     @Override
-    public List<Move> getMovePredictions() {
+    public List<Integer> getMovePredictions() {
         assert this.root != null;
         return this.root.bestMoveSequence();
     }

@@ -3,7 +3,6 @@ package manager;
 import algo.BaseAlgo;
 import board.Board;
 import board.InvalidBoardStringException;
-import board.Move;
 import board.Utils;
 
 import java.util.Scanner;
@@ -99,7 +98,7 @@ public class Manager {
         this.printBoardIndexToMove();
         System.out.print("Please indicate your move, in the format R, C : ");
         String line = this.scanner.nextLine();
-        Move move;
+        int move;
         while (true) {
             try {
                 move = this.parseMove(line);
@@ -128,22 +127,24 @@ public class Manager {
         System.out.printf("Board to move: (%d, %d)%n", row, col);
     }
 
-    private Move parseMove(String moveString) throws InvalidMoveStringException {
+    private int parseMove(String moveString) throws InvalidMoveStringException {
         String[] numbers = moveString.split(", ");
         if (numbers.length != 2) {
             throw new InvalidMoveStringException();
         }
 
-        byte row;
-        byte col;
+        int row;
+        int col;
         try {
-            row = (byte) (Byte.parseByte(numbers[0]) - 1);
-            col = (byte) (Byte.parseByte(numbers[1]) - 1);
+            row = Integer.parseInt(numbers[0]) - 1;
+            col = Integer.parseInt(numbers[1]) - 1;
         } catch (NumberFormatException e) {
             throw new InvalidMoveStringException();
         }
 
-        Move move = new Move(row, col);
+        int boardIndex = 3 * (row / 3) + (col / 3);
+        int index = 3 * (row % 3) + (col % 3);
+        int move = boardIndex * 9 + index;
         if (!this.board.actions().contains(move)) {
             throw new InvalidMoveStringException();
         }
@@ -151,7 +152,7 @@ public class Manager {
     }
 
     private void algoTurn() {
-        Move move;
+        int move;
         if (this.timeControl == null) {
             move = this.algo.nextMove(this.board);
         } else {

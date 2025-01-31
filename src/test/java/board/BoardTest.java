@@ -17,118 +17,51 @@ public class BoardTest {
     }
     @Test
     public void test() {
-        List<Move> allMoves = new ArrayList<>();
-        for (byte i = 0; i < 9; i++) {
-            for (byte j = 0; j < 9; j++) {
-                allMoves.add(new Move(i, j));
-            }
+        List<Integer> allMoves = new ArrayList<>();
+        for (int i = 0; i < 81; i++) {
+            allMoves.add(i);
         }
 
         Board board = new Board();
         assertListHasSameElements(allMoves, board.actions());
 
-        board = board.move(new Move((byte) 4, (byte) 4));
-        assertListHasSameElements(List.of(
-                new Move((byte) 3, (byte) 3),
-                new Move((byte) 3, (byte) 4),
-                new Move((byte) 3, (byte) 5),
-                new Move((byte) 4, (byte) 3),
-                new Move((byte) 4, (byte) 5),
-                new Move((byte) 5, (byte) 3),
-                new Move((byte) 5, (byte) 4),
-                new Move((byte) 5, (byte) 5)
-        ), board.actions());
+        board = board.move(40);
+        assertListHasSameElements(List.of(36, 37, 38, 39, 41, 42, 43, 44), board.actions());
 
-        board = board.move(new Move((byte) 3, (byte) 4));
-        assertListHasSameElements(List.of(
-                new Move((byte) 0, (byte) 3),
-                new Move((byte) 0, (byte) 4),
-                new Move((byte) 0, (byte) 5),
-                new Move((byte) 1, (byte) 3),
-                new Move((byte) 1, (byte) 4),
-                new Move((byte) 1, (byte) 5),
-                new Move((byte) 2, (byte) 3),
-                new Move((byte) 2, (byte) 4),
-                new Move((byte) 2, (byte) 5)
-        ), board.actions());
+        board = board.move(37);
+        assertListHasSameElements(List.of(9, 10, 11, 12, 13, 14, 15, 16, 17), board.actions());
 
-        board = board.move(new Move((byte) 0, (byte) 4));
-        assertListHasSameElements(List.of(
-                new Move((byte) 0, (byte) 3),
-                new Move((byte) 0, (byte) 5),
-                new Move((byte) 1, (byte) 3),
-                new Move((byte) 1, (byte) 4),
-                new Move((byte) 1, (byte) 5),
-                new Move((byte) 2, (byte) 3),
-                new Move((byte) 2, (byte) 4),
-                new Move((byte) 2, (byte) 5)
-        ), board.actions());
+        board = board.move(10);
+        assertListHasSameElements(List.of(9, 11, 12, 13, 14, 15, 16, 17), board.actions());
 
-        board = board.move(new Move((byte) 1, (byte) 4));
-        assertListHasSameElements(List.of(
-                new Move((byte) 3, (byte) 3),
-                new Move((byte) 3, (byte) 5),
-                new Move((byte) 4, (byte) 3),
-                new Move((byte) 4, (byte) 5),
-                new Move((byte) 5, (byte) 3),
-                new Move((byte) 5, (byte) 4),
-                new Move((byte) 5, (byte) 5)
-        ), board.actions());
+        board = board.move(13);
+        assertListHasSameElements(List.of(36, 38, 39, 41, 42, 43, 44), board.actions());
 
-        board = board.move(new Move((byte) 3, (byte) 3));
-        assertListHasSameElements(List.of(
-                new Move((byte) 0, (byte) 0),
-                new Move((byte) 0, (byte) 1),
-                new Move((byte) 0, (byte) 2),
-                new Move((byte) 1, (byte) 0),
-                new Move((byte) 1, (byte) 1),
-                new Move((byte) 1, (byte) 2),
-                new Move((byte) 2, (byte) 0),
-                new Move((byte) 2, (byte) 1),
-                new Move((byte) 2, (byte) 2)
-        ), board.actions());
+        board = board.move(36);
+        assertListHasSameElements(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8), board.actions());
 
-        board = board.move(new Move((byte) 1, (byte) 1));
-        assertListHasSameElements(List.of(
-                new Move((byte) 3, (byte) 5),
-                new Move((byte) 4, (byte) 3),
-                new Move((byte) 4, (byte) 5),
-                new Move((byte) 5, (byte) 3),
-                new Move((byte) 5, (byte) 4),
-                new Move((byte) 5, (byte) 5)
-        ), board.actions());
+        board = board.move(4);
+        assertListHasSameElements(List.of(38, 39, 41, 42, 43, 44), board.actions());
 
-        board = board.move(new Move((byte) 5, (byte) 5));
-        assertListHasSameElements(List.of(
-                new Move((byte) 6, (byte) 6),
-                new Move((byte) 6, (byte) 7),
-                new Move((byte) 6, (byte) 8),
-                new Move((byte) 7, (byte) 6),
-                new Move((byte) 7, (byte) 7),
-                new Move((byte) 7, (byte) 8),
-                new Move((byte) 8, (byte) 6),
-                new Move((byte) 8, (byte) 7),
-                new Move((byte) 8, (byte) 8)
-        ), board.actions());
+        board = board.move(44);
+        assertListHasSameElements(List.of(72, 73, 74, 75, 76, 77, 78, 79, 80), board.actions());
 
-        board = board.move(new Move((byte) 7, (byte) 7));
-        List<Move> expectedMoves = new ArrayList<>(allMoves);
-        expectedMoves.remove(new Move((byte) 1, (byte) 1));
-        expectedMoves.remove(new Move((byte) 7, (byte) 7));
-        expectedMoves.remove(new Move((byte) 0, (byte) 4));
-        expectedMoves.remove(new Move((byte) 1, (byte) 4));
-        for (byte i = 3; i <= 5; i++) {
-            for (byte j = 3; j <= 5; j++) {
-                expectedMoves.remove(new Move(i, j));
-            }
+        board = board.move(76);
+        HashSet<Integer> expectedMoves = new HashSet<>(allMoves);
+        expectedMoves.remove(4);
+        expectedMoves.remove(76);
+        expectedMoves.remove(10);
+        expectedMoves.remove(13);
+        for (int i = 36; i <= 44; i++) {
+            expectedMoves.remove(i);
         }
-        assertListHasSameElements(expectedMoves, board.actions());
+        assertListHasSameElements(new ArrayList<>(expectedMoves), board.actions());
     }
 
     @Test
     public void testImmutability() {
         Board board = new Board();
-        board.move(new Move((byte) 4, (byte) 4));
+        board.move(40);
         assertEquals(new Board(), board);
     }
 

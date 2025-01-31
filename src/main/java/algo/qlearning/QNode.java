@@ -1,7 +1,6 @@
 package algo.qlearning;
 
 import board.Board;
-import board.Move;
 import board.Utils;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ class QNode {
     /** The board that this node represents. */
     private final Board board;
     /** The move that transitions the parent board to this board. */
-    private final Move move;
+    private final int move;
     /** The Q-value of this board. In other words, the Q-value of the parent board and the transitioning move. */
     private double qValue = 0;
     private QNode[] children;
@@ -40,10 +39,10 @@ class QNode {
     public QNode(Board board) {
         this.parent = null;
         this.board = board;
-        this.move = null;
+        this.move = -1;
     }
 
-    private QNode(Board board, Move move, QNode parent) {
+    private QNode(Board board, int move, QNode parent) {
         this.parent = parent;
         this.board = board;
         this.move = move;
@@ -69,10 +68,10 @@ class QNode {
             return;
         }
 
-        List<Move> moves = this.board.actions();
+        List<Integer> moves = this.board.actions();
         this.children = new QNode[moves.size()];
         for (int i = 0; i < moves.size(); i++) {
-            Move move = moves.get(i);
+            int move = moves.get(i);
             Board nextBoard = this.board.move(move);
             this.children[i] = new QNode(nextBoard, move, this);
         }
@@ -157,7 +156,7 @@ class QNode {
     /**
      * Returns the best move at this node, in real game play.
      */
-    public Move bestMove() {
+    public int bestMove() {
         QNode node = this.selectBestMove();
         assert node != null;
         return node.move;
@@ -166,9 +165,9 @@ class QNode {
     /**
      * Returns the sequence of best moves.
      */
-    public List<Move> bestMoveSequence() {
+    public List<Integer> bestMoveSequence() {
         QNode node = this.selectBestMove();
-        List<Move> sequence = new ArrayList<>();
+        List<Integer> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.selectBestMove();
@@ -179,10 +178,10 @@ class QNode {
     /**
      * Selects the child node with the given move.
      */
-    public QNode child(Move move) {
+    public QNode child(int move) {
         for (QNode child: this.children) {
-            assert child.move != null;
-            if (child.move.equals(move)) {
+            assert child.move != -1;
+            if (child.move == move) {
                 return child;
             }
         }
