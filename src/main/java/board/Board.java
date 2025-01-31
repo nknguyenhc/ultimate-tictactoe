@@ -18,15 +18,15 @@ public class Board {
 
     public Board() {
         this.subBoards = new SubBoard[] {
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
+                new SubBoard((byte) 0, (byte) 0),
+                new SubBoard((byte) 0, (byte) 1),
+                new SubBoard((byte) 0, (byte) 2),
+                new SubBoard((byte) 1, (byte) 0),
+                new SubBoard((byte) 1, (byte) 1),
+                new SubBoard((byte) 1, (byte) 2),
+                new SubBoard((byte) 2, (byte) 0),
+                new SubBoard((byte) 2, (byte) 1),
+                new SubBoard((byte) 2, (byte) 2),
         };
         this.subBoardIndex = 9;
         this.turn = true;
@@ -72,7 +72,7 @@ public class Board {
         }
 
         SubBoard[] subBoards = new SubBoard[9];
-        for (int i = 0; i < 3; i++) {
+        for (byte i = 0; i < 3; i++) {
             String[] lines = strings[i].split("\n");
             if (lines.length != 3) {
                 throw new InvalidBoardStringException(String.format(
@@ -88,9 +88,9 @@ public class Board {
                             lines[j], subBoardLines[j].length));
                 }
             }
-            for (int j = 0; j < 3; j++) {
+            for (byte j = 0; j < 3; j++) {
                 subBoards[3 * i + j] = SubBoard.fromString(subBoardLines[0][j],
-                        subBoardLines[1][j], subBoardLines[2][j]);
+                        subBoardLines[1][j], subBoardLines[2][j], i, j);
             }
         }
 
@@ -130,7 +130,7 @@ public class Board {
 
         SubBoard[] subBoards = new SubBoard[9];
         for (int i = 0; i < 9; i++) {
-            subBoards[i] = SubBoard.fromCompactString(strings[i]);
+            subBoards[i] = SubBoard.fromCompactString(strings[i], (byte) (i / 3), (byte) (i % 3));
         }
 
         String[] elems = strings[9].split(",");
@@ -169,38 +169,15 @@ public class Board {
      * Obtains the list of move available for this board.
      */
     public List<Move> actions() {
-        byte rowFloor;
-        byte rowCeil;
-        byte colFloor;
-        byte colCeil;
         if (this.subBoardIndex == 9) {
-            rowFloor = 0;
-            rowCeil = 9;
-            colFloor = 0;
-            colCeil = 9;
-        } else {
-            rowFloor = (byte) (3 * (this.subBoardIndex / 3));
-            rowCeil = (byte) (rowFloor + 3);
-            colFloor = (byte) (3 * (this.subBoardIndex % 3));
-            colCeil = (byte) (colFloor + 3);
-        }
-
-        ArrayList<Move> actions = new ArrayList<>();
-        for (byte row = rowFloor; row < rowCeil; row++) {
-            for (byte col = colFloor; col < colCeil; col++) {
-                int boardIndex = 3 * (row / 3) + col / 3;
-                if (this.subBoards[boardIndex].getWinner() != Utils.Side.U) {
-                    continue;
-                }
-
-                int testRow = row % 3;
-                int testCol = col % 3;
-                if (this.subBoards[boardIndex].getOccupation(testRow, testCol) == Utils.Side.U) {
-                    actions.add(new Move(row, col));
-                }
+            List<Move> actions = new ArrayList<>();
+            for (int boardIndex = 0; boardIndex < 9; boardIndex++) {
+                actions.addAll(this.subBoards[boardIndex].getActions());
             }
+            return actions;
+        } else {
+            return this.subBoards[this.subBoardIndex].getActions();
         }
-        return actions;
     }
 
     /**

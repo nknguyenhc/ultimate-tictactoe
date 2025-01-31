@@ -1,5 +1,8 @@
 package board;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a 3x3 sub-board within an ultimate tictactoe board.
  */
@@ -7,19 +10,31 @@ public class SubBoard {
     /** Represents the occupation across the boards, using the first 9 bits only */
     private final short Xboard;
     private final short Oboard;
+    /** Row index in the bigger board that this sub-board is at. */
+    private final byte row;
+    /** Col index in the bigger board that this sub-board is at. */
+    private final byte col;
     /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
-    private Utils.Side winner = Utils.Side.U;
-    /** Represents the lines along which a player can win */
+    private final Utils.Side winner;
+    /** Actions */
+    private final List<Move> actions;
 
-    public SubBoard() {
+    public SubBoard(byte row, byte col) {
         this.Xboard = 0;
         this.Oboard = 0;
+        this.row = row;
+        this.col = col;
+        this.winner = Utils.Side.U;
+        this.actions = this.determineActions();
     }
 
-    private SubBoard(short Xboard, short Oboard) {
+    private SubBoard(short Xboard, short Oboard, byte row, byte col) {
         this.Xboard = Xboard;
         this.Oboard = Oboard;
-        this.determineWinner();
+        this.row = row;
+        this.col = col;
+        this.winner = this.determineWinner();
+        this.actions = this.determineActions();
     }
 
     /**
@@ -27,7 +42,8 @@ public class SubBoard {
      * Each string corresponds to a line, for eg: {@code "X O -"}.
      * @throws InvalidBoardStringException If the given board string is invalid.
      */
-    public static SubBoard fromString(String line1, String line2, String line3) throws InvalidBoardStringException {
+    public static SubBoard fromString(String line1, String line2, String line3,
+                                      byte row, byte col) throws InvalidBoardStringException {
         int Xboard = SubBoard.parseLine(line1, true);
         int Oboard = SubBoard.parseLine(line1, false);
 
@@ -37,7 +53,7 @@ public class SubBoard {
         Xboard += SubBoard.parseLine(line3, true) << 6;
         Oboard += SubBoard.parseLine(line3, false) << 6;
 
-        return new SubBoard((short) Xboard, (short) Oboard);
+        return new SubBoard((short) Xboard, (short) Oboard, row, col);
     }
 
     /**
@@ -77,7 +93,8 @@ public class SubBoard {
      * and {@code o} is the decimal number for {@code Oboard}.
      * @throws InvalidBoardStringException If the string given is invalid.
      */
-    public static SubBoard fromCompactString(String compactString) throws InvalidBoardStringException {
+    public static SubBoard fromCompactString(String compactString,
+                                             byte row, byte col) throws InvalidBoardStringException {
         String[] numbers = compactString.split(",");
         if (numbers.length != 2) {
             throw new InvalidBoardStringException(String.format("Invalid board compact string: %s", compactString));
@@ -93,7 +110,7 @@ public class SubBoard {
                     "Compact string contains an invalid number: %s", compactString));
         }
 
-        return new SubBoard(Xboard, Oboard);
+        return new SubBoard(Xboard, Oboard, row, col);
     }
 
     /**
@@ -112,7 +129,7 @@ public class SubBoard {
         } else {
             newOboard |= 1 << (3 * row + col);
         }
-        return new SubBoard(newXboard, newOboard);
+        return new SubBoard(newXboard, newOboard, this.row, this.col);
     }
 
     /**
@@ -120,15 +137,15 @@ public class SubBoard {
      * The result is saved, and returned when needed.
      * To be called after making each move, or upon a new board.
      */
-    private void determineWinner() {
+    private Utils.Side determineWinner() {
         if (this.isWinner(this.Xboard)) {
-            this.winner = Utils.Side.X;
+            return Utils.Side.X;
         } else if (this.isWinner(this.Oboard)) {
-            this.winner = Utils.Side.O;
+            return Utils.Side.O;
         } else if ((this.Xboard | this.Oboard) == Utils.filled) {
-            this.winner = Utils.Side.D;
+            return Utils.Side.D;
         } else {
-            this.winner = Utils.Side.U;
+            return Utils.Side.U;
         }
     }
 
@@ -153,18 +170,29 @@ public class SubBoard {
     }
 
     /**
-     * Returns the occupation of this board.
-     * @param row The row index.
-     * @param col The column index.
+     * Pre-calculates the actions available on this board.
+     * To be used only in constructor.
      */
-    public Utils.Side getOccupation(int row, int col) {
-        if ((this.Xboard & (1 << (3 * row + col))) > 0) {
-            return Utils.Side.X;
-        } else if ((this.Oboard & (1 << (3 * row + col))) > 0) {
-            return Utils.Side.O;
-        } else {
-            return Utils.Side.U;
+    private List<Move> determineActions() {
+        if (this.winner != Utils.Side.U) {
+            return List.of();
         }
+        int occupationBoard = this.Xboard | this.Oboard;
+        List<Move> actions = new ArrayList<>();
+        for (byte row = 0; row < 3; row++) {
+            for (byte col = 0; col < 3; col++) {
+                if (((occupationBoard >> (3 * row + col)) & 1) == 0) {
+                    actions.add(new Move(
+                            (byte) (this.row * 3 + row),
+                            (byte) (this.col * 3 + col)));
+                }
+            }
+        }
+        return actions;
+    }
+
+    public List<Move> getActions() {
+        return this.actions;
     }
 
     /**

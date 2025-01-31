@@ -4,31 +4,53 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import java.util.HashSet;
+import java.util.List;
+
 public class SubBoardTest {
     @Test
     public void testWinner() {
-        SubBoard board = new SubBoard();
+        SubBoard board = new SubBoard((byte) 0, (byte) 0);
         board = board.move(0, 0, true);
         board = board.move(1, 1, true);
         assertEquals(Utils.Side.U, board.getWinner());
+        assertEquals(new HashSet<>(List.of(
+                new Move((byte) 0, (byte) 1),
+                new Move((byte) 0, (byte) 2),
+                new Move((byte) 1, (byte) 0),
+                new Move((byte) 1, (byte) 2),
+                new Move((byte) 2, (byte) 0),
+                new Move((byte) 2, (byte) 1),
+                new Move((byte) 2, (byte) 2)
+        )), new HashSet<>(board.getActions()));
 
         board = board.move(2, 2, true);
         assertEquals(Utils.Side.X, board.getWinner());
+        assertEquals(List.of(), board.getActions());
 
-        board = new SubBoard();
+        board = new SubBoard((byte) 0, (byte) 0);
         board = board.move(0, 0, true);
         board = board.move(1, 1, true);
         board = board.move(2, 2, false);
         assertEquals(Utils.Side.U, board.getWinner());
+        assertEquals(new HashSet<>(List.of(
+                new Move((byte) 0, (byte) 1),
+                new Move((byte) 0, (byte) 2),
+                new Move((byte) 1, (byte) 0),
+                new Move((byte) 1, (byte) 2),
+                new Move((byte) 2, (byte) 0),
+                new Move((byte) 2, (byte) 1)
+        )), new HashSet<>(board.getActions()));
 
         board = board.move(1, 2, false);
         board = board.move(0, 2, false);
         assertEquals(Utils.Side.O, board.getWinner());
+        assertEquals(List.of(), board.getActions());
     }
 
     @Test
     public void testStringRepresentation() {
-        SubBoard board = new SubBoard();
+        SubBoard board = new SubBoard((byte) 0, (byte) 0);
         board = board.move(0, 1, true);
         board = board.move(2, 0, false);
         assertEquals("- X -\n- - -\nO - -", board.toString());
@@ -36,17 +58,17 @@ public class SubBoardTest {
 
     @Test
     public void testImmutability() {
-        SubBoard board = new SubBoard();
+        SubBoard board = new SubBoard((byte) 1, (byte) 1);
         SubBoard newBoard = board.move(1, 0, true);
         newBoard = newBoard.move(1, 1, true);
         newBoard.move(1, 2, true);
-        assertEquals(board, new SubBoard());
+        assertEquals(board, new SubBoard((byte) 1, (byte) 1));
         assertEquals(Utils.Side.U, board.getWinner());
     }
 
     @Test
     public void testDraw() {
-        SubBoard board = new SubBoard();
+        SubBoard board = new SubBoard((byte) 0, (byte) 0);
         board = board.move(0, 0, true);
         board = board.move(0, 1, false);
         board = board.move(0, 2, true);
@@ -56,14 +78,16 @@ public class SubBoardTest {
         board = board.move(2, 0, false);
         board = board.move(2, 1, true);
         assertEquals(Utils.Side.U, board.getWinner());
+        assertEquals(List.of(new Move((byte) 2, (byte) 2)), board.getActions());
         board = board.move(2, 2, false);
         assertEquals(Utils.Side.D, board.getWinner());
+        assertEquals(List.of(), board.getActions());
     }
 
     @Test
     public void testFromString() throws Exception {
-        SubBoard board = SubBoard.fromString("X - -", "- O -", "O - X");
-        SubBoard expectedBoard = new SubBoard();
+        SubBoard board = SubBoard.fromString("X - -", "- O -", "O - X", (byte) 1, (byte) 0);
+        SubBoard expectedBoard = new SubBoard((byte) 1, (byte) 0);
         expectedBoard = expectedBoard.move(0, 0, true);
         expectedBoard = expectedBoard.move(1, 1, false);
         expectedBoard = expectedBoard.move(2, 0, false);
@@ -73,8 +97,8 @@ public class SubBoardTest {
 
     @Test
     public void testFromCompactString() throws Exception {
-        SubBoard board = SubBoard.fromCompactString("257,80");
-        SubBoard expectedBoard = new SubBoard();
+        SubBoard board = SubBoard.fromCompactString("257,80", (byte) 0, (byte) 1);
+        SubBoard expectedBoard = new SubBoard((byte) 0, (byte) 1);
         expectedBoard = expectedBoard.move(0, 0, true);
         expectedBoard = expectedBoard.move(1, 1, false);
         expectedBoard = expectedBoard.move(2, 0, false);
@@ -85,7 +109,7 @@ public class SubBoardTest {
     @Test
     public void testToCompactString() throws Exception {
         String string = "257,80";
-        SubBoard subBoard = SubBoard.fromCompactString(string);
+        SubBoard subBoard = SubBoard.fromCompactString(string, (byte) 0, (byte) 0);
         assertEquals(string, subBoard.toCompactString());
     }
 }
