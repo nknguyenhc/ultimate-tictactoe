@@ -18,15 +18,15 @@ public class Board {
 
     public Board() {
         this.subBoards = new SubBoard[] {
-                new SubBoard((byte) 0, (byte) 0),
-                new SubBoard((byte) 0, (byte) 1),
-                new SubBoard((byte) 0, (byte) 2),
-                new SubBoard((byte) 1, (byte) 0),
-                new SubBoard((byte) 1, (byte) 1),
-                new SubBoard((byte) 1, (byte) 2),
-                new SubBoard((byte) 2, (byte) 0),
-                new SubBoard((byte) 2, (byte) 1),
-                new SubBoard((byte) 2, (byte) 2),
+                new SubBoard((byte) 0),
+                new SubBoard((byte) 1),
+                new SubBoard((byte) 2),
+                new SubBoard((byte) 3),
+                new SubBoard((byte) 4),
+                new SubBoard((byte) 5),
+                new SubBoard((byte) 6),
+                new SubBoard((byte) 7),
+                new SubBoard((byte) 8),
         };
         this.subBoardIndex = 9;
         this.turn = true;
@@ -90,7 +90,7 @@ public class Board {
             }
             for (byte j = 0; j < 3; j++) {
                 subBoards[3 * i + j] = SubBoard.fromString(subBoardLines[0][j],
-                        subBoardLines[1][j], subBoardLines[2][j], i, j);
+                        subBoardLines[1][j], subBoardLines[2][j], (byte) (3 * i + j));
             }
         }
 
@@ -129,8 +129,8 @@ public class Board {
         }
 
         SubBoard[] subBoards = new SubBoard[9];
-        for (int i = 0; i < 9; i++) {
-            subBoards[i] = SubBoard.fromCompactString(strings[i], (byte) (i / 3), (byte) (i % 3));
+        for (byte i = 0; i < 9; i++) {
+            subBoards[i] = SubBoard.fromCompactString(strings[i], i);
         }
 
         String[] elems = strings[9].split(",");
