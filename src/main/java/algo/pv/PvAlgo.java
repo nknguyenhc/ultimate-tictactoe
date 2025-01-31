@@ -10,9 +10,9 @@ public class PvAlgo implements BaseAlgo {
     private PvNode root;
 
     @Override
-    public int nextMove(Board board) {
+    public byte nextMove(Board board) {
         this.setupRoot(board);
-        int move = -1;
+        byte move = -1;
         this.root.evaluate();
         for (int i = 1; i <= this.maxDepth; i++) {
             System.out.printf("Searching depth %d\n", i);
@@ -22,9 +22,9 @@ public class PvAlgo implements BaseAlgo {
     }
 
     @Override
-    public int nextMoveWithTime(Board board, int time) {
+    public byte nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
-        int move;
+        byte move;
         long endTime = time + System.currentTimeMillis();
         this.root.evaluate();
         int i = 1;
@@ -65,7 +65,7 @@ public class PvAlgo implements BaseAlgo {
     }
 
     @Override
-    public List<Integer> getMovePredictions() {
+    public List<Byte> getMovePredictions() {
         assert this.root != null;
         return this.root.bestMoveSequence();
     }

@@ -13,7 +13,7 @@ class QNode {
     /** The board that this node represents. */
     private final Board board;
     /** The move that transitions the parent board to this board. */
-    private final int move;
+    private final byte move;
     /** The Q-value of this board. In other words, the Q-value of the parent board and the transitioning move. */
     private double qValue = 0;
     private QNode[] children;
@@ -42,7 +42,7 @@ class QNode {
         this.move = -1;
     }
 
-    private QNode(Board board, int move, QNode parent) {
+    private QNode(Board board, byte move, QNode parent) {
         this.parent = parent;
         this.board = board;
         this.move = move;
@@ -68,10 +68,10 @@ class QNode {
             return;
         }
 
-        List<Integer> moves = this.board.actions();
+        List<Byte> moves = this.board.actions();
         this.children = new QNode[moves.size()];
         for (int i = 0; i < moves.size(); i++) {
-            int move = moves.get(i);
+            byte move = moves.get(i);
             Board nextBoard = this.board.move(move);
             this.children[i] = new QNode(nextBoard, move, this);
         }
@@ -156,7 +156,7 @@ class QNode {
     /**
      * Returns the best move at this node, in real game play.
      */
-    public int bestMove() {
+    public byte bestMove() {
         QNode node = this.selectBestMove();
         assert node != null;
         return node.move;
@@ -165,9 +165,9 @@ class QNode {
     /**
      * Returns the sequence of best moves.
      */
-    public List<Integer> bestMoveSequence() {
+    public List<Byte> bestMoveSequence() {
         QNode node = this.selectBestMove();
-        List<Integer> sequence = new ArrayList<>();
+        List<Byte> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.selectBestMove();

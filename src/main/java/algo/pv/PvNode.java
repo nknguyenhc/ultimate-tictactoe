@@ -12,7 +12,7 @@ class PvNode implements Comparable<PvNode> {
     /** The parent node of this node. */
     private PvNode parent = null;
     /** The move that transitions from the parent node to this node. */
-    private final int move;
+    private final byte move;
     /** The board that this node represents. */
     private final Board board;
 
@@ -56,7 +56,7 @@ class PvNode implements Comparable<PvNode> {
      * @param move The move that transitions from the parent node to this node.
      * @param board The board that this node represents.
      */
-    private PvNode(PvNode parent, int move, Board board) {
+    private PvNode(PvNode parent, byte move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -124,10 +124,10 @@ class PvNode implements Comparable<PvNode> {
      * and assuming that the children array is not instantiated.
      */
     private void createChildren() {
-        List<Integer> actions = this.board.actions();
+        List<Byte> actions = this.board.actions();
         this.children = new PvNode[actions.size()];
         for (int i = 0; i < actions.size(); i++) {
-            int action = actions.get(i);
+            byte action = actions.get(i);
             this.children[i] = new PvNode(this, action, this.board.move(action));
         }
     }
@@ -139,7 +139,7 @@ class PvNode implements Comparable<PvNode> {
     private double simulate() {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
-            List<Integer> actions = board.actions();
+            List<Byte> actions = board.actions();
             int index = PvNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
@@ -338,7 +338,7 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Entry point of the search routine.
      */
-    public int search(int depth) {
+    public byte search(int depth) {
         PvNode.isTrackingTime = false;
         try {
             this.search(depth, -PvNode.WIN, PvNode.WIN, NodeType.ROOT);
@@ -351,7 +351,7 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Entry point of the search routine, with time constraint.
      */
-    public int search(int depth, long endTime) throws TimeoutException {
+    public byte search(int depth, long endTime) throws TimeoutException {
         PvNode.endTime = endTime;
         PvNode.isTrackingTime = true;
         this.search(depth, -PvNode.WIN, PvNode.WIN, NodeType.ROOT);
@@ -361,16 +361,16 @@ class PvNode implements Comparable<PvNode> {
     /**
      * Returns the best move. In the case of timeout.
      */
-    public int getBestMove() {
+    public byte getBestMove() {
         return this.bestChild.move;
     }
 
     /**
      * Returns the optimal sequence starting from this board.
      */
-    public List<Integer> bestMoveSequence() {
+    public List<Byte> bestMoveSequence() {
         PvNode node = this.bestChild;
-        List<Integer> sequence = new ArrayList<>();
+        List<Byte> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.bestChild;

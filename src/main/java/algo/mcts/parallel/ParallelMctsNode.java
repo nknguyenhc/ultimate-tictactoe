@@ -14,12 +14,12 @@ public class ParallelMctsNode {
     private int U = 0;
 
     private ParallelMctsNode parent;
-    private final int move;
+    private final byte move;
     private final Board board;
 
     private ParallelMctsNode[] children = null;
 
-    private ParallelMctsNode(ParallelMctsNode parent, int move, Board board) {
+    private ParallelMctsNode(ParallelMctsNode parent, byte move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -69,11 +69,11 @@ public class ParallelMctsNode {
             return this.children.length;
         }
 
-        List<Integer> actions = this.board.actions();
+        List<Byte> actions = this.board.actions();
         int childrenCount = actions.size();
         this.children = new ParallelMctsNode[childrenCount];
         for (int i = 0; i < childrenCount; i++) {
-            int move = actions.get(i);
+            byte move = actions.get(i);
             this.children[i] = new ParallelMctsNode(this, move, this.board.move(move));
         }
         return childrenCount;
@@ -82,7 +82,7 @@ public class ParallelMctsNode {
     private int simulate() {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
-            List<Integer> actions = board.actions();
+            List<Byte> actions = board.actions();
             int index = ParallelMctsNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
@@ -144,13 +144,13 @@ public class ParallelMctsNode {
         return bestChild;
     }
 
-    public int getBestMoveByUtility() {
+    public byte getBestMoveByUtility() {
         ParallelMctsNode bestChild = this.getBestUtility();
         assert bestChild != null;
         return bestChild.move;
     }
 
-    public int getBestMoveByRollout() {
+    public byte getBestMoveByRollout() {
         ParallelMctsNode bestChild = this.getBestRollout();
         assert bestChild != null;
         return bestChild.move;

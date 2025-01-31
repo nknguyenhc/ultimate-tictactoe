@@ -79,7 +79,7 @@ public class AlgoFight {
 
     public void algoTurn(BaseAlgo algo, boolean includeTrace) {
         this.announceTurn(algo);
-        int move = algo.nextMove(this.game);
+        byte move = algo.nextMove(this.game);
         if (includeTrace) {
             System.out.println(algo.trace());
         }
@@ -91,7 +91,7 @@ public class AlgoFight {
         if (this.allowPondering) {
             ponderingAlgo.ponder();
         }
-        int move = algo.nextMoveWithTime(this.game, time);
+        byte move = algo.nextMoveWithTime(this.game, time);
         if (this.allowPondering) {
             ponderingAlgo.stopPondering();
         }
@@ -105,7 +105,7 @@ public class AlgoFight {
         System.out.printf("Turn: %s%n", this.getAlgoName(algo));
     }
 
-    private void processMove(BaseAlgo algo, int move) {
+    private void processMove(BaseAlgo algo, byte move) {
         this.game = this.game.move(move);
         System.out.printf("Algo %s chose: %s%n", this.getAlgoName(algo), move);
     }

@@ -37,7 +37,7 @@ public class CodinGame {
             this.algo.stopPondering();
             int timeTaken = (int) (System.currentTimeMillis() - startTime);
 
-            int action;
+            byte action;
             if (this.isFirstTurn) {
                 if (opponentRow != -1) {
                     this.board = this.board.move(this.processAction(opponentRow, opponentCol));
@@ -53,10 +53,10 @@ public class CodinGame {
         }
     }
 
-    private int processAction(int row, int col) {
+    private byte processAction(int row, int col) {
         int boardIndex = 3 * (row / 3) + (col / 3);
         int index = 3 * (row % 3) + (col % 3);
-        return 9 * boardIndex + index;
+        return (byte) (9 * boardIndex + index);
     }
 
     private String toSparString(int action) {

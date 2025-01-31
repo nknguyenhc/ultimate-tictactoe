@@ -168,9 +168,9 @@ public class Board {
     /**
      * Obtains the list of move available for this board.
      */
-    public List<Integer> actions() {
+    public List<Byte> actions() {
         if (this.subBoardIndex == 9) {
-            List<Integer> actions = new ArrayList<>();
+            List<Byte> actions = new ArrayList<>();
             for (int boardIndex = 0; boardIndex < 9; boardIndex++) {
                 actions.addAll(this.subBoards[boardIndex].getActions());
             }
@@ -184,7 +184,7 @@ public class Board {
      * Makes a move, returning a new board.
      * @param action The move to apply.
      */
-    public Board move(int action) {
+    public Board move(byte action) {
         int boardIndex;
         if (this.subBoardIndex == 9) {
             boardIndex = action / 9;
@@ -192,7 +192,7 @@ public class Board {
             boardIndex = this.subBoardIndex;
         }
         SubBoard[] newSubBoards = this.subBoards.clone();
-        newSubBoards[boardIndex] = newSubBoards[boardIndex].move(action % 9, this.turn);
+        newSubBoards[boardIndex] = newSubBoards[boardIndex].move((byte) (action % 9), this.turn);
         byte nextSubBoardIndex = (byte) (action % 9);
         if (newSubBoards[nextSubBoardIndex].getWinner() != Utils.Side.U) {
             nextSubBoardIndex = 9;

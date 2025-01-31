@@ -152,7 +152,7 @@ public class WebManager {
     }
 
     private String humanTurn(String input) {
-        int move;
+        byte move;
         try {
             move = this.parseMove(input);
         } catch (InvalidMoveStringException e) {
@@ -167,7 +167,7 @@ public class WebManager {
         return this.boardInfo();
     }
 
-    private int parseMove(String input) throws InvalidMoveStringException {
+    private byte parseMove(String input) throws InvalidMoveStringException {
         // Bytecoder does not support String::split
         if (input.length() != 4 || input.charAt(1) != ',' || input.charAt(2) != ' ') {
             throw new InvalidMoveStringException();
@@ -184,7 +184,7 @@ public class WebManager {
 
         int boardIndex = 3 * (row / 3) + (col / 3);
         int index = 3 * (row % 3) + (col % 3);
-        int move = 9 * boardIndex + index;
+        byte move = (byte) (9 * boardIndex + index);
         if (!this.board.actions().contains(move)) {
             throw new InvalidMoveStringException();
         }
@@ -192,7 +192,7 @@ public class WebManager {
     }
 
     private String algoTurn() {
-        int move = this.algo.nextMoveWithTime(this.board, this.timeControl * 1000);
+        byte move = this.algo.nextMoveWithTime(this.board, this.timeControl * 1000);
         this.board = this.board.move(move);
         if (this.board.winner() != Utils.Side.U) {
             return this.gameJudge();

@@ -15,7 +15,7 @@ public class SubBoard {
     /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
     private final Utils.Side winner;
     /** Actions */
-    private final List<Integer> actions;
+    private final List<Byte> actions;
 
     public SubBoard(byte index) {
         this.Xboard = 0;
@@ -116,7 +116,7 @@ public class SubBoard {
      * @param side The side to move, {@code true} for X, {@code false} for O.
      * @return The new board.
      */
-    public SubBoard move(int i, boolean side) {
+    public SubBoard move(byte i, boolean side) {
         short newXboard = this.Xboard;
         short newOboard = this.Oboard;
         if (side) {
@@ -168,21 +168,21 @@ public class SubBoard {
      * Pre-calculates the actions available on this board.
      * To be used only in constructor.
      */
-    private List<Integer> determineActions() {
+    private List<Byte> determineActions() {
         if (this.winner != Utils.Side.U) {
             return List.of();
         }
         int occupationBoard = this.Xboard | this.Oboard;
-        List<Integer> actions = new ArrayList<>();
+        List<Byte> actions = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             if (((occupationBoard >> i) & 1) == 0) {
-                actions.add(this.index * 9 + i);
+                actions.add((byte) (this.index * 9 + i));
             }
         }
         return actions;
     }
 
-    public List<Integer> getActions() {
+    public List<Byte> getActions() {
         return this.actions;
     }
 

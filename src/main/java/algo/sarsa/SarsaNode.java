@@ -11,7 +11,7 @@ class SarsaNode {
     /** The board that this node encapsulates. */
     private final Board board;
     /** The node that transitions the parent node to this node. */
-    private final int move;
+    private final byte move;
     private SarsaNode parent;
     /** The q-value of this node. */
     private double qValue = 0;
@@ -27,7 +27,7 @@ class SarsaNode {
     /** Utility value for a win. */
     private static final double WIN = 100;
 
-    private SarsaNode(SarsaNode parent, int move, Board board) {
+    private SarsaNode(SarsaNode parent, byte move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -64,10 +64,10 @@ class SarsaNode {
             return;
         }
 
-        List<Integer> moves = this.board.actions();
+        List<Byte> moves = this.board.actions();
         this.children = new SarsaNode[moves.size()];
         for (int i = 0; i < moves.size(); i++) {
-            int move = moves.get(i);
+            byte move = moves.get(i);
             Board nextBoard = this.board.move(move);
             this.children[i] = new SarsaNode(this, move, nextBoard);
         }
@@ -138,7 +138,7 @@ class SarsaNode {
     /**
      * Returns the best move at this node, in a real game play.
      */
-    public int bestMove() {
+    public byte bestMove() {
         SarsaNode node = this.selectBestNode();
         assert node != null;
         return node.move;
@@ -147,9 +147,9 @@ class SarsaNode {
     /**
      * Returns the sequence of best move starting from this board.
      */
-    public List<Integer> bestMoveSequence() {
+    public List<Byte> bestMoveSequence() {
         SarsaNode node = this.selectBestNode();
-        List<Integer> sequence = new ArrayList<>();
+        List<Byte> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.selectBestNode();

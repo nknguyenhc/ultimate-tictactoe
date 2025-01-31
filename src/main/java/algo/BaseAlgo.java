@@ -10,7 +10,7 @@ public interface BaseAlgo {
      * Assume that the given board is not a terminal board.
      * @param board The board to return the move on.
      */
-    int nextMove(Board board);
+    byte nextMove(Board board);
 
     /**
      * Returns the analysis of current board,
@@ -24,14 +24,14 @@ public interface BaseAlgo {
      * See {@code nextMove}.
      * @param time The number of milliseconds allowed.
      */
-    int nextMoveWithTime(Board board, int time);
+    byte nextMoveWithTime(Board board, int time);
 
     /**
      * Returns the prediction on the next moves from this move,
      * based on the last search.
      * Includes the next move to be made by this algo.
      */
-    List<Integer> getMovePredictions();
+    List<Byte> getMovePredictions();
 
     /**
      * Thinks while the opponent is making a move.

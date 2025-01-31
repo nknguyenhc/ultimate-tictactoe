@@ -98,7 +98,7 @@ public class Manager {
         this.printBoardIndexToMove();
         System.out.print("Please indicate your move, in the format R, C : ");
         String line = this.scanner.nextLine();
-        int move;
+        byte move;
         while (true) {
             try {
                 move = this.parseMove(line);
@@ -127,7 +127,7 @@ public class Manager {
         System.out.printf("Board to move: (%d, %d)%n", row, col);
     }
 
-    private int parseMove(String moveString) throws InvalidMoveStringException {
+    private byte parseMove(String moveString) throws InvalidMoveStringException {
         String[] numbers = moveString.split(", ");
         if (numbers.length != 2) {
             throw new InvalidMoveStringException();
@@ -144,7 +144,7 @@ public class Manager {
 
         int boardIndex = 3 * (row / 3) + (col / 3);
         int index = 3 * (row % 3) + (col % 3);
-        int move = boardIndex * 9 + index;
+        byte move = (byte) (boardIndex * 9 + index);
         if (!this.board.actions().contains(move)) {
             throw new InvalidMoveStringException();
         }
@@ -152,7 +152,7 @@ public class Manager {
     }
 
     private void algoTurn() {
-        int move;
+        byte move;
         if (this.timeControl == null) {
             move = this.algo.nextMove(this.board);
         } else {

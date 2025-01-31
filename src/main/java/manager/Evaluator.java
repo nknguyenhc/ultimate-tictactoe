@@ -66,7 +66,7 @@ public class Evaluator {
             if (moveCount % 10 == 0) {
                 System.out.print(moveCount + " ");
             }
-            int move;
+            byte move;
             if (baseGoFirst ^ (moveCount % 2 == 1)) {
                 move = baseAlgo.nextMoveWithTime(board, timePerStep);
             } else {

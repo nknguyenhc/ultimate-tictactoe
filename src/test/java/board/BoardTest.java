@@ -17,43 +17,63 @@ public class BoardTest {
     }
     @Test
     public void test() {
-        List<Integer> allMoves = new ArrayList<>();
-        for (int i = 0; i < 81; i++) {
+        List<Byte> allMoves = new ArrayList<>();
+        for (byte i = 0; i < 81; i++) {
             allMoves.add(i);
         }
 
         Board board = new Board();
         assertListHasSameElements(allMoves, board.actions());
 
-        board = board.move(40);
-        assertListHasSameElements(List.of(36, 37, 38, 39, 41, 42, 43, 44), board.actions());
+        board = board.move((byte) 40);
+        assertListHasSameElements(List.of(
+                (byte) 36, (byte) 37, (byte) 38,
+                (byte) 39, (byte) 41, (byte) 42,
+                (byte) 43, (byte) 44), board.actions());
 
-        board = board.move(37);
-        assertListHasSameElements(List.of(9, 10, 11, 12, 13, 14, 15, 16, 17), board.actions());
+        board = board.move((byte) 37);
+        assertListHasSameElements(List.of(
+                (byte) 9, (byte) 10, (byte) 11,
+                (byte) 12, (byte) 13, (byte) 14,
+                (byte) 15, (byte) 16, (byte) 17), board.actions());
 
-        board = board.move(10);
-        assertListHasSameElements(List.of(9, 11, 12, 13, 14, 15, 16, 17), board.actions());
+        board = board.move((byte) 10);
+        assertListHasSameElements(List.of(
+                (byte) 9, (byte) 11, (byte) 12,
+                (byte) 13, (byte) 14, (byte) 15,
+                (byte) 16, (byte) 17), board.actions());
 
-        board = board.move(13);
-        assertListHasSameElements(List.of(36, 38, 39, 41, 42, 43, 44), board.actions());
+        board = board.move((byte) 13);
+        assertListHasSameElements(List.of(
+                (byte) 36, (byte) 38, (byte) 39,
+                (byte) 41, (byte) 42, (byte) 43,
+                (byte) 44), board.actions());
 
-        board = board.move(36);
-        assertListHasSameElements(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8), board.actions());
+        board = board.move((byte) 36);
+        assertListHasSameElements(List.of(
+                (byte) 0, (byte) 1, (byte) 2,
+                (byte) 3, (byte) 4, (byte) 5,
+                (byte) 6, (byte) 7, (byte) 8), board.actions());
 
-        board = board.move(4);
-        assertListHasSameElements(List.of(38, 39, 41, 42, 43, 44), board.actions());
+        board = board.move((byte) 4);
+        assertListHasSameElements(List.of(
+                (byte) 38, (byte) 39, (byte) 41,
+                (byte) 42, (byte) 43, (byte) 44), board.actions());
 
-        board = board.move(44);
-        assertListHasSameElements(List.of(72, 73, 74, 75, 76, 77, 78, 79, 80), board.actions());
+        board = board.move((byte) 44);
+        assertListHasSameElements(List.of(
+                (byte) 72, (byte) 73, (byte) 74,
+                (byte) 75, (byte) 76, (byte) 77,
+                (byte) 78, (byte) 79, (byte) 80), board.actions());
 
-        board = board.move(76);
-        HashSet<Integer> expectedMoves = new HashSet<>(allMoves);
-        expectedMoves.remove(4);
-        expectedMoves.remove(76);
-        expectedMoves.remove(10);
-        expectedMoves.remove(13);
+        board = board.move((byte) 76);
+        HashSet<Byte> expectedMoves = new HashSet<>(allMoves);
+        expectedMoves.remove((byte) 4);
+        expectedMoves.remove((byte) 76);
+        expectedMoves.remove((byte) 10);
+        expectedMoves.remove((byte) 13);
         for (int i = 36; i <= 44; i++) {
-            expectedMoves.remove(i);
+            expectedMoves.remove((byte) i);
         }
         assertListHasSameElements(new ArrayList<>(expectedMoves), board.actions());
     }
@@ -61,7 +81,7 @@ public class BoardTest {
     @Test
     public void testImmutability() {
         Board board = new Board();
-        board.move(40);
+        board.move((byte) 40);
         assertEquals(new Board(), board);
     }
 

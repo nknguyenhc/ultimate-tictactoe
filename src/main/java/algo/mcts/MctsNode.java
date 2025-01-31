@@ -18,12 +18,12 @@ class MctsNode {
     /** The parent node of this node. Only {@code null} if this is root node. */
     private MctsNode parent;
     /** The move that led to this state. */
-    private final int move;
+    private final byte move;
     private final Board board;
     /** {@code null} if not expanded, an array otherwise. */
     private MctsNode[] children = null;
 
-    public MctsNode(MctsNode parent, int move, Board board, double C) {
+    public MctsNode(MctsNode parent, byte move, Board board, double C) {
         this.parent = parent;
         this.move = move;
         this.board = board;
@@ -76,7 +76,7 @@ class MctsNode {
             return this;
         }
 
-        List<Integer> actions = this.board.actions();
+        List<Byte> actions = this.board.actions();
         this.children = new MctsNode[actions.size()];
         for (int i = 0; i < actions.size(); i++) {
             this.children[i] = new MctsNode(this, actions.get(i), board.move(actions.get(i)), this.C);
@@ -92,7 +92,7 @@ class MctsNode {
     public double simulate() {
         Board board = this.board;
         while (board.winner() == Utils.Side.U) {
-            List<Integer> actions = board.actions();
+            List<Byte> actions = board.actions();
             int index = MctsNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
@@ -140,7 +140,7 @@ class MctsNode {
      * Returns the optimal move at this state, based on the exploration.
      * To be called in root node only. Assume that root node is not terminal.
      */
-    public int getBestMove() {
+    public byte getBestMove() {
         MctsNode bestChild = this.getBestChild();
         assert bestChild != null;
         return bestChild.move;
@@ -150,9 +150,9 @@ class MctsNode {
      * Returns the best move sequence from this board,
      * including the move for the current board.
      */
-    public List<Integer> bestMoveSequence() {
+    public List<Byte> bestMoveSequence() {
         MctsNode node = this.getBestChild();
-        List<Integer> sequence = new ArrayList<>();
+        List<Byte> sequence = new ArrayList<>();
         while (node != null) {
             sequence.add(node.move);
             node = node.getBestChild();

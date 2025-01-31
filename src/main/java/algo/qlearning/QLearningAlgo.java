@@ -9,14 +9,14 @@ public class QLearningAlgo implements BaseAlgo {
     /** Root node of the last call to {@code nextMove}. */
     private QNode root;
     /** The move that the agent last chose. */
-    private int move;
+    private byte move;
     /** Maximum probability of making a random move. */
     private final double p = 0.1;
     /** Number of training epochs, also used for calculating probability of making a random move. */
     private final int epochs = 80000;
 
     @Override
-    public int nextMove(Board board) {
+    public byte nextMove(Board board) {
         this.setupRoot(board);
         for (int i = 0; i < this.epochs; i++) {
             if (i % 10000 == 0) {
@@ -59,13 +59,13 @@ public class QLearningAlgo implements BaseAlgo {
     }
 
     @Override
-    public List<Integer> getMovePredictions() {
+    public List<Byte> getMovePredictions() {
         assert this.root != null;
         return this.root.bestMoveSequence();
     }
 
     @Override
-    public int nextMoveWithTime(Board board, int time) {
+    public byte nextMoveWithTime(Board board, int time) {
         this.setupRoot(board);
         long startTime = System.currentTimeMillis();
         long endTime = startTime + time;
