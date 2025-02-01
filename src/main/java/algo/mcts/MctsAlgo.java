@@ -14,26 +14,18 @@ public class MctsAlgo implements BaseAlgo {
     private boolean hasPonderedAfterSearch = false;
     private boolean isPondering = false;
     private Thread ponderingThread = null;
-    private final double C;
 
     public MctsAlgo() {
         this.continueLastSearch = false;
-        this.C = 1;
     }
 
     public MctsAlgo(boolean continueLastSearch) {
         this.continueLastSearch = continueLastSearch;
-        this.C = 1;
-    }
-
-    public MctsAlgo(boolean continueLastSearch, double C) {
-        this.continueLastSearch = continueLastSearch;
-        this.C = C;
     }
 
     @Override
     public byte nextMove(Board board) {
-        this.root = new MctsNode(null, (byte) -1, board, this.C);
+        this.root = new MctsNode(null, (byte) -1, board);
         for (int i = 0; i < this.epochs; i ++) {
             if (i % 10000 == 0) {
                 System.out.printf("Training epoch %d%n", i);
@@ -73,7 +65,7 @@ public class MctsAlgo implements BaseAlgo {
         if (this.continueLastSearch) {
             this.setupRoot(board);
         } else {
-            this.root = new MctsNode(null, (byte) -1, board, this.C);
+            this.root = new MctsNode(null, (byte) -1, board);
         }
         System.gc();
         long startTime = System.currentTimeMillis();
@@ -86,7 +78,7 @@ public class MctsAlgo implements BaseAlgo {
 
     private void setupRoot(Board board) {
         if (this.root == null) {
-            this.root = new MctsNode(null, (byte) -1, board, this.C);
+            this.root = new MctsNode(null, (byte) -1, board);
         } else {
             this.continueSearch(board);
         }
@@ -96,7 +88,7 @@ public class MctsAlgo implements BaseAlgo {
         if (this.hasPonderedAfterSearch) {
             this.root = this.root.child(board);
             if (this.root == null) {
-                this.root = new MctsNode(null, (byte) -1, board, this.C);
+                this.root = new MctsNode(null, (byte) -1, board);
             }
             this.hasPonderedAfterSearch = false;
         } else {
@@ -131,7 +123,7 @@ public class MctsAlgo implements BaseAlgo {
 
     private void setupRootForPondering() {
         if (this.root == null) {
-            this.root = new MctsNode(null, (byte) -1, new Board(), this.C);
+            this.root = new MctsNode(null, (byte) -1, new Board());
         } else {
             this.root = this.root.getBestChild();
         }

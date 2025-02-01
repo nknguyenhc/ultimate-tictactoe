@@ -12,7 +12,7 @@ class MctsNode {
     private static final Random rng = new Random();
     /** The value of winning. */
     private static final double WIN = 1;
-    private final double C;
+    private final static double C = 1;
     private int N = 0;
     private double U = 0;
     /** The parent node of this node. Only {@code null} if this is root node. */
@@ -23,11 +23,10 @@ class MctsNode {
     /** {@code null} if not expanded, an array otherwise. */
     private MctsNode[] children = null;
 
-    public MctsNode(MctsNode parent, byte move, Board board, double C) {
+    public MctsNode(MctsNode parent, byte move, Board board) {
         this.parent = parent;
         this.move = move;
         this.board = board;
-        this.C = C;
     }
 
     /**
@@ -40,7 +39,7 @@ class MctsNode {
         }
         // To encourage the parent to explore nodes that causes opponent to lose,
         // We invert the utility in UCB.
-        return -this.U / this.N + this.C * Math.sqrt(Math.log(this.parent.N) / this.N);
+        return -this.U / this.N + MctsNode.C * Math.sqrt(Math.log(this.parent.N) / this.N);
     }
 
     public MctsNode select() {
@@ -79,7 +78,7 @@ class MctsNode {
         List<Byte> actions = this.board.actions();
         this.children = new MctsNode[actions.size()];
         for (int i = 0; i < actions.size(); i++) {
-            this.children[i] = new MctsNode(this, actions.get(i), board.move(actions.get(i)), this.C);
+            this.children[i] = new MctsNode(this, actions.get(i), board.move(actions.get(i)));
         }
 
         int index = MctsNode.rng.nextInt(actions.size());

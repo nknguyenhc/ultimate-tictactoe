@@ -18,20 +18,20 @@ public class Main {
     /** Algo to test. */
     private static final BaseAlgo algo = new MctsAlgo();
     /** Whether to print out the trace of the algo after every search. */
-    private static final boolean includeTrace = true;
+    private static final boolean includeTrace = false;
     /** Time control, in seconds.  */
-    private static final int timeControl = 1000;
-    private static final boolean allowPondering = true;
+    private static final int timeControl = 5000;
+    private static final boolean allowPondering = false;
 
     /** Algo 1 for automated fight. */
     private static final BaseAlgo algo1 = new MctsAlgo(true);
     /** Algo 2 for automated fight. */
-    private static final BaseAlgo algo2 = new MctsAlgo(true, 1);
+    private static final BaseAlgo algo2 = null;
     private static final boolean includeTrace1 = false;
     private static final boolean includeTrace2 = false;
 
     /** Base algo to benchmark against. */
-    private static final Supplier<BaseAlgo> baseAlgoSupplier = () -> new MctsAlgo(true, 1);
+    private static final Supplier<BaseAlgo> baseAlgoSupplier = () -> new PvAlgo();
     /** Algo to benchmark. */
     private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new ParallelMctsAlgo(true, false);
     /** Number of games used to benchmark. */
