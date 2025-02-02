@@ -245,4 +245,54 @@ public class SubBoard {
         SubBoard board = (SubBoard) object;
         return this.Xboard == board.Xboard && this.Oboard == board.Oboard;
     }
+
+    /**
+     * Evaluates this sub-board, returning a heuristic value.
+     * To be used in PV algo.
+     */
+    public double evaluate() {
+        switch (this.winner) {
+            case X:
+                return 1;
+            case O:
+                return -1;
+            case D:
+                return 0;
+        }
+
+        boolean isXNearWin = false;
+        for (int i = 0; i < 24; i++) {
+            if ((this.Xboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
+                    && (this.Oboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
+                isXNearWin = true;
+                break;
+            }
+        }
+        boolean isONearWin = false;
+        for (int i = 0; i < 24; i++) {
+            if ((this.Oboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
+                    && (this.Xboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
+                isONearWin = true;
+                break;
+            }
+        }
+        if (isXNearWin) {
+            return isONearWin ? 0 : 0.8;
+        }
+        if (isONearWin) {
+            return -0.8;
+        }
+
+        int XScore = 0;
+        int OScore = 0;
+        for (short line: Utils.winningLines) {
+            if ((line & this.Xboard) == 0) {
+                OScore++;
+            }
+            if ((line & this.Oboard) == 0) {
+                XScore++;
+            }
+        }
+        return (XScore - OScore) / 8.0 * 0.6;
+    }
 }

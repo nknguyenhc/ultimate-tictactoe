@@ -6,35 +6,22 @@ import board.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 class PvNode implements Comparable<PvNode> {
-    /** The parent node of this node. */
-    private PvNode parent = null;
     /** The move that transitions from the parent node to this node. */
     private final byte move;
     /** The board that this node represents. */
     private final Board board;
 
-    /** A random number generator for this class. */
-    private static final Random rng = new Random();
     /** Score/reward for winning a game. */
     private static final double WIN = 1;
-    /** MCTS coefficient that balances exploitation and exploration. */
-    private static final double C = 1.4;
-    /** Number of MCTS visits to this node. */
-    private int N = 0;
-    /** Total utilities of all MCTS visits to this node. */
-    private double U = 0;
-    /** Whether this node is the root of an MCTS search, in evaluation. */
-    private boolean isMctsRoot = false;
+    /** Cached value of evaluation. Must hold a value between -1 and 1 */
+    private double eval = -2;
 
     /** Children node of this node. */
     private PvNode[] children = null;
     /** The child node that contains the current best move. */
     private PvNode bestChild;
-    /** Number of training epochs for MCTS evaluation. */
-    private static final int epochs = 150;
 
     /** Size of null-search window, in PV search. */
     private static final double NULL_WINDOW_RATIO = 0.0001;
@@ -52,12 +39,10 @@ class PvNode implements Comparable<PvNode> {
 
     /**
      * Constructs a new node.
-     * @param parent The parent node of this node.
      * @param move The move that transitions from the parent node to this node.
      * @param board The board that this node represents.
      */
-    private PvNode(PvNode parent, byte move, Board board) {
-        this.parent = parent;
+    private PvNode(byte move, Board board) {
         this.move = move;
         this.board = board;
     }
@@ -72,53 +57,6 @@ class PvNode implements Comparable<PvNode> {
     }
 
     /**
-     * Selection policy in MCTS.
-     * @return The priority level for exploration of this node.
-     */
-    private double ucb() {
-        assert !this.isMctsRoot;
-        if (this.N == 0) {
-            return Double.POSITIVE_INFINITY;
-        }
-        return -this.U / this.N + PvNode.C * Math.sqrt(Math.log(this.parent.N) / this.N);
-    }
-
-    /**
-     * MCTS selection.
-     * @return The child node selected, or itself if this node has not been expanded.
-     */
-    private PvNode select() {
-        if (this.children == null) {
-            return this;
-        }
-
-        PvNode bestChild = null;
-        for (PvNode child: this.children) {
-            if (bestChild != null && child.ucb() <= bestChild.ucb()) {
-                continue;
-            }
-            bestChild = child;
-        }
-        assert bestChild != null;
-        return bestChild.select();
-    }
-
-    /**
-     * MCTS expansion. Assumes that this node has not been expanded.
-     * @return A random children after expansion, or itself if this is a terminal node.
-     */
-    private PvNode expand() {
-        assert this.children == null;
-        if (this.board.winner() != Utils.Side.U) {
-            return this;
-        }
-
-        this.createChildren();
-        int index = PvNode.rng.nextInt(this.children.length);
-        return this.children[index];
-    }
-
-    /**
      * Instantiates the children of this node.
      * Only call on non-terminal node,
      * and assuming that the children array is not instantiated.
@@ -128,76 +66,35 @@ class PvNode implements Comparable<PvNode> {
         this.children = new PvNode[actions.size()];
         for (int i = 0; i < actions.size(); i++) {
             byte action = actions.get(i);
-            this.children[i] = new PvNode(this, action, this.board.move(action));
+            this.children[i] = new PvNode(action, this.board.move(action));
         }
-    }
-
-    /**
-     * MCTS simulation.
-     * @return The evaluation of this board based on the simulation.
-     */
-    private double simulate() {
-        Board board = this.board;
-        while (board.winner() == Utils.Side.U) {
-            List<Byte> actions = board.actions();
-            int index = PvNode.rng.nextInt(actions.size());
-            board = board.move(actions.get(index));
-        }
-        if (board.winner() == Utils.Side.D) {
-            return 0;
-        }
-        Utils.Side side = this.board.getTurn() ? Utils.Side.X : Utils.Side.O;
-        return board.winner() == side ? PvNode.WIN : -PvNode.WIN;
-    }
-
-    /**
-     * Updates the utility values of this node based on the result of an MCTS simulation.
-     */
-    private void backPropagates(double utility) {
-        this.U += utility;
-        this.N += 1;
-        if (!this.isMctsRoot) {
-            this.parent.backPropagates(-utility);
-        }
-    }
-
-    /**
-     * Returns the utility value of this node, based on MCTS search.
-     */
-    private double utility() {
-        if (this.N == 0) {
-            return 0;
-        }
-        return this.U / this.N;
     }
 
     @Override
     public int compareTo(PvNode node) {
-        return Double.compare(this.utility(), node.utility());
+        return Double.compare(this.evaluate(), node.evaluate());
     }
 
     /**
      * Evaluation routine, when PV search at depth <= 0.
-     * Makes use of MCTS.
+     * Uses cached value if already evaluated.
      */
     public double evaluate() {
-        if (this.board.winner() != Utils.Side.U) {
-            if (this.board.winner() == Utils.Side.D) {
-                return 0;
-            } else {
-                return -PvNode.WIN;
-            }
+        if (this.eval != -2) {
+            return this.eval;
         }
+        this.eval = this.computeEvaluation();
+        return this.eval;
+    }
 
-        this.isMctsRoot = true;
-        while (this.N < PvNode.epochs) {
-            PvNode node = this.select();
-            PvNode child = node.expand();
-            double value = child.simulate();
-            child.backPropagates(value);
+    private double computeEvaluation() {
+        if (this.board.winner() == Utils.Side.U) {
+            return this.board.getTurn() ? this.board.evaluate() : -this.board.evaluate();
+        } else if (this.board.winner() == Utils.Side.D) {
+            return 0;
+        } else {
+            return -PvNode.WIN;
         }
-        this.isMctsRoot = false;
-        return this.utility();
     }
 
     /**
@@ -384,7 +281,7 @@ class PvNode implements Comparable<PvNode> {
         trace.append(String.format("Move: %s\n", this.move));
         while (node.bestChild != null) {
             trace.append(node.board.toCompactString());
-            trace.append(String.format("; Utility: %,3f, Best move: %s\n", node.utility(), node.bestChild.move));
+            trace.append(String.format("; Utility: %,3f, Best move: %s\n", node.evaluate(), node.bestChild.move));
             node = node.bestChild;
         }
         return trace.toString();
@@ -406,12 +303,5 @@ class PvNode implements Comparable<PvNode> {
         }
         assert false: "Grandchild with the given board not found";
         return null;
-    }
-
-    /**
-     * Makes this node a root node.
-     */
-    public void makeRoot() {
-        this.parent = null;
     }
 }

@@ -26,7 +26,6 @@ public class PvAlgo implements BaseAlgo {
         this.setupRoot(board);
         byte move;
         long endTime = time + System.currentTimeMillis();
-        this.root.evaluate();
         int i = 1;
         while (true) {
             try {
@@ -48,7 +47,6 @@ public class PvAlgo implements BaseAlgo {
             this.root = new PvNode(board);
         } else {
             this.root = this.root.grandchild(board);
-            this.root.makeRoot();
         }
     }
 

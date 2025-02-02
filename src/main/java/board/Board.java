@@ -305,4 +305,60 @@ public class Board {
         stringBuilder.append(String.format("%d,%d", this.getBoardIndexToMove(), this.getTurn() ? 0 : 1));
         return stringBuilder.toString();
     }
+
+    /**
+     * Gives a heuristic score for this board,
+     * to be used in PV algo.
+     */
+    public double evaluate() {
+        switch (this.winner) {
+            case X:
+                return 1;
+            case O:
+                return -1;
+            case D:
+                return 0;
+        }
+
+        double total = 0;
+        double[] evaluations = new double[9];
+        for (int i = 0; i < 9; i++) {
+            evaluations[i] = this.subBoards[i].evaluate();
+        }
+
+        for (int i = 0; i < 3; i++) {
+            // horizontal
+            total += this.evaluateSubBoards(
+                    evaluations[3 * i],
+                    evaluations[3 * i + 1],
+                    evaluations[3 * i + 2]);
+            // vertical
+            total += this.evaluateSubBoards(
+                    evaluations[i],
+                    evaluations[i + 3],
+                    evaluations[i + 6]);
+        }
+
+        // diagonals
+        total += this.evaluateSubBoards(evaluations[0], evaluations[4], evaluations[8]);
+        total += this.evaluateSubBoards(evaluations[2], evaluations[4], evaluations[6]);
+
+        return total / 8;
+    }
+
+    private double evaluateSubBoards(double ...values) {
+        double total = 0;
+        double lowerBound = -1;
+        double upperBound = 1;
+        for (double value: values) {
+            if (value > 0) {
+                lowerBound = Math.max(lowerBound, value - 1);
+            } else {
+                upperBound = Math.min(upperBound, value + 1);
+            }
+            total += value;
+        }
+        double distToMin = (total / values.length + 1) / 2;
+        return lowerBound + (upperBound - lowerBound) * distToMin;
+    }
 }

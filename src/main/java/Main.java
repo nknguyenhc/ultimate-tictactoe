@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  */
 public class Main {
     /** Algo to test. */
-    private static final BaseAlgo algo = new MctsAlgo();
+    private static final BaseAlgo algo = new PvAlgo();
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = false;
     /** Time control, in seconds.  */
@@ -33,7 +33,7 @@ public class Main {
     /** Base algo to benchmark against. */
     private static final Supplier<BaseAlgo> baseAlgoSupplier = () -> new PvAlgo();
     /** Algo to benchmark. */
-    private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new ParallelMctsAlgo(true, false);
+    private static final Supplier<BaseAlgo> testAlgoSupplier = () -> new MctsAlgo(true);
     /** Number of games used to benchmark. */
     private static final int numOfGames = 20;
 
