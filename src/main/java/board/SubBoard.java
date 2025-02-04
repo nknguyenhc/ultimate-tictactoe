@@ -277,10 +277,10 @@ public class SubBoard {
             }
         }
         if (isXNearWin) {
-            return isONearWin ? 0 : 0.8;
+            return isONearWin ? 0 : 0.1;
         }
         if (isONearWin) {
-            return -0.8;
+            return -0.1;
         }
 
         int XScore = 0;
@@ -293,6 +293,6 @@ public class SubBoard {
                 XScore++;
             }
         }
-        return (XScore - OScore) / 8.0 * 0.6;
+        return (XScore - OScore) / 8.0 * 0.01;
     }
 }

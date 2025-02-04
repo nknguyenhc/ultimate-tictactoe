@@ -6,7 +6,7 @@ import board.Board;
 import java.util.List;
 
 public class PvAlgo implements BaseAlgo {
-    private final int maxDepth = 6;
+    private final int maxDepth = 9;
     private PvNode root;
 
     @Override
