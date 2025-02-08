@@ -12,6 +12,21 @@ public class Utils {
             0b100100100,
     };
 
+    static final boolean[] wins = Utils.computeWins();
+
+    static boolean[] computeWins() {
+        boolean[] result = new boolean[0b111111111];
+        for (int i = 0; i < 0b111111111; i++) {
+            for (short winningLine: Utils.winningLines) {
+                if ((i & winningLine) == winningLine) {
+                    result[i] = true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     static final short[] nearWinningLines = {
             0b100010000,
             0b100000001,

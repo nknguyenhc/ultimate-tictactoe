@@ -218,12 +218,10 @@ public class Board {
             }
         }
 
-        for (short line: Utils.winningLines) {
-            if ((Xboard & line) == line) {
-                return Utils.Side.X;
-            } else if ((Oboard & line) == line) {
-                return Utils.Side.O;
-            }
+        if (Utils.wins[Xboard]) {
+            return Utils.Side.X;
+        } else if (Utils.wins[Oboard]) {
+            return Utils.Side.O;
         }
         if ((Xboard | Oboard | Dboard) == Utils.filled) {
             return Utils.Side.D;

@@ -133,28 +133,15 @@ public class SubBoard {
      * To be called after making each move, or upon a new board.
      */
     private Utils.Side determineWinner() {
-        if (this.isWinner(this.Xboard)) {
+        if (Utils.wins[this.Xboard]) {
             return Utils.Side.X;
-        } else if (this.isWinner(this.Oboard)) {
+        } else if (Utils.wins[this.Oboard]) {
             return Utils.Side.O;
         } else if ((this.Xboard | this.Oboard) == Utils.filled) {
             return Utils.Side.D;
         } else {
             return Utils.Side.U;
         }
-    }
-
-    /**
-     * Determines if the player with the occupation board is the winner.
-     * @param board Either {@code this.Xboard} or {@code this.Oboard}.
-     */
-    private boolean isWinner(short board) {
-        for (short line: Utils.winningLines) {
-            if ((board & line) == line) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
