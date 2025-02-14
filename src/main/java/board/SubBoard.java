@@ -8,20 +8,17 @@ import java.util.List;
  */
 public class SubBoard {
     /** Represents the occupation across the boards, using the first 9 bits only */
-    private final short Xboard;
-    private final short Oboard;
+    private final int board;
     /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
     private final Utils.Side winner;
 
     public SubBoard() {
-        this.Xboard = 0;
-        this.Oboard = 0;
+        this.board = 0;
         this.winner = Utils.Side.U;
     }
 
-    private SubBoard(short Xboard, short Oboard) {
-        this.Xboard = Xboard;
-        this.Oboard = Oboard;
+    private SubBoard(int board) {
+        this.board = board;
         this.winner = this.determineWinner();
     }
 
@@ -40,7 +37,7 @@ public class SubBoard {
         Xboard += SubBoard.parseLine(line3, true) << 6;
         Oboard += SubBoard.parseLine(line3, false) << 6;
 
-        return new SubBoard((short) Xboard, (short) Oboard);
+        return new SubBoard(Xboard + (Oboard << 9));
     }
 
     /**
@@ -96,7 +93,7 @@ public class SubBoard {
                     "Compact string contains an invalid number: %s", compactString));
         }
 
-        return new SubBoard(Xboard, Oboard);
+        return new SubBoard(Xboard + (Oboard << 9));
     }
 
     /**
@@ -107,14 +104,11 @@ public class SubBoard {
      * @return The new board.
      */
     public SubBoard move(byte i, boolean side) {
-        short newXboard = this.Xboard;
-        short newOboard = this.Oboard;
         if (side) {
-            newXboard |= 1 << i;
+            return new SubBoard(this.board | (1 << i));
         } else {
-            newOboard |= 1 << i;
+            return new SubBoard(this.board | (1 << (i + 9)));
         }
-        return new SubBoard(newXboard, newOboard);
     }
 
     /**
@@ -123,11 +117,11 @@ public class SubBoard {
      * To be called after making each move, or upon a new board.
      */
     private Utils.Side determineWinner() {
-        if (Utils.wins[this.Xboard]) {
+        if (Utils.wins[this.board & Utils.filled]) {
             return Utils.Side.X;
-        } else if (Utils.wins[this.Oboard]) {
+        } else if (Utils.wins[(this.board >> 9) & Utils.filled]) {
             return Utils.Side.O;
-        } else if ((this.Xboard | this.Oboard) == Utils.filled) {
+        } else if (((this.board & Utils.filled) | (this.board >> 9)) == Utils.filled) {
             return Utils.Side.D;
         } else {
             return Utils.Side.U;
@@ -145,7 +139,7 @@ public class SubBoard {
         if (this.winner != Utils.Side.U) {
             return 0;
         }
-        return (short) (Utils.filled ^ (this.Xboard | this.Oboard));
+        return (short) (Utils.filled ^ ((this.board & Utils.filled) | (this.board >> 9)));
     }
 
     /**
@@ -155,9 +149,9 @@ public class SubBoard {
      * @return {@code 'X'}, {@code 'O'} or {@code '-'}
      */
     private char getCharAtPosition(short positionMask) {
-        if ((this.Xboard & positionMask) > 0) {
+        if ((this.board & positionMask) > 0) {
             return 'X';
-        } else if ((this.Oboard & positionMask) > 0) {
+        } else if (((this.board >> 9) & positionMask) > 0) {
             return 'O';
         } else {
             return '-';
@@ -187,7 +181,7 @@ public class SubBoard {
      * Returns the compact string representation, for ease of copy-pasting.
      */
     public String toCompactString() {
-        return String.format("%d,%d", this.Xboard, this.Oboard);
+        return String.format("%d,%d", this.board & Utils.filled, this.board >> 9);
     }
 
     /**
@@ -205,7 +199,7 @@ public class SubBoard {
         }
 
         SubBoard board = (SubBoard) object;
-        return this.Xboard == board.Xboard && this.Oboard == board.Oboard;
+        return this.board == board.board;
     }
 
     /**
@@ -223,17 +217,19 @@ public class SubBoard {
         }
 
         boolean isXNearWin = false;
+        short Xboard = (short) (this.board & Utils.filled);
+        short Oboard = (short) ((this.board >> 9) & Utils.filled);
         for (int i = 0; i < 24; i++) {
-            if ((this.Xboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
-                    && (this.Oboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
+            if ((Xboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
+                    && (Oboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
                 isXNearWin = true;
                 break;
             }
         }
         boolean isONearWin = false;
         for (int i = 0; i < 24; i++) {
-            if ((this.Oboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
-                    && (this.Xboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
+            if ((Oboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
+                    && (Xboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
                 isONearWin = true;
                 break;
             }
@@ -248,10 +244,10 @@ public class SubBoard {
         int XScore = 0;
         int OScore = 0;
         for (short line: Utils.winningLines) {
-            if ((line & this.Xboard) == 0) {
+            if ((line & Xboard) == 0) {
                 OScore++;
             }
-            if ((line & this.Oboard) == 0) {
+            if ((line & Oboard) == 0) {
                 XScore++;
             }
         }
