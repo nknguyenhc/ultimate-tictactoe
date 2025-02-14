@@ -14,15 +14,12 @@ public class SubBoard {
     private final byte index;
     /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
     private final Utils.Side winner;
-    /** Actions */
-    private final List<Byte> actions;
 
     public SubBoard(byte index) {
         this.Xboard = 0;
         this.Oboard = 0;
         this.index = index;
         this.winner = Utils.Side.U;
-        this.actions = this.determineActions();
     }
 
     private SubBoard(short Xboard, short Oboard, byte index) {
@@ -30,7 +27,6 @@ public class SubBoard {
         this.Oboard = Oboard;
         this.index = index;
         this.winner = this.determineWinner();
-        this.actions = this.determineActions();
     }
 
     /**
@@ -151,26 +147,11 @@ public class SubBoard {
         return this.winner;
     }
 
-    /**
-     * Pre-calculates the actions available on this board.
-     * To be used only in constructor.
-     */
-    private List<Byte> determineActions() {
+    public short getActions() {
         if (this.winner != Utils.Side.U) {
-            return List.of();
+            return 0;
         }
-        int occupationBoard = this.Xboard | this.Oboard;
-        List<Byte> actions = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            if (((occupationBoard >> i) & 1) == 0) {
-                actions.add((byte) (this.index * 9 + i));
-            }
-        }
-        return actions;
-    }
-
-    public List<Byte> getActions() {
-        return this.actions;
+        return (short) (Utils.filled ^ (this.Xboard | this.Oboard));
     }
 
     /**

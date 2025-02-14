@@ -172,11 +172,23 @@ public class Board {
         if (this.subBoardIndex == 9) {
             List<Byte> actions = new ArrayList<>();
             for (int boardIndex = 0; boardIndex < 9; boardIndex++) {
-                actions.addAll(this.subBoards[boardIndex].getActions());
+                short subBoardActions = this.subBoards[boardIndex].getActions();
+                for (int i = 0; i < 9; i++) {
+                    if (((subBoardActions >> i) & 1) == 1) {
+                        actions.add((byte) (boardIndex * 9 + i));
+                    }
+                }
             }
             return actions;
         } else {
-            return this.subBoards[this.subBoardIndex].getActions();
+            List<Byte> actions = new ArrayList<>();
+            short subBoardActions = this.subBoards[this.subBoardIndex].getActions();
+            for (int i = 0; i < 9; i++) {
+                if (((subBoardActions >> i) & 1) == 1) {
+                    actions.add((byte) (this.subBoardIndex * 9 + i));
+                }
+            }
+            return actions;
         }
     }
 

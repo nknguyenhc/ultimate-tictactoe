@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  */
 public class Main {
     /** Algo to test. */
-    private static final BaseAlgo algo = new PvAlgo();
+    private static final BaseAlgo algo = new MctsAlgo();
     /** Whether to print out the trace of the algo after every search. */
     private static final boolean includeTrace = false;
     /** Time control, in seconds.  */

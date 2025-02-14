@@ -14,30 +14,23 @@ public class SubBoardTest {
         board = board.move((byte) 0, true);
         board = board.move((byte) 4, true);
         assertEquals(Utils.Side.U, board.getWinner());
-        assertEquals(new HashSet<>(List.of(
-                (byte) 1, (byte) 2, (byte) 3,
-                (byte) 5, (byte) 6, (byte) 7,
-                (byte) 8
-        )), new HashSet<>(board.getActions()));
+        assertEquals(0b111101110, board.getActions());
 
         board = board.move((byte) 8, true);
         assertEquals(Utils.Side.X, board.getWinner());
-        assertEquals(List.of(), board.getActions());
+        assertEquals(0, board.getActions());
 
         board = new SubBoard((byte) 0);
         board = board.move((byte) 0, true);
         board = board.move((byte) 4, true);
         board = board.move((byte) 8, false);
         assertEquals(Utils.Side.U, board.getWinner());
-        assertEquals(new HashSet<>(List.of(
-                (byte) 1, (byte) 2, (byte) 3,
-                (byte) 5, (byte) 6, (byte) 7
-        )), new HashSet<>(board.getActions()));
+        assertEquals(0b011101110, board.getActions());
 
         board = board.move((byte) 5, false);
         board = board.move((byte) 2, false);
         assertEquals(Utils.Side.O, board.getWinner());
-        assertEquals(List.of(), board.getActions());
+        assertEquals(0, board.getActions());
     }
 
     @Test
@@ -70,10 +63,10 @@ public class SubBoardTest {
         board = board.move((byte) 6, false);
         board = board.move((byte) 7, true);
         assertEquals(Utils.Side.U, board.getWinner());
-        assertEquals(List.of((byte) 8), board.getActions());
+        assertEquals(0b100000000, board.getActions());
         board = board.move((byte) 8, false);
         assertEquals(Utils.Side.D, board.getWinner());
-        assertEquals(List.of(), board.getActions());
+        assertEquals(0, board.getActions());
     }
 
     @Test
