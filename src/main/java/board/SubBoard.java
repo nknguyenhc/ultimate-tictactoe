@@ -10,22 +10,18 @@ public class SubBoard {
     /** Represents the occupation across the boards, using the first 9 bits only */
     private final short Xboard;
     private final short Oboard;
-    /** Index in the bigger board that this sub-board is at. */
-    private final byte index;
     /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
     private final Utils.Side winner;
 
     public SubBoard(byte index) {
         this.Xboard = 0;
         this.Oboard = 0;
-        this.index = index;
         this.winner = Utils.Side.U;
     }
 
-    private SubBoard(short Xboard, short Oboard, byte index) {
+    private SubBoard(short Xboard, short Oboard) {
         this.Xboard = Xboard;
         this.Oboard = Oboard;
-        this.index = index;
         this.winner = this.determineWinner();
     }
 
@@ -34,8 +30,7 @@ public class SubBoard {
      * Each string corresponds to a line, for eg: {@code "X O -"}.
      * @throws InvalidBoardStringException If the given board string is invalid.
      */
-    public static SubBoard fromString(String line1, String line2, String line3,
-                                      byte index) throws InvalidBoardStringException {
+    public static SubBoard fromString(String line1, String line2, String line3) throws InvalidBoardStringException {
         int Xboard = SubBoard.parseLine(line1, true);
         int Oboard = SubBoard.parseLine(line1, false);
 
@@ -45,7 +40,7 @@ public class SubBoard {
         Xboard += SubBoard.parseLine(line3, true) << 6;
         Oboard += SubBoard.parseLine(line3, false) << 6;
 
-        return new SubBoard((short) Xboard, (short) Oboard, index);
+        return new SubBoard((short) Xboard, (short) Oboard);
     }
 
     /**
@@ -85,8 +80,7 @@ public class SubBoard {
      * and {@code o} is the decimal number for {@code Oboard}.
      * @throws InvalidBoardStringException If the string given is invalid.
      */
-    public static SubBoard fromCompactString(String compactString,
-                                             byte index) throws InvalidBoardStringException {
+    public static SubBoard fromCompactString(String compactString) throws InvalidBoardStringException {
         String[] numbers = compactString.split(",");
         if (numbers.length != 2) {
             throw new InvalidBoardStringException(String.format("Invalid board compact string: %s", compactString));
@@ -102,7 +96,7 @@ public class SubBoard {
                     "Compact string contains an invalid number: %s", compactString));
         }
 
-        return new SubBoard(Xboard, Oboard, index);
+        return new SubBoard(Xboard, Oboard);
     }
 
     /**
@@ -120,7 +114,7 @@ public class SubBoard {
         } else {
             newOboard |= 1 << i;
         }
-        return new SubBoard(newXboard, newOboard, this.index);
+        return new SubBoard(newXboard, newOboard);
     }
 
     /**

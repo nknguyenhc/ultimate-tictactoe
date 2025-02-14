@@ -90,7 +90,7 @@ public class Board {
             }
             for (byte j = 0; j < 3; j++) {
                 subBoards[3 * i + j] = SubBoard.fromString(subBoardLines[0][j],
-                        subBoardLines[1][j], subBoardLines[2][j], (byte) (3 * i + j));
+                        subBoardLines[1][j], subBoardLines[2][j]);
             }
         }
 
@@ -130,7 +130,7 @@ public class Board {
 
         SubBoard[] subBoards = new SubBoard[9];
         for (byte i = 0; i < 9; i++) {
-            subBoards[i] = SubBoard.fromCompactString(strings[i], i);
+            subBoards[i] = SubBoard.fromCompactString(strings[i]);
         }
 
         String[] elems = strings[9].split(",");

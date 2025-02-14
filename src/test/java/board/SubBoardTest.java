@@ -71,7 +71,7 @@ public class SubBoardTest {
 
     @Test
     public void testFromString() throws Exception {
-        SubBoard board = SubBoard.fromString("X - -", "- O -", "O - X", (byte) 3);
+        SubBoard board = SubBoard.fromString("X - -", "- O -", "O - X");
         SubBoard expectedBoard = new SubBoard((byte) 3);
         expectedBoard = expectedBoard.move((byte) 0, true);
         expectedBoard = expectedBoard.move((byte) 4, false);
@@ -82,7 +82,7 @@ public class SubBoardTest {
 
     @Test
     public void testFromCompactString() throws Exception {
-        SubBoard board = SubBoard.fromCompactString("257,80", (byte) 1);
+        SubBoard board = SubBoard.fromCompactString("257,80");
         SubBoard expectedBoard = new SubBoard((byte) 1);
         expectedBoard = expectedBoard.move((byte) 0, true);
         expectedBoard = expectedBoard.move((byte) 4, false);
@@ -94,7 +94,7 @@ public class SubBoardTest {
     @Test
     public void testToCompactString() throws Exception {
         String string = "257,80";
-        SubBoard subBoard = SubBoard.fromCompactString(string, (byte) 0);
+        SubBoard subBoard = SubBoard.fromCompactString(string);
         assertEquals(string, subBoard.toCompactString());
     }
 }
