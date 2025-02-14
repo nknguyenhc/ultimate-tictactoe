@@ -13,7 +13,7 @@ public class SubBoard {
     /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
     private final Utils.Side winner;
 
-    public SubBoard(byte index) {
+    public SubBoard() {
         this.Xboard = 0;
         this.Oboard = 0;
         this.winner = Utils.Side.U;

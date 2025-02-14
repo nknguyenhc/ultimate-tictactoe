@@ -18,15 +18,15 @@ public class Board {
 
     public Board() {
         this.subBoards = new SubBoard[] {
-                new SubBoard((byte) 0),
-                new SubBoard((byte) 1),
-                new SubBoard((byte) 2),
-                new SubBoard((byte) 3),
-                new SubBoard((byte) 4),
-                new SubBoard((byte) 5),
-                new SubBoard((byte) 6),
-                new SubBoard((byte) 7),
-                new SubBoard((byte) 8),
+                new SubBoard(),
+                new SubBoard(),
+                new SubBoard(),
+                new SubBoard(),
+                new SubBoard(),
+                new SubBoard(),
+                new SubBoard(),
+                new SubBoard(),
+                new SubBoard(),
         };
         this.subBoardIndex = 9;
         this.turn = true;
