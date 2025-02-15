@@ -8,7 +8,7 @@ import java.util.List;
  * Represents a 9x9 ultimate tictactoe board.
  */
 public class Board {
-    private final SubBoard[] subBoards;
+    private final int[] subBoards;
     /** The board index that the next player must go at. 9 if the next player can go anywhere. */
     private final byte subBoardIndex;
     /** Represents the turn at this board. {@code true} if X, {@code false} otherwise. */
@@ -23,17 +23,7 @@ public class Board {
     private final short Dmeta;
 
     public Board() {
-        this.subBoards = new SubBoard[] {
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-                new SubBoard(),
-        };
+        this.subBoards = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
         this.subBoardIndex = 9;
         this.turn = true;
         this.Xmeta = 0;
@@ -42,7 +32,7 @@ public class Board {
         this.winner = Utils.Side.U;
     }
 
-    private Board(SubBoard[] subBoards, byte subBoardIndex, boolean turn,
+    private Board(int[] subBoards, byte subBoardIndex, boolean turn,
                   short Xmeta, short Ometa, short Dmeta) {
         this.subBoards = subBoards;
         this.subBoardIndex = subBoardIndex;
@@ -86,7 +76,7 @@ public class Board {
                     string, strings.length));
         }
 
-        SubBoard[] subBoards = new SubBoard[9];
+        int[] subBoards = new int[9];
         for (byte i = 0; i < 3; i++) {
             String[] lines = strings[i].split("\n");
             if (lines.length != 3) {
@@ -104,7 +94,7 @@ public class Board {
                 }
             }
             for (byte j = 0; j < 3; j++) {
-                subBoards[3 * i + j] = SubBoard.fromString(subBoardLines[0][j],
+                subBoards[3 * i + j] = subBoardFromString(subBoardLines[0][j],
                         subBoardLines[1][j], subBoardLines[2][j]);
             }
         }
@@ -112,16 +102,13 @@ public class Board {
         short Ometa = 0;
         short Dmeta = 0;
         for (int i = 0; i < 9; i++) {
-            switch (subBoards[i].getWinner()) {
-                case X:
-                    Xmeta |= 1 << i;
-                    break;
-                case O:
-                    Ometa |= 1 << i;
-                    break;
-                case D:
-                    Dmeta |= 1 << i;
-                    break;
+            int subBoard = subBoards[i];
+            if (Utils.wins[subBoard & Utils.filled]) {
+                Xmeta |= 1 << i;
+            } else if (Utils.wins[(subBoard >> 9) & Utils.filled]) {
+                Ometa |= 1 << i;
+            } else if (((subBoard & Utils.filled) | (subBoard >> 9)) == Utils.filled) {
+                Dmeta |= 1 << i;
             }
         }
 
@@ -147,6 +134,54 @@ public class Board {
     }
 
     /**
+     * Creates a new sub-board from the human-readable strings.
+     * Each string corresponds to a line, for eg: {@code "X O -"}.
+     * @throws InvalidBoardStringException If the given board string is invalid.
+     */
+    static int subBoardFromString(String line1, String line2, String line3) throws InvalidBoardStringException {
+        int Xboard = parseLine(line1, true);
+        int Oboard = parseLine(line1, false);
+
+        Xboard += parseLine(line2, true) << 3;
+        Oboard += parseLine(line2, false) << 3;
+
+        Xboard += parseLine(line3, true) << 6;
+        Oboard += parseLine(line3, false) << 6;
+
+        return Xboard + (Oboard << 9);
+    }
+
+    /**
+     * Returns the new value of the board given the string of the line, eg: {@code "X O -"}.
+     */
+    private static int parseLine(String line, boolean isX) throws InvalidBoardStringException {
+        String[] cells = line.split(" ");
+        if (cells.length != 3) {
+            throw new InvalidBoardStringException(String.format("Line length not of correct length: %s", line));
+        }
+        int currentBoard = parseCell(cells[0], isX);
+        currentBoard += parseCell(cells[1], isX) << 1;
+        currentBoard += parseCell(cells[2], isX) << 2;
+        return currentBoard;
+    }
+
+    /**
+     * Parses the cell, of form {@code "X"}, {@code "O"}, or {@code "-"}.
+     */
+    private static int parseCell(String cell, boolean isX) throws InvalidBoardStringException {
+        switch (cell) {
+            case "X":
+                return isX ? 1 : 0;
+            case "O":
+                return isX ? 0 : 1;
+            case "-":
+                return 0;
+            default:
+                throw new InvalidBoardStringException(String.format("Invalid character: %s", cell));
+        }
+    }
+
+    /**
      * Gets the board from the compact string.
      * The compact string is of the format {@code x1,y1 x2,y2 ... x9,y9 boardIndex,turnValue},
      * where each {@code xi,yi} represents the corresponding sub-board.
@@ -159,24 +194,21 @@ public class Board {
                     string, strings.length));
         }
 
-        SubBoard[] subBoards = new SubBoard[9];
+        int[] subBoards = new int[9];
         for (byte i = 0; i < 9; i++) {
-            subBoards[i] = SubBoard.fromCompactString(strings[i]);
+            subBoards[i] = subBoardFromCompactString(strings[i]);
         }
         short Xmeta = 0;
         short Ometa = 0;
         short Dmeta = 0;
         for (int i = 0; i < 9; i++) {
-            switch (subBoards[i].getWinner()) {
-                case X:
-                    Xmeta |= 1 << i;
-                    break;
-                case O:
-                    Ometa |= 1 << i;
-                    break;
-                case D:
-                    Dmeta |= 1 << i;
-                    break;
+            int subBoard = subBoards[i];
+            if (Utils.wins[subBoard & Utils.filled]) {
+                Xmeta |= 1 << i;
+            } else if (Utils.wins[(subBoard >> 9) & Utils.filled]) {
+                Ometa |= 1 << i;
+            } else if (((subBoard & Utils.filled) | (subBoard >> 9)) == Utils.filled) {
+                Dmeta |= 1 << i;
             }
         }
 
@@ -198,6 +230,32 @@ public class Board {
 
         validateBoardIndexAndTurnValue(boardIndex, turnValue);
         return new Board(subBoards, (byte) boardIndex, turnValue == 0, Xmeta, Ometa, Dmeta);
+    }
+
+    /**
+     * Returns a sub-board that corresponds to the compact string representation.
+     * The string is of format {@code x,o},
+     * where {@code x} is the decimal number for {@code Xboard},
+     * and {@code o} is the decimal number for {@code Oboard}.
+     * @throws InvalidBoardStringException If the string given is invalid.
+     */
+    static int subBoardFromCompactString(String compactString) throws InvalidBoardStringException {
+        String[] numbers = compactString.split(",");
+        if (numbers.length != 2) {
+            throw new InvalidBoardStringException(String.format("Invalid board compact string: %s", compactString));
+        }
+
+        short Xboard;
+        short Oboard;
+        try {
+            Xboard = Short.parseShort(numbers[0]);
+            Oboard = Short.parseShort(numbers[1]);
+        } catch (NumberFormatException e) {
+            throw new InvalidBoardStringException(String.format(
+                    "Compact string contains an invalid number: %s", compactString));
+        }
+
+        return Xboard + (Oboard << 9);
     }
 
     private static void validateBoardIndexAndTurnValue(int boardIndex, int turnValue)
@@ -223,7 +281,8 @@ public class Board {
                 if (((occupiedBoards >> boardIndex) & 1) == 1) {
                     continue;
                 }
-                short subBoardActions = this.subBoards[boardIndex].getActions();
+                short subBoardActions = (short) (Utils.filled ^ (
+                        (this.subBoards[boardIndex] & Utils.filled) | (this.subBoards[boardIndex] >> 9)));
                 for (int i = 0; i < 9; i++) {
                     if (((subBoardActions >> i) & 1) == 1) {
                         actions.add((byte) (boardIndex * 9 + i));
@@ -231,7 +290,8 @@ public class Board {
                 }
             }
         } else {
-            short subBoardActions = this.subBoards[this.subBoardIndex].getActions();
+            short subBoardActions = (short) (Utils.filled ^ (
+                    (this.subBoards[this.subBoardIndex] & Utils.filled) | (this.subBoards[this.subBoardIndex] >> 9)));
             for (int i = 0; i < 9; i++) {
                 if (((subBoardActions >> i) & 1) == 1) {
                     actions.add((byte) (this.subBoardIndex * 9 + i));
@@ -247,24 +307,25 @@ public class Board {
      */
     public Board move(byte action) {
         int boardIndex = this.subBoardIndex == 9 ? action / 9 : this.subBoardIndex;
-        SubBoard[] newSubBoards = this.subBoards.clone();
-        newSubBoards[boardIndex] = newSubBoards[boardIndex].move((byte) (action % 9), this.turn);
+        int[] newSubBoards = this.subBoards.clone();
+        if (this.turn) {
+            newSubBoards[boardIndex] = newSubBoards[boardIndex] | (1 << (action % 9));
+        } else {
+            newSubBoards[boardIndex] = newSubBoards[boardIndex] | (1 << (action % 9 + 9));
+        }
         byte nextSubBoardIndex = (byte) (action % 9);
         short newXmeta = this.Xmeta;
         short newOmeta = this.Ometa;
         short newDmeta = this.Dmeta;
-        switch (newSubBoards[boardIndex].getWinner()) {
-            case D:
-                newDmeta |= (1 << boardIndex);
-                break;
-            case X:
-                newXmeta |= (1 << boardIndex);
-                break;
-            case O:
-                newOmeta |= (1 << boardIndex);
-                break;
+        int subBoardToConsider = newSubBoards[boardIndex];
+        if (Utils.wins[subBoardToConsider & Utils.filled]) {
+            newXmeta |= 1 << boardIndex;
+        } else if (Utils.wins[(subBoardToConsider >> 9) & Utils.filled]) {
+            newOmeta |= 1 << boardIndex;
+        } else if (((subBoardToConsider & Utils.filled) | (subBoardToConsider >> 9)) == Utils.filled) {
+            newDmeta |= 1 << boardIndex;
         }
-        if (newSubBoards[nextSubBoardIndex].getWinner() != Utils.Side.U) {
+        if ((((newXmeta | newOmeta | newDmeta) >> nextSubBoardIndex) & 1) == 1) {
             nextSubBoardIndex = 9;
         }
         return new Board(newSubBoards, nextSubBoardIndex, !this.turn, newXmeta, newOmeta, newDmeta);
@@ -330,9 +391,9 @@ public class Board {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 stringBuilder.append(String.format("%s  %s  %s\n",
-                        this.subBoards[3 * i].getRow(j),
-                        this.subBoards[3 * i + 1].getRow(j),
-                        this.subBoards[3 * i + 2].getRow(j)));
+                        this.getRow(this.subBoards[3 * i], j),
+                        this.getRow(this.subBoards[3 * i + 1], j),
+                        this.getRow(this.subBoards[3 * i + 2], j)));
             }
             if (i != 2) {
                 stringBuilder.append("\n");
@@ -342,12 +403,39 @@ public class Board {
     }
 
     /**
+     * Returns the char representing the occupier of the cell
+     * @param positionMask The mask representing the position in binary,
+     *                     must be 1 at the position and 0 everywhere else,
+     * @return {@code 'X'}, {@code 'O'} or {@code '-'}
+     */
+    private char getCharAtPosition(int subBoard, short positionMask) {
+        if ((subBoard & positionMask) > 0) {
+            return 'X';
+        } else if (((subBoard >> 9) & positionMask) > 0) {
+            return 'O';
+        } else {
+            return '-';
+        }
+    }
+
+    /**
+     * Returns the string representation of the row.
+     * @param rowIndex The index of the row, between 0 and 2 inclusive.
+     */
+    public String getRow(int subBoard, int rowIndex) {
+        return String.format("%c %c %c",
+                this.getCharAtPosition(subBoard, (short) (1 << (3 * rowIndex))),
+                this.getCharAtPosition(subBoard, (short) (1 << (3 * rowIndex + 1))),
+                this.getCharAtPosition(subBoard, (short) (1 << (3 * rowIndex + 2))));
+    }
+
+    /**
      * Returns the compact string representation, for ease of trace printing.
      */
     public String toCompactString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < 9; i++) {
-            stringBuilder.append(this.subBoards[i].toCompactString());
+            stringBuilder.append(String.format("%d,%d", this.subBoards[i] & Utils.filled, this.subBoards[i] >> 9));
             stringBuilder.append(" ");
         }
         stringBuilder.append(String.format("%d,%d", this.getBoardIndexToMove(), this.getTurn() ? 0 : 1));
@@ -378,7 +466,7 @@ public class Board {
             } else if (((this.Dmeta >> i) & 1) == 1) {
                 evaluations[i] = 0;
             } else {
-                evaluations[i] = this.subBoards[i].evaluate();
+                evaluations[i] = this.evaluateSubBoard(this.subBoards[i]);
             }
         }
 
@@ -400,6 +488,50 @@ public class Board {
         total += this.evaluateSubBoards(evaluations[2], evaluations[4], evaluations[6]);
 
         return total / 8;
+    }
+
+    /**
+     * Evaluates this sub-board, returning a heuristic value.
+     * Assuming this board is not yet won.
+     * To be used in PV algo.
+     */
+    public double evaluateSubBoard(int subBoard) {
+        boolean isXNearWin = false;
+        short Xboard = (short) (subBoard & Utils.filled);
+        short Oboard = (short) ((subBoard >> 9) & Utils.filled);
+        for (int i = 0; i < 24; i++) {
+            if ((Xboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
+                    && (Oboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
+                isXNearWin = true;
+                break;
+            }
+        }
+        boolean isONearWin = false;
+        for (int i = 0; i < 24; i++) {
+            if ((Oboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
+                    && (Xboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
+                isONearWin = true;
+                break;
+            }
+        }
+        if (isXNearWin) {
+            return isONearWin ? 0 : 0.1;
+        }
+        if (isONearWin) {
+            return -0.1;
+        }
+
+        int XScore = 0;
+        int OScore = 0;
+        for (short line: Utils.winningLines) {
+            if ((line & Xboard) == 0) {
+                OScore++;
+            }
+            if ((line & Oboard) == 0) {
+                XScore++;
+            }
+        }
+        return (XScore - OScore) / 8.0 * 0.01;
     }
 
     private double evaluateSubBoards(double ...values) {
