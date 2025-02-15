@@ -144,4 +144,37 @@ public class BoardTest {
         Board board = Board.fromCompactString(string);
         assertEquals(string, board.toCompactString());
     }
+
+    @Test
+    public void testSubBoardWinnerRegistered() throws Exception {
+        Board board = Board.fromString(
+                "X - -  - - -  - - -\n" +
+                "- X -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - - -\n" +
+                "\n" +
+                "- - -  - - -  - - -\n" +
+                "- - -  - - -  - O -\n" +
+                "- - -  - - -  - - O\n" +
+                "\n" +
+                "8,1");
+        assertEquals(List.of(
+                (byte) 72, (byte) 73, (byte) 74,
+                (byte) 75, (byte) 77, (byte) 78,
+                (byte) 79), board.actions());
+        board = board.move((byte) 72);
+        assertEquals(List.of(
+                (byte) 1, (byte) 2, (byte) 3,
+                (byte) 5, (byte) 6, (byte) 7,
+                (byte) 8), board.actions());
+        board = board.move((byte) 8);
+        List<Byte> expectedActions = new ArrayList<>();
+        for (byte i = 9; i < 72; i++) {
+            expectedActions.add(i);
+        }
+        assertEquals(expectedActions, board.actions());
+    }
 }

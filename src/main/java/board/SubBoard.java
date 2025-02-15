@@ -9,17 +9,13 @@ import java.util.List;
 public class SubBoard {
     /** Represents the occupation across the boards, using the first 9 bits only */
     private final int board;
-    /** Represents the winner, 0 for draw/not determined, 1 for X, 2 for O */
-    private final Utils.Side winner;
 
     public SubBoard() {
         this.board = 0;
-        this.winner = Utils.Side.U;
     }
 
     private SubBoard(int board) {
         this.board = board;
-        this.winner = this.determineWinner();
     }
 
     /**
@@ -112,11 +108,9 @@ public class SubBoard {
     }
 
     /**
-     * Determines the winner for this board.
-     * The result is saved, and returned when needed.
-     * To be called after making each move, or upon a new board.
+     * Returns the current winner of the board.
      */
-    private Utils.Side determineWinner() {
+    public Utils.Side getWinner() {
         if (Utils.wins[this.board & Utils.filled]) {
             return Utils.Side.X;
         } else if (Utils.wins[(this.board >> 9) & Utils.filled]) {
@@ -129,16 +123,10 @@ public class SubBoard {
     }
 
     /**
-     * Returns the current winner of the board.
+     * Returns bitboard of actions of this board,
+     * assuming that this board is not yet finished.
      */
-    public Utils.Side getWinner() {
-        return this.winner;
-    }
-
     public short getActions() {
-        if (this.winner != Utils.Side.U) {
-            return 0;
-        }
         return (short) (Utils.filled ^ ((this.board & Utils.filled) | (this.board >> 9)));
     }
 
@@ -204,18 +192,10 @@ public class SubBoard {
 
     /**
      * Evaluates this sub-board, returning a heuristic value.
+     * Assuming this board is not yet won.
      * To be used in PV algo.
      */
     public double evaluate() {
-        switch (this.winner) {
-            case X:
-                return 1;
-            case O:
-                return -1;
-            case D:
-                return 0;
-        }
-
         boolean isXNearWin = false;
         short Xboard = (short) (this.board & Utils.filled);
         short Oboard = (short) ((this.board >> 9) & Utils.filled);

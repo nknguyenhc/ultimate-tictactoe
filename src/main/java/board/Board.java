@@ -14,7 +14,13 @@ public class Board {
     /** Represents the turn at this board. {@code true} if X, {@code false} otherwise. */
     private final boolean turn;
     /** Cached value of the winner */
-    private Utils.Side winner = null;
+    private final Utils.Side winner;
+    /** Boards won by X. */
+    private final short Xmeta;
+    /** Boards won by O. */
+    private final short Ometa;
+    /** Boards draw. */
+    private final short Dmeta;
 
     public Board() {
         this.subBoards = new SubBoard[] {
@@ -30,12 +36,21 @@ public class Board {
         };
         this.subBoardIndex = 9;
         this.turn = true;
+        this.Xmeta = 0;
+        this.Ometa = 0;
+        this.Dmeta = 0;
+        this.winner = Utils.Side.U;
     }
 
-    private Board(SubBoard[] subBoards, byte subBoardIndex, boolean turn) {
+    private Board(SubBoard[] subBoards, byte subBoardIndex, boolean turn,
+                  short Xmeta, short Ometa, short Dmeta) {
         this.subBoards = subBoards;
         this.subBoardIndex = subBoardIndex;
         this.turn = turn;
+        this.Xmeta = Xmeta;
+        this.Ometa = Ometa;
+        this.Dmeta = Dmeta;
+        this.winner = this.determineWinner();
     }
 
     /**
@@ -93,6 +108,22 @@ public class Board {
                         subBoardLines[1][j], subBoardLines[2][j]);
             }
         }
+        short Xmeta = 0;
+        short Ometa = 0;
+        short Dmeta = 0;
+        for (int i = 0; i < 9; i++) {
+            switch (subBoards[i].getWinner()) {
+                case X:
+                    Xmeta |= 1 << i;
+                    break;
+                case O:
+                    Ometa |= 1 << i;
+                    break;
+                case D:
+                    Dmeta |= 1 << i;
+                    break;
+            }
+        }
 
         String[] boardInfo = strings[3].split(",");
         if (boardInfo.length != 2) {
@@ -112,7 +143,7 @@ public class Board {
         }
 
         validateBoardIndexAndTurnValue(boardIndex, turnValue);
-        return new Board(subBoards, (byte) boardIndex, turnValue == 0);
+        return new Board(subBoards, (byte) boardIndex, turnValue == 0, Xmeta, Ometa, Dmeta);
     }
 
     /**
@@ -132,6 +163,22 @@ public class Board {
         for (byte i = 0; i < 9; i++) {
             subBoards[i] = SubBoard.fromCompactString(strings[i]);
         }
+        short Xmeta = 0;
+        short Ometa = 0;
+        short Dmeta = 0;
+        for (int i = 0; i < 9; i++) {
+            switch (subBoards[i].getWinner()) {
+                case X:
+                    Xmeta |= 1 << i;
+                    break;
+                case O:
+                    Ometa |= 1 << i;
+                    break;
+                case D:
+                    Dmeta |= 1 << i;
+                    break;
+            }
+        }
 
         String[] elems = strings[9].split(",");
         if (elems.length != 2) {
@@ -150,7 +197,7 @@ public class Board {
         }
 
         validateBoardIndexAndTurnValue(boardIndex, turnValue);
-        return new Board(subBoards, (byte) boardIndex, turnValue == 0);
+        return new Board(subBoards, (byte) boardIndex, turnValue == 0, Xmeta, Ometa, Dmeta);
     }
 
     private static void validateBoardIndexAndTurnValue(int boardIndex, int turnValue)
@@ -169,9 +216,13 @@ public class Board {
      * Obtains the list of move available for this board.
      */
     public List<Byte> actions() {
+        List<Byte> actions = new ArrayList<>();
         if (this.subBoardIndex == 9) {
-            List<Byte> actions = new ArrayList<>();
+            short occupiedBoards = (short) (this.Xmeta | this.Ometa | this.Dmeta);
             for (int boardIndex = 0; boardIndex < 9; boardIndex++) {
+                if (((occupiedBoards >> boardIndex) & 1) == 1) {
+                    continue;
+                }
                 short subBoardActions = this.subBoards[boardIndex].getActions();
                 for (int i = 0; i < 9; i++) {
                     if (((subBoardActions >> i) & 1) == 1) {
@@ -179,17 +230,15 @@ public class Board {
                     }
                 }
             }
-            return actions;
         } else {
-            List<Byte> actions = new ArrayList<>();
             short subBoardActions = this.subBoards[this.subBoardIndex].getActions();
             for (int i = 0; i < 9; i++) {
                 if (((subBoardActions >> i) & 1) == 1) {
                     actions.add((byte) (this.subBoardIndex * 9 + i));
                 }
             }
-            return actions;
         }
+        return actions;
     }
 
     /**
@@ -197,45 +246,37 @@ public class Board {
      * @param action The move to apply.
      */
     public Board move(byte action) {
-        int boardIndex;
-        if (this.subBoardIndex == 9) {
-            boardIndex = action / 9;
-        } else {
-            boardIndex = this.subBoardIndex;
-        }
+        int boardIndex = this.subBoardIndex == 9 ? action / 9 : this.subBoardIndex;
         SubBoard[] newSubBoards = this.subBoards.clone();
         newSubBoards[boardIndex] = newSubBoards[boardIndex].move((byte) (action % 9), this.turn);
         byte nextSubBoardIndex = (byte) (action % 9);
+        short newXmeta = this.Xmeta;
+        short newOmeta = this.Ometa;
+        short newDmeta = this.Dmeta;
+        switch (newSubBoards[boardIndex].getWinner()) {
+            case D:
+                newDmeta |= (1 << boardIndex);
+                break;
+            case X:
+                newXmeta |= (1 << boardIndex);
+                break;
+            case O:
+                newOmeta |= (1 << boardIndex);
+                break;
+        }
         if (newSubBoards[nextSubBoardIndex].getWinner() != Utils.Side.U) {
             nextSubBoardIndex = 9;
         }
-        return new Board(newSubBoards, nextSubBoardIndex, !this.turn);
+        return new Board(newSubBoards, nextSubBoardIndex, !this.turn, newXmeta, newOmeta, newDmeta);
     }
 
     private Utils.Side determineWinner() {
-        int Xboard = 0;
-        int Oboard = 0;
-        int Dboard = 0;
-        for (int i = 0; i < 9; i++) {
-            switch (this.subBoards[i].getWinner()) {
-                case X:
-                    Xboard += 1 << i;
-                    break;
-                case O:
-                    Oboard += 1 << i;
-                    break;
-                case D:
-                    Dboard += 1 << i;
-                    break;
-            }
-        }
-
-        if (Utils.wins[Xboard]) {
+        if (Utils.wins[this.Xmeta]) {
             return Utils.Side.X;
-        } else if (Utils.wins[Oboard]) {
+        } else if (Utils.wins[this.Ometa]) {
             return Utils.Side.O;
         }
-        if ((Xboard | Oboard | Dboard) == Utils.filled) {
+        if ((this.Xmeta | this.Ometa | this.Dmeta) == Utils.filled) {
             return Utils.Side.D;
         }
         return Utils.Side.U;
@@ -246,9 +287,6 @@ public class Board {
      * Caches the value.
      */
     public Utils.Side winner() {
-        if (this.winner == null) {
-            this.winner = this.determineWinner();
-        }
         return this.winner;
     }
 
@@ -333,7 +371,15 @@ public class Board {
         double total = 0;
         double[] evaluations = new double[9];
         for (int i = 0; i < 9; i++) {
-            evaluations[i] = this.subBoards[i].evaluate();
+            if (((this.Xmeta >> i) & 1) == 1) {
+                evaluations[i] = 1;
+            } else if (((this.Ometa >> i) & 1) == 1) {
+                evaluations[i] = -1;
+            } else if (((this.Dmeta >> i) & 1) == 1) {
+                evaluations[i] = 0;
+            } else {
+                evaluations[i] = this.subBoards[i].evaluate();
+            }
         }
 
         for (int i = 0; i < 3; i++) {

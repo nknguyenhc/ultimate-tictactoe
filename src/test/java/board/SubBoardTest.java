@@ -18,7 +18,6 @@ public class SubBoardTest {
 
         board = board.move((byte) 8, true);
         assertEquals(Utils.Side.X, board.getWinner());
-        assertEquals(0, board.getActions());
 
         board = new SubBoard();
         board = board.move((byte) 0, true);
@@ -30,7 +29,6 @@ public class SubBoardTest {
         board = board.move((byte) 5, false);
         board = board.move((byte) 2, false);
         assertEquals(Utils.Side.O, board.getWinner());
-        assertEquals(0, board.getActions());
     }
 
     @Test
