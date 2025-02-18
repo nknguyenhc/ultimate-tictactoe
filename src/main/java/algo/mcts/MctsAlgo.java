@@ -3,6 +3,7 @@ package algo.mcts;
 import algo.BaseAlgo;
 import board.Board;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MctsAlgo implements BaseAlgo {
@@ -33,6 +34,14 @@ public class MctsAlgo implements BaseAlgo {
             this.search();
         }
         return this.root.getBestMove();
+    }
+
+    public double evaluate(Board board, int count) {
+        this.root = new MctsNode(null, (byte) -1, board);
+        for (int i = 0; i < count; i++) {
+            this.search();
+        }
+        return this.evaluate();
     }
 
     private void search() {
