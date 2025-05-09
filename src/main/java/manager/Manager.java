@@ -158,14 +158,22 @@ public class Manager {
         } else {
             move = this.algo.nextMoveWithTime(this.board, this.timeControl);
         }
-        System.out.printf("Algo chose: %s%n", move);
+        System.out.printf("Algo chose: %s%n", this.toMoveString(move));
         this.board = this.board.move(move);
 
         if (this.includeTrace) {
             System.out.println(this.algo.trace());
             System.out.println(this.algo.getMovePredictions());
-            System.out.printf("Algo chose: %s%n", move);
+            System.out.printf("Algo chose: %s%n", this.toMoveString(move));
         }
+    }
+
+    private String toMoveString(int move) {
+        int boardIndex = move / 9;
+        int cellIndex = move % 9;
+        int row = boardIndex / 3 * 3 + cellIndex / 3;
+        int col = boardIndex % 3 * 3 + cellIndex % 3;
+        return String.format("(%d, %d)", row + 1, col + 1);
     }
 
     private void announceResults(boolean humanTurn) {
