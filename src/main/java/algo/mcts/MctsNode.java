@@ -71,7 +71,7 @@ class MctsNode {
      */
     public MctsNode expand() {
         assert this.children == null;
-        if (this.board.winner() != Utils.Side.U) { // Board is terminal
+        if (this.board.winner != Utils.Side.U) { // Board is terminal
             return this;
         }
 
@@ -90,16 +90,16 @@ class MctsNode {
      */
     public double simulate() {
         Board board = this.board;
-        while (board.winner() == Utils.Side.U) {
+        while (board.winner == Utils.Side.U) {
             List<Byte> actions = board.actions();
             int index = MctsNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
-        if (board.winner() == Utils.Side.D) {
+        if (board.winner == Utils.Side.D) {
             return 0;
         }
         Utils.Side side = this.board.getTurn() ? Utils.Side.X : Utils.Side.O;
-        return board.winner() == side ? MctsNode.WIN : -MctsNode.WIN;
+        return board.winner == side ? MctsNode.WIN : -MctsNode.WIN;
     }
 
     /**

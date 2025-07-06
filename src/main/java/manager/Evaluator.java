@@ -62,7 +62,7 @@ public class Evaluator {
     private Utils.Side play(BaseAlgo baseAlgo, BaseAlgo testAlgo, int timePerStep, boolean baseGoFirst) {
         Board board = new Board();
         int moveCount = 0;
-        while (board.winner() == Utils.Side.U) {
+        while (board.winner == Utils.Side.U) {
             if (moveCount % 10 == 0) {
                 System.out.print(moveCount + " ");
             }
@@ -76,6 +76,6 @@ public class Evaluator {
             moveCount++;
         }
         System.out.println();
-        return board.winner();
+        return board.winner;
     }
 }

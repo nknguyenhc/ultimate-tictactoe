@@ -28,7 +28,7 @@ public class AlgoFight {
 
     public void run() {
         this.welcome();
-        while (this.game.winner() == Utils.Side.U) {
+        while (this.game.winner == Utils.Side.U) {
             this.printGame();
             if (this.game.getTurn()) {
                 this.timer1.time();
@@ -43,7 +43,7 @@ public class AlgoFight {
 
     public void runWithTime(int time) {
         this.welcome();
-        while (this.game.winner() == Utils.Side.U) {
+        while (this.game.winner == Utils.Side.U) {
             this.printGame();
             if (this.game.getTurn()) {
                 this.algoTurnWithTime(this.algo1, this.algo2, time, this.includeTrace1);
@@ -111,7 +111,7 @@ public class AlgoFight {
     }
 
     private void judge() {
-        switch (this.game.winner()) {
+        switch (this.game.winner) {
             case D:
                 System.out.println("Draw!");
                 break;

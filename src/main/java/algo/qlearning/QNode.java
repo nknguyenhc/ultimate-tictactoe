@@ -53,7 +53,7 @@ class QNode {
      * Determines the q-value of this node, if the board is terminal.
      */
     private void earlyQValue() {
-        if (this.board.winner() == Utils.Side.X || this.board.winner() == Utils.Side.O) {
+        if (this.board.winner == Utils.Side.X || this.board.winner == Utils.Side.O) {
             this.qValue = -QNode.WIN;
         }
     }
@@ -82,12 +82,12 @@ class QNode {
      * @param p The probability of choosing a random move.
      */
     public void train(double p) {
-        if (this.board.winner() == Utils.Side.U) {
+        if (this.board.winner == Utils.Side.U) {
             this.setup();
             QNode node = this.selectMove(p);
             node.train(p);
         } else {
-            if (this.board.winner() == Utils.Side.D) {
+            if (this.board.winner == Utils.Side.D) {
                 this.update(0, 0);
             } else {
                 this.update(-QNode.WIN, 0);

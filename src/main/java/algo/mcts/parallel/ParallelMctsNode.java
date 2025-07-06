@@ -55,7 +55,7 @@ public class ParallelMctsNode {
 
     private ParallelMctsNode expand() {
         assert this.children == null;
-        if (this.board.winner() != Utils.Side.U) {
+        if (this.board.winner != Utils.Side.U) {
             return this;
         }
 
@@ -81,17 +81,17 @@ public class ParallelMctsNode {
 
     private int simulate() {
         Board board = this.board;
-        while (board.winner() == Utils.Side.U) {
+        while (board.winner == Utils.Side.U) {
             List<Byte> actions = board.actions();
             int index = ParallelMctsNode.rng.nextInt(actions.size());
             board = board.move(actions.get(index));
         }
 
-        if (board.winner() == Utils.Side.D) {
+        if (board.winner == Utils.Side.D) {
             return 0;
         }
         Utils.Side side = this.board.getTurn() ? Utils.Side.X : Utils.Side.O;
-        return board.winner() == side ? ParallelMctsNode.WIN : -ParallelMctsNode.WIN;
+        return board.winner == side ? ParallelMctsNode.WIN : -ParallelMctsNode.WIN;
     }
 
     private void backProp(int utility) {

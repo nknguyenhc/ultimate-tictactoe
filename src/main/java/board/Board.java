@@ -14,7 +14,7 @@ public class Board {
     /** Represents the turn at this board. {@code true} if X, {@code false} otherwise. */
     private final boolean turn;
     /** Cached value of the winner */
-    private final Utils.Side winner;
+    public final Utils.Side winner;
     /** Boards won by X. */
     private final short Xmeta;
     /** Boards won by O. */
@@ -341,14 +341,6 @@ public class Board {
             return Utils.Side.D;
         }
         return Utils.Side.U;
-    }
-
-    /**
-     * Determines the winner of this board.
-     * Caches the value.
-     */
-    public Utils.Side winner() {
-        return this.winner;
     }
 
     /**

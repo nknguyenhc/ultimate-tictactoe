@@ -88,9 +88,9 @@ class PvNode implements Comparable<PvNode> {
     }
 
     private double computeEvaluation() {
-        if (this.board.winner() == Utils.Side.U) {
+        if (this.board.winner == Utils.Side.U) {
             return this.board.getTurn() ? this.board.evaluate() : -this.board.evaluate();
-        } else if (this.board.winner() == Utils.Side.D) {
+        } else if (this.board.winner == Utils.Side.D) {
             return 0;
         } else {
             return -PvNode.WIN;
@@ -138,7 +138,7 @@ class PvNode implements Comparable<PvNode> {
             throw new TimeoutException();
         }
 
-        if (depth == 0 || this.board.winner() != Utils.Side.U) {
+        if (depth == 0 || this.board.winner != Utils.Side.U) {
             return this.evaluate();
         }
 

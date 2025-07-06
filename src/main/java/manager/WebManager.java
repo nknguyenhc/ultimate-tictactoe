@@ -159,7 +159,7 @@ public class WebManager {
             return e.getMessage() + TURN_PROMPT_APPEND;
         }
         this.board = this.board.move(move);
-        if (this.board.winner() != Utils.Side.U) {
+        if (this.board.winner != Utils.Side.U) {
             return this.gameJudge();
         }
 
@@ -194,7 +194,7 @@ public class WebManager {
     private String algoTurn() {
         byte move = this.algo.nextMoveWithTime(this.board, this.timeControl * 1000);
         this.board = this.board.move(move);
-        if (this.board.winner() != Utils.Side.U) {
+        if (this.board.winner != Utils.Side.U) {
             return this.gameJudge();
         }
 
@@ -203,7 +203,7 @@ public class WebManager {
     }
 
     private String gameJudge() {
-        Utils.Side winner = this.board.winner();
+        Utils.Side winner = this.board.winner;
         this.state = State.GAME_FINISHED;
         return this.board.toString() + String.format("%s won !!!", winner);
     }

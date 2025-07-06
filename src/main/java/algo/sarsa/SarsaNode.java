@@ -49,7 +49,7 @@ class SarsaNode {
      * Only for board that has a winner.
      */
     private void earlyQValue() {
-        if (this.board.winner() == Utils.Side.X || this.board.winner() == Utils.Side.O) {
+        if (this.board.winner == Utils.Side.X || this.board.winner == Utils.Side.O) {
             this.qValue = -SarsaNode.WIN;
         }
     }
@@ -80,7 +80,7 @@ class SarsaNode {
      */
     public void train(double p) {
         this.numVisits++;
-        if (this.board.winner() == Utils.Side.U) {
+        if (this.board.winner == Utils.Side.U) {
             this.setup();
             SarsaNode node = this.selectNode(p);
             node.train(p);

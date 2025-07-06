@@ -39,7 +39,7 @@ public class Manager {
             this.printWelcomeMessage();
         }
         boolean humanTurn = this.determineTurn();
-        while (this.board.winner() == Utils.Side.U) {
+        while (this.board.winner == Utils.Side.U) {
             System.out.println(this.board);
             if (this.includeTrace) {
                 System.out.printf("Compact string: %s%n", this.board.toCompactString());
@@ -178,7 +178,7 @@ public class Manager {
 
     private void announceResults(boolean humanTurn) {
         System.out.println(this.board);
-        switch (this.board.winner()) {
+        switch (this.board.winner) {
             case X:
                 if (humanTurn) {
                     this.notifyHumanWin();
