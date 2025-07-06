@@ -30,16 +30,12 @@ public class MctsAlgo implements BaseAlgo {
             if (i % 10000 == 0) {
                 System.out.printf("Training epoch %d%n", i);
             }
-            this.search();
+            MctsNode leaf = this.root.select();
+            MctsNode child = leaf.expand();
+            double value = child.simulate();
+            child.backPropagates(value);
         }
         return this.root.getBestMove();
-    }
-
-    private void search() {
-        MctsNode leaf = this.root.select();
-        MctsNode child = leaf.expand();
-        double value = child.simulate();
-        child.backPropagates(value);
     }
 
     @Override
@@ -71,7 +67,10 @@ public class MctsAlgo implements BaseAlgo {
         long startTime = System.currentTimeMillis();
         long endTime = startTime + time;
         while (System.currentTimeMillis() < endTime) {
-            this.search();
+            MctsNode leaf = this.root.select();
+            MctsNode child = leaf.expand();
+            double value = child.simulate();
+            child.backPropagates(value);
         }
         return this.root.getBestMove();
     }
@@ -115,7 +114,10 @@ public class MctsAlgo implements BaseAlgo {
         this.isPondering = true;
         this.ponderingThread = new Thread(() -> {
             while (this.isPondering) {
-                this.search();
+                MctsNode leaf = this.root.select();
+                MctsNode child = leaf.expand();
+                double value = child.simulate();
+                child.backPropagates(value);
             }
         });
         this.ponderingThread.start();
