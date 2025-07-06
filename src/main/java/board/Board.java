@@ -40,7 +40,13 @@ public class Board {
         this.Xmeta = Xmeta;
         this.Ometa = Ometa;
         this.Dmeta = Dmeta;
-        this.winner = this.determineWinner();
+        this.winner = Utils.wins[Xmeta]
+                ? Utils.Side.X
+                : Utils.wins[Ometa]
+                ? Utils.Side.O
+                : (Xmeta | Ometa | Dmeta) == Utils.filled
+                ? Utils.Side.D
+                : Utils.Side.U;
     }
 
     /**
@@ -329,18 +335,6 @@ public class Board {
             nextSubBoardIndex = 9;
         }
         return new Board(newSubBoards, nextSubBoardIndex, !this.turn, newXmeta, newOmeta, newDmeta);
-    }
-
-    private Utils.Side determineWinner() {
-        if (Utils.wins[this.Xmeta]) {
-            return Utils.Side.X;
-        } else if (Utils.wins[this.Ometa]) {
-            return Utils.Side.O;
-        }
-        if ((this.Xmeta | this.Ometa | this.Dmeta) == Utils.filled) {
-            return Utils.Side.D;
-        }
-        return Utils.Side.U;
     }
 
     /**
