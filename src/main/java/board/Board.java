@@ -12,7 +12,7 @@ public class Board {
     /** The board index that the next player must go at. 9 if the next player can go anywhere. */
     private final byte subBoardIndex;
     /** Represents the turn at this board. {@code true} if X, {@code false} otherwise. */
-    private final boolean turn;
+    public final boolean turn;
     /** Cached value of the winner */
     public final Utils.Side winner;
     /** Boards won by X. */
@@ -338,13 +338,6 @@ public class Board {
     }
 
     /**
-     * Returns the turn at this board.
-     */
-    public boolean getTurn() {
-        return this.turn;
-    }
-
-    /**
      * Get the board index that the current player has to move at.
      */
     public byte getBoardIndexToMove() {
@@ -424,7 +417,7 @@ public class Board {
             stringBuilder.append(String.format("%d,%d", this.subBoards[i] & Utils.filled, this.subBoards[i] >> 9));
             stringBuilder.append(" ");
         }
-        stringBuilder.append(String.format("%d,%d", this.subBoardIndex, this.getTurn() ? 0 : 1));
+        stringBuilder.append(String.format("%d,%d", this.subBoardIndex, this.turn ? 0 : 1));
         return stringBuilder.toString();
     }
 

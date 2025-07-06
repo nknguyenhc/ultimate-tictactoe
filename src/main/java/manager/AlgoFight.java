@@ -30,7 +30,7 @@ public class AlgoFight {
         this.welcome();
         while (this.game.winner == Utils.Side.U) {
             this.printGame();
-            if (this.game.getTurn()) {
+            if (this.game.turn) {
                 this.timer1.time();
             } else {
                 this.timer2.time();
@@ -45,7 +45,7 @@ public class AlgoFight {
         this.welcome();
         while (this.game.winner == Utils.Side.U) {
             this.printGame();
-            if (this.game.getTurn()) {
+            if (this.game.turn) {
                 this.algoTurnWithTime(this.algo1, this.algo2, time, this.includeTrace1);
             } else {
                 this.algoTurnWithTime(this.algo2, this.algo1, time, this.includeTrace2);

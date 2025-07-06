@@ -115,7 +115,7 @@ public class BoardTest {
                 "- - -  - - -  - - -\n",
                 board.toString());
         assertEquals(7, board.getBoardIndexToMove());
-        assertTrue(board.getTurn());
+        assertTrue(board.turn);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class BoardTest {
                 "- - -  - - -  - - -\n",
                 board.toString());
         assertEquals(7, board.getBoardIndexToMove());
-        assertTrue(board.getTurn());
+        assertTrue(board.turn);
     }
 
     @Test

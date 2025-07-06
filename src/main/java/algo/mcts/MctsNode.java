@@ -98,7 +98,7 @@ class MctsNode {
         if (board.winner == Utils.Side.D) {
             return 0;
         }
-        Utils.Side side = this.board.getTurn() ? Utils.Side.X : Utils.Side.O;
+        Utils.Side side = this.board.turn ? Utils.Side.X : Utils.Side.O;
         return board.winner == side ? MctsNode.WIN : -MctsNode.WIN;
     }
 

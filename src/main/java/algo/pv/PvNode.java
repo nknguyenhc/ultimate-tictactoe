@@ -89,7 +89,7 @@ class PvNode implements Comparable<PvNode> {
 
     private double computeEvaluation() {
         if (this.board.winner == Utils.Side.U) {
-            return this.board.getTurn() ? this.board.evaluate() : -this.board.evaluate();
+            return this.board.turn ? this.board.evaluate() : -this.board.evaluate();
         } else if (this.board.winner == Utils.Side.D) {
             return 0;
         } else {

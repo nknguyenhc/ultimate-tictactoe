@@ -44,7 +44,7 @@ public class Manager {
             if (this.includeTrace) {
                 System.out.printf("Compact string: %s%n", this.board.toCompactString());
             }
-            if (this.board.getTurn() == humanTurn) {
+            if (this.board.turn == humanTurn) {
                 this.humanTurn();
             } else {
                 this.algoTurn();
