@@ -111,7 +111,7 @@ public class Board {
             int subBoard = subBoards[i];
             if (Utils.wins[subBoard & Utils.filled]) {
                 Xmeta |= 1 << i;
-            } else if (Utils.wins[(subBoard >> 9) & Utils.filled]) {
+            } else if (Utils.wins[subBoard >> 9]) {
                 Ometa |= 1 << i;
             } else if (((subBoard & Utils.filled) | (subBoard >> 9)) == Utils.filled) {
                 Dmeta |= 1 << i;
@@ -211,7 +211,7 @@ public class Board {
             int subBoard = subBoards[i];
             if (Utils.wins[subBoard & Utils.filled]) {
                 Xmeta |= 1 << i;
-            } else if (Utils.wins[(subBoard >> 9) & Utils.filled]) {
+            } else if (Utils.wins[subBoard >> 9]) {
                 Ometa |= 1 << i;
             } else if (((subBoard & Utils.filled) | (subBoard >> 9)) == Utils.filled) {
                 Dmeta |= 1 << i;
@@ -326,7 +326,7 @@ public class Board {
         int subBoardToConsider = newSubBoards[boardIndex];
         if (Utils.wins[subBoardToConsider & Utils.filled]) {
             newXmeta |= 1 << boardIndex;
-        } else if (Utils.wins[(subBoardToConsider >> 9) & Utils.filled]) {
+        } else if (Utils.wins[subBoardToConsider >> 9]) {
             newOmeta |= 1 << boardIndex;
         } else if (((subBoardToConsider & Utils.filled) | (subBoardToConsider >> 9)) == Utils.filled) {
             newDmeta |= 1 << boardIndex;
@@ -484,7 +484,7 @@ public class Board {
     public double evaluateSubBoard(int subBoard) {
         boolean isXNearWin = false;
         short Xboard = (short) (subBoard & Utils.filled);
-        short Oboard = (short) ((subBoard >> 9) & Utils.filled);
+        short Oboard = (short) (subBoard >> 9);
         for (int i = 0; i < 24; i++) {
             if ((Xboard & Utils.nearWinningLines[i]) == Utils.nearWinningLines[i]
                     && (Oboard & Utils.blockingWinningLines[i]) != Utils.blockingWinningLines[i]) {
