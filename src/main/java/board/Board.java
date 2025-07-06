@@ -430,7 +430,7 @@ public class Board {
             stringBuilder.append(String.format("%d,%d", this.subBoards[i] & Utils.filled, this.subBoards[i] >> 9));
             stringBuilder.append(" ");
         }
-        stringBuilder.append(String.format("%d,%d", this.getBoardIndexToMove(), this.getTurn() ? 0 : 1));
+        stringBuilder.append(String.format("%d,%d", this.subBoardIndex, this.getTurn() ? 0 : 1));
         return stringBuilder.toString();
     }
 
