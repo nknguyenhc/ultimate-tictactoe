@@ -139,6 +139,66 @@ public class Board {
         return new Board(subBoards, (byte) boardIndex, turnValue == 0, Xmeta, Ometa, Dmeta);
     }
 
+    public static Board fromFypString(String string, int lastMove) throws InvalidBoardStringException {
+        String[] strings = string.split("------------------------------");
+        if (strings.length != 3) {
+            throw new InvalidBoardStringException(String.format(
+                    "Not enough rows of small boards, expected 3, got: %d", strings.length));
+        }
+
+        int[] subBoards = new int[9];
+        for (byte i = 0; i < 3; i++) {
+            String[] lines = strings[i].strip().split("\n");
+            if (lines.length != 3) {
+                throw new InvalidBoardStringException(String.format(
+                        "Group does not have the correct number of lines:\n%s;\nExpected length: 3, actual: %d",
+                        strings[i], lines.length));
+            }
+            String[][] subBoardLines = new String[3][];
+            for (int j = 0; j < 3; j++) {
+                subBoardLines[j] = lines[j].strip().split("\\|");
+                if (subBoardLines[j].length != 3) {
+                    throw new InvalidBoardStringException(String.format(
+                            "Long line does not have the correct number of groups: %s; Expected number of groups: %d",
+                            lines[j], subBoardLines[j].length));
+                }
+            }
+            for (byte j = 0; j < 3; j++) {
+                subBoards[3 * i + j] = subBoardFromFypString(subBoardLines[0][j],
+                        subBoardLines[1][j], subBoardLines[2][j]);
+            }
+        }
+        short Xmeta = 0;
+        short Ometa = 0;
+        short Dmeta = 0;
+        for (int i = 0; i < 9; i++) {
+            int subBoard = subBoards[i];
+            if (Utils.wins[subBoard & Utils.filled]) {
+                Xmeta |= 1 << i;
+            } else if (Utils.wins[subBoard >> 9]) {
+                Ometa |= 1 << i;
+            } else if (((subBoard & Utils.filled) | (subBoard >> 9)) == Utils.filled) {
+                Dmeta |= 1 << i;
+            }
+        }
+
+        // Infer turn from number of pieces on the board
+        int boardIndex = lastMove / 9;
+        int cellIndex = lastMove % 9;
+        boolean isXTurn;
+        if (((subBoards[boardIndex] >> cellIndex) & 1) == 1) {
+            isXTurn = false;
+        } else if ((((subBoards[boardIndex] >> 9) >> cellIndex) & 1) == 1) {
+            isXTurn = true;
+        } else {
+            throw new InvalidBoardStringException(
+                    String.format("Invalid board\n%s\nWith move %d, move does not point to a valid cell",
+                            string, lastMove));
+        }
+
+        return new Board(subBoards, (byte) cellIndex, isXTurn, Xmeta, Ometa, Dmeta);
+    }
+
     /**
      * Creates a new sub-board from the human-readable strings.
      * Each string corresponds to a line, for eg: {@code "X O -"}.
@@ -157,6 +217,19 @@ public class Board {
         return Xboard + (Oboard << 9);
     }
 
+    static int subBoardFromFypString(String line1, String line2, String line3) throws InvalidBoardStringException {
+        int Xboard = parseFypLine(line1, true);
+        int Oboard = parseFypLine(line1, false);
+
+        Xboard += parseFypLine(line2, true) << 3;
+        Oboard += parseFypLine(line2, false) << 3;
+
+        Xboard += parseFypLine(line3, true) << 6;
+        Oboard += parseFypLine(line3, false) << 6;
+
+        return Xboard + (Oboard << 9);
+    }
+
     /**
      * Returns the new value of the board given the string of the line, eg: {@code "X O -"}.
      */
@@ -168,6 +241,17 @@ public class Board {
         int currentBoard = parseCell(cells[0], isX);
         currentBoard += parseCell(cells[1], isX) << 1;
         currentBoard += parseCell(cells[2], isX) << 2;
+        return currentBoard;
+    }
+
+    private static int parseFypLine(String line, boolean isX) throws InvalidBoardStringException {
+        String[] cells = line.split("  ");
+        if (cells.length != 3) {
+            throw new InvalidBoardStringException(String.format("Line length not of correct length: %s", line));
+        }
+        int currentBoard = parseCell(cells[0].strip(), isX);
+        currentBoard += parseCell(cells[1].strip(), isX) << 1;
+        currentBoard += parseCell(cells[2].strip(), isX) << 2;
         return currentBoard;
     }
 

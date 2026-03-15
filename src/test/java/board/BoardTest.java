@@ -119,6 +119,38 @@ public class BoardTest {
     }
 
     @Test
+    public void testFromFypString() throws Exception {
+        Board board = Board.fromFypString(
+                "-  -  X  | -  -  -  | -  -  -\n" +
+                        "-  -  -  | -  -  -  | -  -  -\n" +
+                        "-  -  -  | -  -  -  | -  O  -\n" +
+                        "------------------------------\n" +
+                        "-  -  -  | O  -  -  | -  -  -\n" +
+                        "-  -  -  | -  X  -  | -  -  -\n" +
+                        "-  -  -  | -  -  -  | -  -  -\n" +
+                        "------------------------------\n" +
+                        "-  -  -  | -  -  -  | -  -  -\n" +
+                        "-  -  -  | -  -  -  | -  -  -\n" +
+                        "-  -  -  | -  -  -  | -  -  -\n",
+                25);
+        assertEquals(
+                "- - X  - - -  - - -\n" +
+                        "- - -  - - -  - - -\n" +
+                        "- - -  - - -  - O -\n" +
+                        "\n" +
+                        "- - -  O - -  - - -\n" +
+                        "- - -  - X -  - - -\n" +
+                        "- - -  - - -  - - -\n" +
+                        "\n" +
+                        "- - -  - - -  - - -\n" +
+                        "- - -  - - -  - - -\n" +
+                        "- - -  - - -  - - -\n",
+                board.toString());
+        assertEquals(7, board.getBoardIndexToMove());
+        assertTrue(board.turn);
+    }
+
+    @Test
     public void testFromCompactString() throws Exception {
         Board board = Board.fromCompactString("4,0 0,0 0,128 0,0 16,1 0,0 0,0 0,0 0,0 7,0");
         assertEquals(
