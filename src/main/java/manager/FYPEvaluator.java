@@ -39,7 +39,12 @@ public class FYPEvaluator {
                 throw new RuntimeException(String.format("Invalid game, need \"Response\": %s", game));
             }
             Board board = this.boardFromPrompt(parts[0]);
-            byte action = this.actionFromResponse(parts[1]);
+            byte action;
+            try {
+                action = this.actionFromResponse(parts[1]);
+            } catch (NumberFormatException e) {
+                continue;
+            }
             if (!board.actions().contains(action)) {
                 System.out.println("Invalid");
                 continue;
